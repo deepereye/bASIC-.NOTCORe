@@ -8,4 +8,20 @@ description: "Run Godot integration tests"
 inputs:
   artifact-name:
     required: true
-    description: "Name of the comp
+    description: "Name of the compiled Godot artifact to download"
+
+  godot-binary:
+    required: true
+    description: "Filename of the Godot executable"
+
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+
+    # Replaces also backspaces on Windows, since they cause problems in Bash
+    - name: "Store variable to Godot binary"
+      run: |
+        runnerDir=$(echo "${{ runner.temp }}" | sed "s!\\\\!/!")
+        echo "RUNNER_DIR=$runnerDir" >> $GITHUB_ENV
