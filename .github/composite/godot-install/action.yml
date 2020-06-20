@@ -37,4 +37,15 @@ runs:
 #      shell: bash
 
     - name: "Download Godot artifact"
-#      if: step
+#      if: steps.cache-godot.outputs.cache-hit != 'true'
+      run: |
+        curl https://nightly.link/Bromeon/godot4-nightly/workflows/compile-godot/master/${{ inputs.artifact-name }}.zip \
+          -Lo artifact.zip \
+          --retry 3
+        unzip artifact.zip -d $RUNNER_DIR/godot_bin
+      shell: bash
+
+    - name: "Prepare Godot executable"
+      run: |
+        chmod +x $GODOT4_BIN
+      shell: bash
