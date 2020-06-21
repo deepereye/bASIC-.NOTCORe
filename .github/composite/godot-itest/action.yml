@@ -1,1 +1,19 @@
-# This Source Code Form is subject to the terms of
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+name: godot
+description: "Run Godot integration tests"
+
+inputs:
+  artifact-name:
+    required: true
+    description: "Name of the compiled Godot artifact to download"
+
+  godot-binary:
+    required: true
+    description: "Filename of the Godot executable"
+
+  godot-args:
+    required: false
+    def
