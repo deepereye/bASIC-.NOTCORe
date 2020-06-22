@@ -16,4 +16,20 @@ inputs:
 
   godot-args:
     required: false
-    def
+    default: ''
+    description: "Command-line arguments passed to Godot"
+
+  rust-toolchain:
+    required: false
+    default: 'stable'
+    description: "Rust toolchain specifier (e.g. 'nightly')"
+
+  rust-extra-args:
+    required: false
+    default: ''
+    description: "Extra command line arguments for 'cargo build', e.g. features"
+
+  rust-env-rustflags:
+    required: false
+    default: ''
+    description: "Extra values for the 
