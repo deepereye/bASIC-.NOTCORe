@@ -32,4 +32,23 @@ inputs:
   rust-env-rustflags:
     required: false
     default: ''
-    description: "Extra values for the 
+    description: "Extra values for the RUSTFLAGS env var"
+
+  with-llvm:
+    required: false
+    default: ''
+    description: "Set to 'true' if LLVM should be installed"
+
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+
+    - name: "Install Godot"
+      uses: ./.github/composite/godot-install
+      with:
+        artifact-name: ${{ inputs.artifact-name }}
+        godot-binary: ${{ inputs.godot-binary }}
+
+    # The chmod seems still 
