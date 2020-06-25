@@ -51,4 +51,10 @@ runs:
         artifact-name: ${{ inputs.artifact-name }}
         godot-binary: ${{ inputs.godot-binary }}
 
-    # The chmod seems still 
+    # The chmod seems still necessary, although applied before uploading artifact. Possibly modes are not preserved.
+    # The `| xargs` pattern trims the output, since printed version may contain extra newline, which causes problems in env vars.
+    - name: "Inspect Godot version"
+      run: |
+        godotVer=$($GODOT4_BIN --version | xargs || true)
+        gitSha=$(echo $godotVer | sed -E "s/.+custom_build\.//")
+        echo "GODOT_BUILT_FROM=_Built from [\`$godo
