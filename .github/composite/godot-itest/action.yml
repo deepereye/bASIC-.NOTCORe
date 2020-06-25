@@ -57,4 +57,12 @@ runs:
       run: |
         godotVer=$($GODOT4_BIN --version | xargs || true)
         gitSha=$(echo $godotVer | sed -E "s/.+custom_build\.//")
-        echo "GODOT_BUILT_FROM=_Built from [\`$godo
+        echo "GODOT_BUILT_FROM=_Built from [\`$godotVer\`](https://github.com/godotengine/godot/commit/$gitSha)._" >> $GITHUB_ENV
+      shell: bash
+
+    # Note: if this fails, run `git diff -R > tweaks.patch` after updating the file manually
+    - name: "Copy and compare GDExtension header"
+      if: inputs.artifact-name == 'godot-linux'
+      run: |
+        mkdir -p godot-codegen/input
+        cp $RUNNER_DIR/godot_bin/gdextension_interface.h godot-codegen/input/gdextension_interfac
