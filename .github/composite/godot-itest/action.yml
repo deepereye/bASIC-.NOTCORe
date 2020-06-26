@@ -65,4 +65,12 @@ runs:
       if: inputs.artifact-name == 'godot-linux'
       run: |
         mkdir -p godot-codegen/input
-        cp $RUNNER_DIR/godot_bin/gdextension_interface.h godot-codegen/input/gdextension_interfac
+        cp $RUNNER_DIR/godot_bin/gdextension_interface.h godot-codegen/input/gdextension_interface.h
+        git apply godot-codegen/input/tweak.patch -v
+        git diff --exit-code --quiet || {
+            echo "OUTCOME=header-diff" >> $GITHUB_ENV
+            echo "gdextension_interface.h is not up-to-date; abort."
+            echo ""
+            
+            echo "### :x: Outdated GDExtension API header" >> $GITHUB_STEP_SUMMARY
+            echo "gdextension_interface.h contains the following differences:" >> $GITHU
