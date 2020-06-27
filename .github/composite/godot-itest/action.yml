@@ -73,4 +73,17 @@ runs:
             echo ""
             
             echo "### :x: Outdated GDExtension API header" >> $GITHUB_STEP_SUMMARY
-            echo "gdextension_interface.h contains the following differences:" >> $GITHU
+            echo "gdextension_interface.h contains the following differences:" >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`diff" >> $GITHUB_STEP_SUMMARY
+            git diff >> $GITHUB_STEP_SUMMARY
+            echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+            echo "After manually updating file, run:   \`git diff -R > tweak.patch\`." >> $GITHUB_STEP_SUMMARY
+
+        	exit 1
+        }
+      shell: bash
+
+    - name: "Install Rust"
+      uses: ./.github/composite/rust
+      with:
+        rust: ${{ inpu
