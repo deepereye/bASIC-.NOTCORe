@@ -86,4 +86,16 @@ runs:
     - name: "Install Rust"
       uses: ./.github/composite/rust
       with:
-        rust: ${{ inpu
+        rust: ${{ inputs.rust-toolchain }}
+        with-llvm: ${{ inputs.with-llvm }}
+
+    - name: "Build godot-rust"
+      run: |
+        cargo build -p itest ${{ inputs.rust-extra-args }}
+      shell: bash
+      env:
+        RUSTFLAGS: ${{ inputs.rust-env-rustflags }}
+
+    - name: "Run Godot integration tests"
+      # Aborts immediately if Godot outputs certain keywords (would otherwise stall until CI runner times out).
+      # Explana
