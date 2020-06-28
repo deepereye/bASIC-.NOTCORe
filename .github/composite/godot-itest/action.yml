@@ -105,4 +105,13 @@ runs:
       # * exit:     the terminated process would return 143, but this is more explicit and future-proof
       run: |
         cd itest/godot
-        echo "OUTCOME=ite
+        echo "OUTCOME=itest" >> $GITHUB_ENV
+        $GODOT4_BIN --headless ${{ inputs.godot-args }} 2>&1 | tee "${{ runner.temp }}/log.txt" | tee >(grep "SCRIPT ERROR:" -q && {
+        	printf "\n -- Godot engine encountered error, abort...\n";
+        	pkill godot
+            echo "OUTCOME=godot-runtime" >> $GITHUB_ENV
+        	exit 2
+        })
+        
+        echo "OUTCOME=success" >> $GITHUB_ENV
+      she
