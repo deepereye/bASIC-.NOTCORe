@@ -131,4 +131,12 @@ runs:
         
         case $OUTCOME in
           "success")
-            echo "### :heav
+            echo "### :heavy_check_mark: Godot integration tests passed" > $GITHUB_STEP_SUMMARY
+            echo "$GODOT_BUILT_FROM" >> $GITHUB_STEP_SUMMARY
+            ;;
+        
+          "godot-runtime")
+            echo "### :x: Godot runtime error" > $GITHUB_STEP_SUMMARY
+            echo "$GODOT_BUILT_FROM" >> $GITHUB_STEP_SUMMARY
+        	echo "Aborted due to an error during Godot execution." >> $GITHUB_STEP_SUMMARY
+  
