@@ -151,4 +151,18 @@ runs:
         
           "itest")
             echo "### :x: Godot integration tests failed" > $GITHUB_STEP_SUMMARY
-            echo "$GODOT_BUILT_FROM" >
+            echo "$GODOT_BUILT_FROM" >> $GITHUB_STEP_SUMMARY
+            exit 4
+            ;;
+        
+          "header-diff")
+            # already written
+            ;;
+
+          *)
+            echo "### :x: Unknown error occurred" > $GITHUB_STEP_SUMMARY
+            echo "$GODOT_BUILT_FROM" >> $GITHUB_STEP_SUMMARY
+            exit 5
+            ;;
+        esac
+      shell: bash
