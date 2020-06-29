@@ -114,4 +114,21 @@ runs:
         })
         
         echo "OUTCOME=success" >> $GITHUB_ENV
-      she
+      shell: bash
+
+    - name: "Check for memory leaks"
+      run: |
+        if grep -q "ObjectDB instances leaked at exit" "${{ runner.temp }}/log.txt"; then
+          echo "OUTCOME=godot-leak" >> $GITHUB_ENV
+          exit 2
+        fi
+      shell: bash
+
+    - name: "Conclusion"
+      if: always()
+      run: |
+        echo "Evaluate conclusion ($OUTCOME)"
+        
+        case $OUTCOME in
+          "success")
+            echo "### :heav
