@@ -139,4 +139,16 @@ runs:
             echo "### :x: Godot runtime error" > $GITHUB_STEP_SUMMARY
             echo "$GODOT_BUILT_FROM" >> $GITHUB_STEP_SUMMARY
         	echo "Aborted due to an error during Godot execution." >> $GITHUB_STEP_SUMMARY
-  
+            exit 2
+            ;;
+        
+          "godot-leak")
+            echo "### :x: Memory leak" > $GITHUB_STEP_SUMMARY
+            echo "$GODOT_BUILT_FROM" >> $GITHUB_STEP_SUMMARY
+        	echo "Integration tests cause memory leaks." >> $GITHUB_STEP_SUMMARY
+            exit 3
+            ;;
+        
+          "itest")
+            echo "### :x: Godot integration tests failed" > $GITHUB_STEP_SUMMARY
+            echo "$GODOT_BUILT_FROM" >
