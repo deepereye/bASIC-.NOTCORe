@@ -1,0 +1,62 @@
+
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+name: rust
+description: "Install Rust toolchain, with caching"
+
+inputs:
+  rust:
+    required: false
+    description: "Rust toolchain, e.g. 'stable' or 'nightly'"
+    default: stable
+
+  components:
+    required: false
+    description: "Components array"
+    default: ''
+
+  cache-key:
+    required: false
+    description: "Extra key to resolve cache"
+    default: ''
+
+  with-llvm:
+    required: false
+    description: "Set to 'true' if LLVM should be installed"
+    default: ''
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Configure"
+      id: configure
+      run: |
+        echo "Rust cache shared-key: '${{ runner.os }}-${{ inputs.rust }}${{ inputs.cache-key }}'"
+        echo "components=$( for c in ${cs//,/ }; do echo -n ' --component' $c; done )" >> $GITHUB_OUTPUT
+      env:
+        cs: ${{ inputs.components }}
+      shell: bash
+
+    - name: "Rustup"
+      run: |
+        rustup toolchain install ${{ inputs.rust }} --profile minimal --no-self-update ${{ steps.configure.outputs.components }}
+        rustup default ${{ inputs.rust }}
+      shell: bash
+
+    - name: "Reuse cached dependencies"
+      uses: Swatinem/rust-cache@v2
+      with:
+        # A cache key that is used instead of the automatic `job`-based key, and is stable over multiple jobs.
+        # default: empty
+        shared-key: "${{ runner.os }}-${{ inputs.rust }}${{ inputs.cache-key }}"
+
+        # An additional cache key that is added alongside the automatic `job`-based
+        # cache key and can be used to further differentiate jobs.
+        # default: empty
+        key: ${{ inputs.cache-key }}
+
+        # Determines if the cache should be saved even when the workflow has failed.
+        # default: "false"
+        cache-on-failure: true

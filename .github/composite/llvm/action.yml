@@ -30,4 +30,18 @@ runs:
 #        path: |
 #          C:/Program Files/LLVM
 #          ./llvm
-        path: ${{ env
+        path: ${{ env.LLVM_INSTALL_DIR }}
+        key: llvm-10.0
+
+    - uses: KyleMayes/install-llvm-action@v1
+      # if: ${{ inputs.llvm == 'true' }}
+      with:
+        version: "10.0"
+        directory: ${{ env.LLVM_INSTALL_DIR }}
+        cached: ${{ steps.cache-llvm.outputs.cache-hit }}
+
+    - name: "Print LLVM dir"
+      #run: ls -ls $LLVM_DIR/lib
+      run: |
+        echo "LLVM_PATH: $LLVM_PATH"
+      shell: bash
