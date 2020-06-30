@@ -1,2 +1,20 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If 
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+name: llvm
+description: "Install LLVM + Clang, with caching"
+
+#inputs:
+#  llvm:
+#    required: false
+#    default: 'true'
+#    description: "Whether LLVM should be installed ('true' by default)"
+
+runs:
+  using: "composite"
+  steps:
+    # Replaces also backspaces on Windows, since they cause problems in Bash
+    - name: "Set up install dir"
+      run: |
+        installDi
