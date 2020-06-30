@@ -17,4 +17,17 @@ runs:
     # Replaces also backspaces on Windows, since they cause problems in Bash
     - name: "Set up install dir"
       run: |
-        installDi
+        installDir=$(echo "${{ runner.temp }}/llvm" | sed "s!\\\\!/!")
+        echo "LLVM_INSTALL_DIR=$installDir" >> $GITHUB_ENV
+      shell: bash
+
+    - name: "Cache LLVM and clang"
+      id: cache-llvm
+      # Note: conditionals not yet supported; see https://github.com/actions/runner/issues/834
+      # if: ${{ inputs.llvm == 'true' }}
+      uses: actions/cache@v3
+      with:
+#        path: |
+#          C:/Program Files/LLVM
+#          ./llvm
+        path: ${{ env
