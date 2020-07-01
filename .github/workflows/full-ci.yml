@@ -22,4 +22,22 @@ env:
   # * report_objects: list individual leaked objects when running LeakSanitizer
   LSAN_OPTIONS: report_objects=1
 
-  # ASan options:
+  # ASan options: https://github.com/google/sanitizers/wiki/AddressSanitizerFlags
+
+defaults:
+  run:
+    shell: bash
+
+# If a new commit is pushed before the old one's CI has completed (on the same branch), abort previous run
+#concurrency:
+#  group: ${{ github.head_ref }}
+#  cancel-in-progress: true
+
+jobs:
+  rustfmt:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: "Install Rust"
+        uses: ./.github/comp
