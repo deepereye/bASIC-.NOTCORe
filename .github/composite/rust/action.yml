@@ -60,3 +60,16 @@ runs:
         # Determines if the cache should be saved even when the workflow has failed.
         # default: "false"
         cache-on-failure: true
+
+    - name: "Install LLVM"
+      uses: ./.github/composite/llvm
+      if: ${{ inputs.with-llvm == 'true' }}
+
+    - name: "Set environment variables used by toolchain"
+      run: |
+        echo CARGO_TERM_COLOR=always >> $GITHUB_ENV
+        echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV
+        echo RUST_BACKTRACE=1 >> $GITHUB_ENV
+        
+        rustc --version --verbose
+      shell: bash

@@ -1,0 +1,12 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+# Full CI workflow
+# Run before merging. Rebases on master to make sure CI passes for latest integration, not only for the PR at the time of creation.
+
+name: Full CI
+
+on:
+  push:
+ 
