@@ -82,4 +82,14 @@ jobs:
         run: |
           cargo clippy --all-targets $GDEXT_FEATURES ${{ matrix.rust-extra-args }} -- \
           -D clippy::suspicious -D clippy::style -D clippy::complexity -D clippy::perf \
-         
+          -D clippy::dbg_macro -D clippy::todo -D clippy::unimplemented -D warnings 
+
+
+  unit-test:
+    name: unit-test (${{ matrix.name }}${{ matrix.rust-special }})
+    runs-on: ${{ matrix.os }}
+    continue-on-error: false
+    strategy:
+      fail-fast: false # cancel all jobs as soon as one fails?
+      matrix:
+        # Order this way because macOS typically has the longest duration, followed by Windows, so it
