@@ -72,4 +72,14 @@ jobs:
 
       # TODO get rid of Godot binary, once the JSON is either versioned or fetched from somewhere
       # Replaces also backspaces on Windows, since they cause problems in Bash
-      
+      - name: "Install Godot"
+        uses: ./.github/composite/godot-install
+        with:
+          artifact-name: godot-${{ matrix.name }}
+          godot-binary: ${{ matrix.godot-binary }}
+
+      - name: "Check clippy"
+        run: |
+          cargo clippy --all-targets $GDEXT_FEATURES ${{ matrix.rust-extra-args }} -- \
+          -D clippy::suspicious -D clippy::style -D clippy::complexity -D clippy::perf \
+         
