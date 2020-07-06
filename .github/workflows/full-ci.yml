@@ -112,4 +112,19 @@ jobs:
           - name: linux
             os: ubuntu-20.04
             rust-toolchain: stable
-   
+            godot-binary: godot.linuxbsd.editor.dev.x86_64
+
+          - name: linux
+            os: ubuntu-20.04
+            rust-toolchain: stable
+            rust-special: -minimal-deps
+            godot-binary: godot.linuxbsd.editor.dev.x86_64
+          
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: "Install Rust"
+        uses: ./.github/composite/rust
+        with:
+          rust: stable
+          cache-key: $
