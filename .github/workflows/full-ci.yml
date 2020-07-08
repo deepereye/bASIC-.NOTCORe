@@ -147,4 +147,19 @@ jobs:
         uses: ./.github/composite/godot-install
         with:
           artifact-name: godot-${{ matrix.name }}
-   
+          godot-binary: ${{ matrix.godot-binary }}
+
+      - name: "Compile tests"
+        run: cargo test $GDEXT_FEATURES --no-run ${{ matrix.rust-extra-args }}
+
+      - name: "Test"
+        run: cargo test $GDEXT_FEATURES ${{ matrix.rust-extra-args }}
+
+
+  godot-itest:
+    name: godot-itest (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    continue-on-error: false
+    timeout-minutes: 24
+    strategy:
+      fail-fast: false # cancel all jobs as so
