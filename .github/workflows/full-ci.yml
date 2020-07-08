@@ -162,4 +162,12 @@ jobs:
     continue-on-error: false
     timeout-minutes: 24
     strategy:
-      fail-fast: false # cancel all jobs as so
+      fail-fast: false # cancel all jobs as soon as one fails?
+      matrix:
+        # Order this way because macOS typically has the longest duration, followed by Windows, so it benefits total workflow execution time.
+        # Additionally, the 'linux (msrv *)' special case will then be listed next to the other 'linux' jobs.
+        # Note: Windows uses '--target x86_64-pc-windows-msvc' by default as Cargo argument.
+        include:
+          - name: macos
+            os: macos-12
+            rust-too
