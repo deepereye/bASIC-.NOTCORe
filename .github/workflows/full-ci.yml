@@ -138,4 +138,13 @@ jobs:
         if: ${{ matrix.rust-special == '-minimal-deps' }}
 
       - name: "Install minimal dependency versions from Cargo"
-        run: cargo +nigh
+        run: cargo +nightly update -Z minimal-versions
+        if: ${{ matrix.rust-special == '-minimal-deps' }}
+
+      # TODO get rid of Godot binary, once the JSON is either versioned or fetched from somewhere
+      # Replaces also backspaces on Windows, since they cause problems in Bash
+      - name: "Install Godot"
+        uses: ./.github/composite/godot-install
+        with:
+          artifact-name: godot-${{ matrix.name }}
+   
