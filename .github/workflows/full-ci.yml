@@ -183,4 +183,13 @@ jobs:
 
           - name: windows
             os: windows-latest
-            rust
+            rust-toolchain: stable-x86_64-pc-windows-msvc
+            godot-binary: godot.windows.editor.dev.x86_64.exe
+
+          - name: windows-double
+            os: windows-latest
+            rust-toolchain: stable-x86_64-pc-windows-msvc
+            godot-binary: godot.windows.editor.dev.double.x86_64.exe
+            rust-extra-args: --features double-precision
+
+          # Don't use latest Ubuntu (22.04) as it breaks lots
