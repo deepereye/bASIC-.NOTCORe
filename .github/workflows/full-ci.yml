@@ -202,4 +202,10 @@ jobs:
           - name: linux-double
             os: ubuntu-20.04
             rust-toolchain: stable
-            godot-binary: godot.linuxbsd.editor.dev.dou
+            godot-binary: godot.linuxbsd.editor.dev.double.x86_64
+            rust-extra-args: --features double-precision
+
+          # Special Godot binaries compiled with AddressSanitizer/LeakSanitizer to detect UB/leaks.
+          # Additionally, the Godot source is patched to make dlclose() a no-op, as unloading dynamic libraries loses stacktrace and
+          # cause false positives like println!. See https://github.com/google/sanitizers/issues/89.
+          # Th
