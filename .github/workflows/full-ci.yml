@@ -216,4 +216,18 @@ jobs:
             godot-binary: godot.linuxbsd.editor.dev.x86_64.san
             godot-args: -- --disallow-focus
             rust-toolchain: nightly
-    
+            rust-env-rustflags: -Zrandomize-layout
+
+          - name: linux-memcheck-clang
+            os: ubuntu-20.04
+            godot-binary: godot.linuxbsd.editor.dev.x86_64.llvm.san
+            godot-args: -- --disallow-focus
+            rust-toolchain: nightly
+            rust-env-rustflags: -Zrandomize-layout
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: "Run Godot integration test"
+        uses: ./.github/composite/godot-itest
+        
