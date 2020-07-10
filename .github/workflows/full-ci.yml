@@ -230,4 +230,17 @@ jobs:
 
       - name: "Run Godot integration test"
         uses: ./.github/composite/godot-itest
-        
+        with:
+          artifact-name: godot-${{ matrix.name }}
+          godot-binary: ${{ matrix.godot-binary }}
+          godot-args: ${{ matrix.godot-args }}
+          rust-extra-args: ${{ matrix.rust-extra-args }}
+          rust-toolchain: ${{ matrix.rust-toolchain }}
+          rust-env-rustflags: ${{ matrix.rust-env-rustflags }}
+          with-llvm: ${{ matrix.with-llvm }}
+
+
+  license-guard:
+    runs-on: ubuntu-20.04
+    steps:
+      - use
