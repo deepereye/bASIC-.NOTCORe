@@ -243,4 +243,12 @@ jobs:
   license-guard:
     runs-on: ubuntu-20.04
     steps:
-      - use
+      - uses: actions/checkout@v3
+
+      - name: "Check license headers"
+        uses: apache/skywalking-eyes/header@v0.4.0
+        with:
+          # log: debug # optional: set the log level. The default value is `info`.
+          config: .github/external-config/licenserc.yml
+          # token: # optional: the token that license eye uses when it needs to comment on the pull request.
+          # Set to empty ("") to disable commenting on pull request. The de
