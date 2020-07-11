@@ -1,0 +1,16 @@
+[workspace]
+members = [
+    "godot-codegen",
+    "godot-ffi",
+    "godot-macros",
+    "godot-core",
+    "godot",
+
+    # Godot integration
+    "itest/rust",
+    "examples/dodge-the-creeps/rust"
+]
+
+# These dependencies don't need to be debugged, make build scripts run faster
+[profile.dev.package.bindgen]
+debug = 0
