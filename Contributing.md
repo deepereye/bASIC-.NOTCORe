@@ -32,4 +32,14 @@ $ ./check.sh test
 
 ## Integration tests
 
-The `itest/` directory contai
+The `itest/` directory contains a suite of integration tests that actually exercise `gdext` from within Godot.
+
+The `itest/rust` directory is a Rust `cdylib` library project that can be loaded as a GDExtension in Godot, with an entry point for running integration tests. The `itest/godot` directory contains the Godot project that loads this library and invokes the test suite.
+
+You can run the integration tests like this:
+
+```
+$ ./check.sh itest
+```
+
+Just
