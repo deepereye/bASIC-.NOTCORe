@@ -14,4 +14,22 @@ $ check.sh
 
 At the time of writing, this will run formatting, clippy, unit tests and integration tests. More checks may be added in the future. Run `./check.sh --help` to see all available options.
 
-If you like, you can set this as a pre-commit hook in your local clone o
+If you like, you can set this as a pre-commit hook in your local clone of the repository:
+
+```
+$ ln -sf check.sh .git/hooks/pre-commit
+```
+
+## Unit tests
+
+Because most of `gdext` interacts with the Godot engine, which is not available from the test executable, unit tests (using `cargo test` and the `#[test]` attribute) are pretty limited in scope.
+
+Because additional flags might be needed, the preferred way to run unit tests is through the `check.sh` script:
+
+```
+$ ./check.sh test
+```
+
+## Integration tests
+
+The `itest/` directory contai
