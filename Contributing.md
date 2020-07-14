@@ -42,4 +42,16 @@ You can run the integration tests like this:
 $ ./check.sh itest
 ```
 
-Just
+Just like when compiling the crate, the `GODOT4_BIN` environment variable can be used to supply the path and filename of your Godot executable.
+
+## Formatting
+
+`rustfmt` is used to format code. `check.sh` only warns about formatting issues, but does not fix them. To do that, run:
+
+```
+$ cargo fmt
+```
+
+## Clippy
+
+`clippy` is used for additional lint warnings not implemented in `rustc`. This, too, is best run throug
