@@ -32,4 +32,19 @@ At this point, there is **no** support for Android, iOS or WASM. Contributions a
 
 You need to have LLVM installed to use `bindgen`, see [the book](https://godot-rust.github.io/book/getting-started/setup.html#llvm) for instructions.
 
-To find a version of Godot 4, the library expects either an executable of name `go
+To find a version of Godot 4, the library expects either an executable of name `godot4` in the PATH, or an environment variable `GODOT4_BIN`
+containing the path to the executable (including filename).
+
+### Project setup
+
+We currently only have a GitHub version, crates.io releases are planned once more of the foundation is ready.  
+In your Cargo.toml, add:
+
+```toml
+[dependencies]
+godot = { git = "https://github.com/godot-rust/gdext", branch = "master" }
+
+[lib]
+crate-type = ["cdylib"]
+```
+To get th
