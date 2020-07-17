@@ -22,4 +22,14 @@ Its _GDExtension_ API allows integrating third-party languages and libraries.
 We do not recommend building a larger project in gdext yet.
 However, the library can serve as a playground for experimenting.
 
-To get an overview of currently supported features, consult [
+To get an overview of currently supported features, consult [#24](https://github.com/godot-rust/gdext/issues/24).  
+At this point, there is **no** support for Android, iOS or WASM. Contributions are very welcome!
+
+
+## Getting started
+
+### Toolchain
+
+You need to have LLVM installed to use `bindgen`, see [the book](https://godot-rust.github.io/book/getting-started/setup.html#llvm) for instructions.
+
+To find a version of Godot 4, the library expects either an executable of name `go
