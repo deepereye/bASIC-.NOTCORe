@@ -15,4 +15,11 @@ Its _GDExtension_ API allows integrating third-party languages and libraries.
 > * Lots of bugs. A lot of the scaffolding is still being ironed out. 
 >   There are known safety issues, possible undefined behavior as well as other potential problems.
 > * Lots of missing features. The priority is to get basic interactions working;
->   as suc
+>   as such, edge case APIs are deliberately neglected at this stage.
+> * No stability guarantees. APIs will break frequently (for releases, we try to take SemVer seriously though).
+>   Resolving the above two points has currently more weight than a stable API.
+
+We do not recommend building a larger project in gdext yet.
+However, the library can serve as a playground for experimenting.
+
+To get an overview of currently supported features, consult [
