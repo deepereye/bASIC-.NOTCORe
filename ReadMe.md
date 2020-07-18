@@ -47,4 +47,10 @@ godot = { git = "https://github.com/godot-rust/gdext", branch = "master" }
 [lib]
 crate-type = ["cdylib"]
 ```
-To get th
+To get the latest changes, you can regularly run a `cargo update` (possibly breaking). Keep your `Cargo.lock` file under version control, so that it's easy to revert updates.
+
+To register the GDExtension library with Godot, you need to create two files relative to your Godot project folder:
+
+1. First, add `res://MyExt.gdextension`, which is the equivalent of `.gdnlib` for GDNative.  
+   
+   The `[configuration]` section should
