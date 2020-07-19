@@ -63,4 +63,11 @@ To register the GDExtension library with Godot, you need to create two files rel
    linux.debug.x86_64 = "res://../rust/target/debug/lib{my_ext}.so"
    linux.release.x86_64 = "res://../rust/target/release/lib{my_ext}.so"
    windows.debug.x86_64 = "res://../rust/target/debug/{my_ext}.dll"
-   windows.release.x86_64 = 
+   windows.release.x86_64 = "res://../rust/target/release/{my_ext}.dll"
+   macos.debug = "res://../rust/target/debug/{my_ext}.dylib"
+   macos.release = "res://../rust/target/release/{my_ext}.dylib"
+   ```
+   (Note that for exporting your project, you'll need to use paths inside `res://`).
+
+2. A second file `res://.godot/extension_list.cfg` should be generated once you open the Godot editor for the first time.
+   If not, you can also manually create it, simply c
