@@ -53,4 +53,14 @@ To register the GDExtension library with Godot, you need to create two files rel
 
 1. First, add `res://MyExt.gdextension`, which is the equivalent of `.gdnlib` for GDNative.  
    
-   The `[configuration]` section should
+   The `[configuration]` section should be copied as-is.  
+   The `[libraries]` section should be updated to match the paths of your dynamic Rust libraries.
+   ```ini
+   [configuration]
+   entry_symbol = "gdext_rust_init"
+   
+   [libraries]
+   linux.debug.x86_64 = "res://../rust/target/debug/lib{my_ext}.so"
+   linux.release.x86_64 = "res://../rust/target/release/lib{my_ext}.so"
+   windows.debug.x86_64 = "res://../rust/target/debug/{my_ext}.dll"
+   windows.release.x86_64 = 
