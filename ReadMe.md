@@ -70,4 +70,16 @@ To register the GDExtension library with Godot, you need to create two files rel
    (Note that for exporting your project, you'll need to use paths inside `res://`).
 
 2. A second file `res://.godot/extension_list.cfg` should be generated once you open the Godot editor for the first time.
-   If not, you can also manually create it, simply c
+   If not, you can also manually create it, simply containing the Godot path to your `.gdextension` file:
+   ```
+   res://MyExt.gdextension
+   ```
+
+### Examples
+
+We highly recommend to have a look at a working example in the `examples/dodge-the-creeps` directory.
+This integrates a small game with Godot and has all the necessary steps set up.
+
+API documentation can be generated locally using `cargo doc -p godot --no-deps --open`.
+
+If you need help, join ou
