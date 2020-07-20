@@ -82,4 +82,12 @@ This integrates a small game with Godot and has all the necessary steps set up.
 
 API documentation can be generated locally using `cargo doc -p godot --no-deps --open`.
 
-If you need help, join ou
+If you need help, join our [Discord] server and ask in the `#help-gdext` channel!
+
+
+## License
+
+We use the [Mozilla Public License 2.0][mpl]. MPL tries to find a balance between permissive (MIT, Apache, Zlib) and copyleft licenses (GPL, LGPL).
+
+The license provides a lot of freedom: you can use the library commercially and keep your own code closed-source,
+i.e. game development is not restricted. The main condition is that if you change godot-rust _its
