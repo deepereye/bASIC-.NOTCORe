@@ -90,4 +90,16 @@ If you need help, join our [Discord] server and ask in the `#help-gdext` channel
 We use the [Mozilla Public License 2.0][mpl]. MPL tries to find a balance between permissive (MIT, Apache, Zlib) and copyleft licenses (GPL, LGPL).
 
 The license provides a lot of freedom: you can use the library commercially and keep your own code closed-source,
-i.e. game development is not restricted. The main condition is that if you change godot-rust _its
+i.e. game development is not restricted. The main condition is that if you change godot-rust _itself_, you need to make 
+those changes available (and only those, no surrounding code).
+
+
+## Contributing
+
+Contributions are very welcome! If you want to help out, see [`Contributing.md`](Contributing.md) for some pointers on getting started!
+
+[Godot]: https://godotengine.org
+[`gdnative`]: https://github.com/godot-rust/gdnative
+[mpl]: https://www.mozilla.org/en-US/MPL/
+[Discord]: https://discord.gg/aKUCJ8rJsc
+[Mastodon]: https://mastodon.gamede
