@@ -102,4 +102,5 @@ Contributions are very welcome! If you want to help out, see [`Contributing.md`]
 [`gdnative`]: https://github.com/godot-rust/gdnative
 [mpl]: https://www.mozilla.org/en-US/MPL/
 [Discord]: https://discord.gg/aKUCJ8rJsc
-[Mastodon]: https://mastodon.gamede
+[Mastodon]: https://mastodon.gamedev.place/@GodotRust
+[Twitter]: https://twitter.com/GodotRust
