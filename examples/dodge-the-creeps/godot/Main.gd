@@ -18,4 +18,21 @@ func game_over():
 
 
 func new_game():
-	get_tree().call_group("mobs", "queue_free"
+	get_tree().call_group("mobs", "queue_free")
+	score = 0
+	$Player.start($StartPosition.position)
+	$StartTimer.start()
+	$Hud.update_score(score)
+	$Hud.show_message("Get Ready")
+	$Music.play()
+
+
+func _on_MobTimer_timeout():
+	# Create a new instance of the Mob scene.
+	var mob = mob_scene.instantiate()
+
+	# Choose a random location on Path2D.
+	var mob_spawn_location = get_node(^"MobPath/MobSpawnLocation")
+	mob_spawn_location.progress = randi()
+
+	# Set the mob's direction perpendicular to the path
