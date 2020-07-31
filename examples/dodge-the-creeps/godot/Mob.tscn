@@ -1,0 +1,4 @@
+[gd_scene load_steps=9 format=3 uid="uid://rkdnhqgf2hpj"]
+
+[ext_resource type="Texture2D" uid="uid://cm5gcq5ye1dfp" path="res://art/enemyFlyingAlt_1.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://bgm216v7s45eh" path="res://art/enemyFlyingAlt_2.png" id="3
