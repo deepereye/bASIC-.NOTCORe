@@ -35,4 +35,27 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("4")
 }, {
-"durat
+"duration": 1.0,
+"texture": ExtResource("5")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 4.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="2"]
+radius = 37.0
+height = 100.0
+
+[node name="Mob" type="Mob" groups=["mobs"]]
+collision_mask = 0
+gravity_scale = 0.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.75, 0.75)
+sprite_frames = SubResource("1")
+animation = &"fly"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5708
+shape = SubReso
