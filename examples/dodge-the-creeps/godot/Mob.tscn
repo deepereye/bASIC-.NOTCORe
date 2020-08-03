@@ -7,4 +7,32 @@
 [ext_resource type="Texture2D" uid="uid://bmw4gn8qp4owc" path="res://art/enemySwimming_1.png" id="6"]
 [ext_resource type="Texture2D" uid="uid://bciy3d2t3uuvf" path="res://art/enemySwimming_2.png" id="7"]
 
-[sub_resource type="SpriteFrame
+[sub_resource type="SpriteFrames" id="1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3")
+}],
+"loop": true,
+"name": &"fly",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7")
+}],
+"loop": true,
+"name": &"swim",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4")
+}, {
+"durat
