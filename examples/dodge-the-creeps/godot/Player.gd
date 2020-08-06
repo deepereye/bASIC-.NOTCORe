@@ -24,4 +24,19 @@ func _process(delta):
 		velocity.y -= 1
 
 	if velocity.length() > 0:
-		velocity = veloci
+		velocity = velocity.normalized() * speed
+		$AnimatedSprite2D.play()
+	else:
+		$AnimatedSprite2D.stop()
+
+	position += velocity * delta
+	position.x = clamp(position.x, 0, screen_size.x)
+	position.y = clamp(position.y, 0, screen_size.y)
+
+	if velocity.x != 0:
+		$AnimatedSprite2D.animation = "right"
+		$AnimatedSprite2D.flip_v = false
+		$AnimatedSprite2D.flip_h = velocity.x < 0
+	elif velocity.y != 0:
+		$AnimatedSprite2D.animation = "up"
+		$AnimatedSprite2D.flip
