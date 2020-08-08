@@ -10,4 +10,14 @@ consider following the tutorial in the documentation.
 
 Language: GDScript
 
-Renderer:
+Renderer: Vulkan Mobile
+
+Note: There is a C# version available [here](https://github.com/godotengine/godot-demo-projects/tree/master/mono/dodge_the_creeps).
+
+Note: There is a GDNative C++ version available [here](https://github.com/godotengine/gdnative-demos/tree/master/cpp/dodge_the_creeps).
+
+Check out this demo on the asset library: https://godotengine.org/asset-library/asset/515
+
+## Screenshots
+
+![GIF
