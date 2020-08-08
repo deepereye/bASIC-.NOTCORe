@@ -1,0 +1,79 @@
+
+Please distribute this file along with the Xolonium fonts when possible.
+
+
+Source
+
+	Find the sourcefiles of Xolonium at
+	<gitlab.com/sev/xolonium>
+
+
+Credits
+
+	Xolonium is created with FontForge <fontforge.org>,
+	Inkscape <inkscape.org>, Python <python.org>, and
+	FontTools <github.com/fonttools>.
+
+	It originated as a custom font for the open-source
+	game Xonotic <xonotic.org>. With many thanks to the
+	Xonotic community for your support.
+
+
+Supported OpenType features
+
+	case  Provides case sensitive placement of punctuation,
+	      brackets, and math symbols for uppercase text.
+	frac  Replaces number/number sequences with diagonal fractions.
+	      Numbers that touch a slash should not exceed 10 digits.
+	kern  Provides kerning for Latin, Greek, and Cyrillic scripts.
+	locl  Dutch: Replaces j with a stressed version if it follows í.
+	      Sami: Replaces n-form Eng with the preferred N-form version.
+	      Romanian and Moldovan: Replaces ŞşŢţ with the preferred ȘșȚț.
+	pnum  Replaces monospaced digits with proportional versions.
+	sinf  Replaces digits with scientific inferiors below the baseline.
+	subs  Replaces digits with subscript versions on the baseline.
+	sups  Replaces digits with superscript versions.
+	zero  Replaces zero with a slashed version.
+
+
+Supported glyph sets
+
+	Adobe Latin 3
+	OpenType W1G
+	ISO 8859-1   Western European
+	ISO 8859-2   Central European
+	ISO 8859-3   South European
+	ISO 8859-4   North European
+	ISO 8859-5   Cyrillic
+	ISO 8859-7   Greek
+	ISO 8859-9   Turkish
+	ISO 8859-10  Nordic
+	ISO 8859-13  Baltic Rim
+	ISO 8859-14  Celtic
+	ISO 8859-15  Western European
+	ISO 8859-16  South-Eastern European
+
+
+Available glyphs
+
+	 !"#$%&'()*+,-./0123456789:;<=>?
+	@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_
+	`abcdefghijklmnopqrstuvwxyz{|}~
+
+	 ¡¢£¤¥¦§¨©ª«¬ ®¯°±²³´µ¶·¸¹º»¼½¾¿
+	ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞß
+	àáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ
+	ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğ
+	ĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľ
+	ĿŀŁłŃńŅņŇňŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞş
+	ŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽž
+	ƒǺǻǼǽǾǿȘșȚțȷ
+
+	ˆˇˉ˘˙˚˛˜˝
+
+	ͺ;΄΅Ά·ΈΉΊΌΎΏΐ
+	ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩΪΫάέήίΰ
+	αβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ
+
+	ЀЁЂЃЄЅІЇЈЉЊЋЌЍЎЏАБВГДЕЖЗИЙКЛМНОП
+	РСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмноп
