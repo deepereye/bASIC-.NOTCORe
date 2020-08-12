@@ -42,4 +42,11 @@ impl Hud {
     }
 
     #[func]
-    fn on_start_button_p
+    fn on_start_button_pressed(&mut self) {
+        let mut button = self.base.get_node_as::<Button>("StartButton");
+        button.hide();
+
+        // Note: this works only because `start_game` is a deferred signal.
+        // This method keeps a &mut Hud, and start_game calls Main::new_game(), which itself accesses this Hud
+        // instance through Gd<Hud>::bind_mut(). It will try creating a 2nd &mut reference, and thus panic.
+        // Deferring the signal is one
