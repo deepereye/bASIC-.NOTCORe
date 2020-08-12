@@ -26,4 +26,20 @@ impl Hud {
     pub fn show_game_over(&self) {
         self.show_message("Game Over".into());
 
-        let mut message_label = self.base
+        let mut message_label = self.base.get_node_as::<Label>("MessageLabel");
+        message_label.set_text("Dodge the\nCreeps!".into());
+        message_label.show();
+
+        let mut button = self.base.get_node_as::<Button>("StartButton");
+        button.show();
+    }
+
+    #[func]
+    pub fn update_score(&self, score: i64) {
+        let mut label = self.base.get_node_as::<Label>("ScoreLabel");
+
+        label.set_text(score.to_string().into());
+    }
+
+    #[func]
+    fn on_start_button_p
