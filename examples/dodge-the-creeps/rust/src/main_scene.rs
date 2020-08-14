@@ -102,3 +102,61 @@ impl Main {
         {
             // Local scope to bind `mob`
             let mut mob = mob.bind_mut();
+            let range = rng.gen_range(mob.min_speed..mob.max_speed);
+
+            mob.set_linear_velocity(Vector2::new(range, 0.0));
+            let lin_vel = mob.get_linear_velocity().rotated(real::from_f64(direction));
+            mob.set_linear_velocity(lin_vel);
+        }
+
+        let mut hud = self.base.get_node_as::<Hud>("Hud");
+        hud.bind_mut().connect(
+            "start_game".into(),
+            Callable::from_object_method(mob, "on_start_game"),
+            0,
+        );
+    }
+
+    fn music(&mut self) -> &mut AudioStreamPlayer {
+        self.music.as_deref_mut().unwrap()
+    }
+
+    fn death_sound(&mut self) -> &mut AudioStreamPlayer {
+        self.death_sound.as_deref_mut().unwrap()
+    }
+}
+
+#[godot_api]
+impl GodotExt for Main {
+    fn init(base: Base<Node>) -> Self {
+        Main {
+            mob_scene: PackedScene::new(),
+            score: 0,
+            base,
+            music: None,
+            death_sound: None,
+        }
+    }
+
+    fn ready(&mut self) {
+        // Note: this is downcast during load() -- completely type-safe thanks to type inference!
+        // If the resource does not exist or has an incompatible type, this panics.
+        // There is also try_load() if you want to check whether loading succeeded.
+        self.mob_scene = load("res://Mob.tscn");
+        self.music = Some(self.base.get_node_as("Music"));
+        self.death_sound = Some(self.base.get_node_as("DeathSound"));
+    }
+}
+
+/// Root here is needs to be the same type (or a parent type) of the node that you put in the child
+///   scene as the root. For instance Spatial is used for this example.
+fn instantiate_scene<Root>(scene: &PackedScene) -> Gd<Root>
+where
+    Root: GodotClass + Inherits<Node>,
+{
+    let s = scene
+        .instantiate(GenEditState::GEN_EDIT_STATE_DISABLED)
+        .expect("scene instantiated");
+
+    s.cast::<Root>()
+}
