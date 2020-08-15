@@ -35,4 +35,26 @@ pub struct Mob {
 
 #[godot_api]
 impl Mob {
-    #[func
+    #[func]
+    fn on_visibility_screen_exited(&mut self) {
+        self.base.queue_free();
+    }
+
+    #[func]
+    fn on_start_game(&mut self) {
+        self.base.queue_free();
+    }
+}
+
+#[godot_api]
+impl GodotExt for Mob {
+    fn init(base: Base<RigidBody2D>) -> Self {
+        Mob {
+            min_speed: 150.0,
+            max_speed: 250.0,
+            base,
+        }
+    }
+
+    fn ready(&mut self) {
+        let mu
