@@ -57,4 +57,12 @@ impl GodotExt for Mob {
     }
 
     fn ready(&mut self) {
-        let mu
+        let mut rng = rand::thread_rng();
+        let animation_name = MOB_TYPES.choose(&mut rng).unwrap().to_str();
+
+        let mut sprite = self
+            .base
+            .get_node_as::<AnimatedSprite2D>("AnimatedSprite2D");
+        sprite.set_animation(StringName::from(&animation_name));
+    }
+}
