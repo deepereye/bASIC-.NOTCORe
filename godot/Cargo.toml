@@ -14,4 +14,8 @@ trace = ["godot-core/trace"]
 double-precision = ["godot-core/double-precision"]
 
 # Private features, they are under no stability guarantee
-codegen-full = ["godot-core/codegen-ful
+codegen-full = ["godot-core/codegen-full"]
+
+[dependencies]
+godot-core = { path = "../godot-core" }
+godot-macros = { path = "../godot-macros" }
