@@ -1,0 +1,4 @@
+diff --git b/godot-codegen/input/gdextension_interface.h a/godot-codegen/input/gdextension_interface.h
+index 0b7615f..6db266e 100644
+--- b/godot-codegen/input/gdextension_interface.h
++++ a/godot-code
