@@ -22,4 +22,14 @@ index 0b7615f..6db266e 100644
 +typedef struct TagStringName *GDExtensionStringNamePtr;
 +typedef const struct TagStringName *GDExtensionConstStringNamePtr;
 +typedef struct TagString *GDExtensionStringPtr;
-+typedef const struct TagString *GDExtensionConstStri
++typedef const struct TagString *GDExtensionConstStringPtr;
++typedef struct TagObject *GDExtensionObjectPtr;
++typedef const struct TagObject *GDExtensionConstObjectPtr;
++typedef struct TagType *GDExtensionTypePtr;
++typedef const struct TagType *GDExtensionConstTypePtr;
++typedef struct TagMethodBind *GDExtensionMethodBindPtr;
+ typedef int64_t GDExtensionInt;
+ typedef uint8_t GDExtensionBool;
+ typedef uint64_t GDObjectInstanceID;
+-typedef void *GDExtensionRefPtr;
+-typedef const void *GDExte
