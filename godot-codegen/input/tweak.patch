@@ -32,4 +32,9 @@ index 0b7615f..6db266e 100644
  typedef uint8_t GDExtensionBool;
  typedef uint64_t GDObjectInstanceID;
 -typedef void *GDExtensionRefPtr;
--typedef const void *GDExte
+-typedef const void *GDExtensionConstRefPtr;
++typedef struct TagExtensionRef *GDExtensionRefPtr;
++typedef const struct TagExtensionRef *GDExtensionConstRefPtr;
+ 
+ /* VARIANT DATA I/O */
+ 
