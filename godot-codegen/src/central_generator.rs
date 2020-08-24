@@ -21,4 +21,22 @@ struct CentralItems {
     variant_op_enumerators_pascal: Vec<Ident>,
     variant_op_enumerators_ord: Vec<Literal>,
     variant_fn_decls: Vec<TokenStream>,
-    variant_fn_inits: Vec<
+    variant_fn_inits: Vec<TokenStream>,
+    global_enum_defs: Vec<TokenStream>,
+}
+
+pub(crate) struct TypeNames {
+    /// Name in JSON: "int" or "PackedVector2Array"
+    pub json_builtin_name: String,
+
+    /// "packed_vector2_array"
+    pub snake_case: String,
+
+    /// "PACKED_VECTOR2_ARRAY"
+    //pub shout_case: String,
+
+    /// GDEXTENSION_VARIANT_TYPE_PACKED_VECTOR2_ARRAY
+    pub sys_variant_type: Ident,
+}
+
+/// Allows collecting all builtin TypeNa
