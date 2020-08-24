@@ -39,4 +39,13 @@ pub(crate) struct TypeNames {
     pub sys_variant_type: Ident,
 }
 
-/// Allows collecting all builtin TypeNa
+/// Allows collecting all builtin TypeNames before generating methods
+pub(crate) struct BuiltinTypeInfo<'a> {
+    pub value: i32,
+    pub type_names: TypeNames,
+
+    /// If `variant_get_ptr_destructor` returns a non-null function pointer for this type.
+    /// List is directly sourced from extension_api.json (information would also be in variant_destruct.cpp).
+    pub has_destructor: bool,
+    pub constructors: Option<&'a Vec<Constructor>>,
+    pub operator
