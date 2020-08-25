@@ -64,4 +64,15 @@ pub(crate) fn generate_sys_central_file(
     write_file(sys_gen_path, "central.rs", sys_code, out_files);
 }
 
-pub(crate) fn generate_sys_mod_file(core
+pub(crate) fn generate_sys_mod_file(core_gen_path: &Path, out_files: &mut Vec<PathBuf>) {
+    let code = quote! {
+        pub mod central;
+        pub mod gdextension_interface;
+    };
+
+    write_file(core_gen_path, "mod.rs", code.to_string(), out_files);
+}
+
+pub(crate) fn generate_core_mod_file(core_gen_path: &Path, out_files: &mut Vec<PathBuf>) {
+    // When invoked by another crate during unit-test (not integration test), don't run generator
+    let code = 
