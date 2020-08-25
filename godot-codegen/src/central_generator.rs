@@ -48,4 +48,20 @@ pub(crate) struct BuiltinTypeInfo<'a> {
     /// List is directly sourced from extension_api.json (information would also be in variant_destruct.cpp).
     pub has_destructor: bool,
     pub constructors: Option<&'a Vec<Constructor>>,
-    pub operator
+    pub operators: Option<&'a Vec<Operator>>,
+}
+
+pub(crate) fn generate_sys_central_file(
+    api: &ExtensionApi,
+    ctx: &mut Context,
+    build_config: &str,
+    sys_gen_path: &Path,
+    out_files: &mut Vec<PathBuf>,
+) {
+    let central_items = make_central_items(api, build_config, ctx);
+    let sys_code = make_sys_code(&central_items);
+
+    write_file(sys_gen_path, "central.rs", sys_code, out_files);
+}
+
+pub(crate) fn generate_sys_mod_file(core
