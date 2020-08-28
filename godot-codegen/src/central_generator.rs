@@ -75,4 +75,21 @@ pub(crate) fn generate_sys_mod_file(core_gen_path: &Path, out_files: &mut Vec<Pa
 
 pub(crate) fn generate_core_mod_file(core_gen_path: &Path, out_files: &mut Vec<PathBuf>) {
     // When invoked by another crate during unit-test (not integration test), don't run generator
-    let code = 
+    let code = quote! {
+        pub mod central;
+        pub mod classes;
+        pub mod builtin_classes;
+        pub mod utilities;
+    };
+
+    write_file(core_gen_path, "mod.rs", code.to_string(), out_files);
+}
+
+pub(crate) fn generate_core_central_file(
+    api: &ExtensionApi,
+    ctx: &mut Context,
+    build_config: &str,
+    core_gen_path: &Path,
+    out_files: &mut Vec<PathBuf>,
+) {
+    let central_items = make_central_items(api, build_config
