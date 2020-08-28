@@ -92,4 +92,21 @@ pub(crate) fn generate_core_central_file(
     core_gen_path: &Path,
     out_files: &mut Vec<PathBuf>,
 ) {
-    let central_items = make_central_items(api, build_config
+    let central_items = make_central_items(api, build_config, ctx);
+    let core_code = make_core_code(&central_items);
+
+    write_file(core_gen_path, "central.rs", core_code, out_files);
+}
+
+pub(crate) fn write_file(
+    gen_path: &Path,
+    filename: &str,
+    code: String,
+    out_files: &mut Vec<PathBuf>,
+) {
+    let _ = std::fs::create_dir_all(gen_path);
+    let out_path = gen_path.join(filename);
+
+    std::fs::write(&out_path, code).unwrap_or_else(|e| {
+        panic!(
+    
