@@ -124,4 +124,21 @@ fn make_sys_code(central_items: &CentralItems) -> String {
         variant_ty_enumerators_ord,
         variant_op_enumerators_pascal,
         variant_op_enumerators_ord,
-        variant_fn_de
+        variant_fn_decls,
+        variant_fn_inits,
+        ..
+    } = central_items;
+
+    let sys_tokens = quote! {
+        use crate::{GDExtensionVariantPtr, GDExtensionTypePtr, GDExtensionConstTypePtr, GodotFfi, ffi_methods};
+
+        pub mod types {
+            #(#opaque_types)*
+        }
+
+        pub struct GlobalMethodTable {
+            #(#variant_fn_decls)*
+        }
+
+        impl GlobalMethodTable {
+       
