@@ -109,4 +109,19 @@ pub(crate) fn write_file(
 
     std::fs::write(&out_path, code).unwrap_or_else(|e| {
         panic!(
-    
+            "failed to write code file to {};\n\t{}",
+            out_path.display(),
+            e
+        )
+    });
+    out_files.push(out_path);
+}
+
+fn make_sys_code(central_items: &CentralItems) -> String {
+    let CentralItems {
+        opaque_types,
+        variant_ty_enumerators_pascal,
+        variant_ty_enumerators_ord,
+        variant_op_enumerators_pascal,
+        variant_op_enumerators_ord,
+        variant_fn_de
