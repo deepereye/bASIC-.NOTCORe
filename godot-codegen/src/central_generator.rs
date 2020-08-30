@@ -154,4 +154,15 @@ fn make_sys_code(central_items: &CentralItems) -> String {
             Nil = 0,
             #(
                 #variant_ty_enumerators_pascal = #variant_ty_enumerators_ord,
-           
+            )*
+        }
+
+        impl VariantType {
+            #[doc(hidden)]
+            pub fn from_sys(enumerator: crate::GDExtensionVariantType) -> Self {
+                // Annoying, but only stable alternative is transmute(), which dictates enum size
+                match enumerator {
+                    0 => Self::Nil,
+                    #(
+                        #variant_ty_enumerators_ord => Self::#variant_ty_enumerators_pascal,
+            
