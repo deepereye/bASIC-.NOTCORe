@@ -165,4 +165,19 @@ fn make_sys_code(central_items: &CentralItems) -> String {
                     0 => Self::Nil,
                     #(
                         #variant_ty_enumerators_ord => Self::#variant_ty_enumerators_pascal,
-            
+                    )*
+                    _ => unreachable!("invalid variant type {}", enumerator)
+                }
+            }
+
+            #[doc(hidden)]
+            pub fn sys(self) -> crate::GDExtensionVariantType {
+                self as _
+            }
+        }
+
+        impl GodotFfi for VariantType {
+            ffi_methods! { type GDExtensionTypePtr = *mut Self; .. }
+        }
+
+        #[derive(Copy, Clone, Eq, PartialEq, 
