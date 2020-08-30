@@ -141,4 +141,17 @@ fn make_sys_code(central_items: &CentralItems) -> String {
         }
 
         impl GlobalMethodTable {
-       
+            pub(crate) unsafe fn new(interface: &crate::GDExtensionInterface) -> Self {
+                Self {
+                    #(#variant_fn_inits)*
+                }
+            }
+        }
+
+        #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+        #[repr(i32)]
+        pub enum VariantType {
+            Nil = 0,
+            #(
+                #variant_ty_enumerators_pascal = #variant_ty_enumerators_ord,
+           
