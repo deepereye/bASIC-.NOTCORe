@@ -180,4 +180,17 @@ fn make_sys_code(central_items: &CentralItems) -> String {
             ffi_methods! { type GDExtensionTypePtr = *mut Self; .. }
         }
 
-        #[derive(Copy, Clone, Eq, PartialEq, 
+        #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+        #[repr(i32)]
+        pub enum VariantOperator {
+            #(
+                #variant_op_enumerators_pascal = #variant_op_enumerators_ord,
+            )*
+        }
+
+        impl VariantOperator {
+            #[doc(hidden)]
+            pub fn from_sys(enumerator: crate::GDExtensionVariantOperator) -> Self {
+                match enumerator {
+                    #(
+               
