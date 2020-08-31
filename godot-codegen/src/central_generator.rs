@@ -193,4 +193,17 @@ fn make_sys_code(central_items: &CentralItems) -> String {
             pub fn from_sys(enumerator: crate::GDExtensionVariantOperator) -> Self {
                 match enumerator {
                     #(
-               
+                        #variant_op_enumerators_ord => Self::#variant_op_enumerators_pascal,
+                    )*
+                    _ => unreachable!("invalid variant operator {}", enumerator)
+                }
+            }
+
+            #[doc(hidden)]
+            pub fn sys(self) -> crate::GDExtensionVariantOperator {
+                self as _
+            }
+        }
+
+        impl GodotFfi for VariantOperator {
+            ffi_methods! { type
