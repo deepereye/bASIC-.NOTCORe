@@ -206,4 +206,20 @@ fn make_sys_code(central_items: &CentralItems) -> String {
         }
 
         impl GodotFfi for VariantOperator {
-            ffi_methods! { type
+            ffi_methods! { type GDExtensionTypePtr = *mut Self; .. }
+        }
+    };
+
+    sys_tokens.to_string()
+}
+
+fn make_core_code(central_items: &CentralItems) -> String {
+    let CentralItems {
+        variant_ty_enumerators_pascal,
+        variant_ty_enumerators_rust,
+        global_enum_defs,
+        ..
+    } = central_items;
+
+    // TODO impl Clone, Debug, PartialEq, PartialOrd, Hash for VariantDispatch
+    // TODO could use try_to().unwrap_unchecked(), since type is already verified. Also directly overload from
