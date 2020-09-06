@@ -222,4 +222,20 @@ fn make_core_code(central_items: &CentralItems) -> String {
     } = central_items;
 
     // TODO impl Clone, Debug, PartialEq, PartialOrd, Hash for VariantDispatch
-    // TODO could use try_to().unwrap_unchecked(), since type is already verified. Also directly overload from
+    // TODO could use try_to().unwrap_unchecked(), since type is already verified. Also directly overload from_variant().
+    // But this requires that all the variant types support this
+    let core_tokens = quote! {
+        use crate::builtin::*;
+        use crate::engine::Object;
+        use crate::obj::Gd;
+
+        #[allow(dead_code)]
+        pub enum VariantDispatch {
+            Nil,
+            #(
+                #variant_ty_enumerators_pascal(#variant_ty_enumerators_rust),
+            )*
+        }
+
+        #[cfg(FALSE)]
+        imp
