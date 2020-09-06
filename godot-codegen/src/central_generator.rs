@@ -244,4 +244,24 @@ fn make_core_code(central_items: &CentralItems) -> String {
                     VariantType::Nil => Self::Nil,
                     #(
                         VariantType::#variant_ty_enumerators_pascal
-                            => Self::#variant_ty_enumerators_pascal(variant.to::<#variant_ty_enumerato
+                            => Self::#variant_ty_enumerators_pascal(variant.to::<#variant_ty_enumerators_rust>()),
+                    )*
+                };
+
+                Ok(dispatch)
+            }
+        }
+
+        pub mod global {
+            use crate::sys;
+            #( #global_enum_defs )*
+        }
+    };
+
+    core_tokens.to_string()
+}
+
+fn make_central_items(api: &ExtensionApi, build_config: &str, ctx: &mut Context) -> CentralItems {
+    let mut opaque_types = vec![];
+    for class in &api.builtin_class_sizes {
+        if class.build_c
