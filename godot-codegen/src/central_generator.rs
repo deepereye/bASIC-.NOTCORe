@@ -238,4 +238,10 @@ fn make_core_code(central_items: &CentralItems) -> String {
         }
 
         #[cfg(FALSE)]
-        imp
+        impl FromVariant for VariantDispatch {
+            fn try_from_variant(variant: &Variant) -> Result<Self, VariantConversionError> {
+                let dispatch = match variant.get_type() {
+                    VariantType::Nil => Self::Nil,
+                    #(
+                        VariantType::#variant_ty_enumerators_pascal
+                            => Self::#variant_ty_enumerators_pascal(variant.to::<#variant_ty_enumerato
