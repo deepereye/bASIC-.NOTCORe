@@ -287,4 +287,15 @@ fn make_central_items(api: &ExtensionApi, build_config: &str, ctx: &mut Context)
         variant_ty_enumerators_ord: Vec::with_capacity(len),
         variant_op_enumerators_pascal: Vec::new(),
         variant_op_enumerators_ord: Vec::new(),
-        variant_fn_decls: Vec::with_cap
+        variant_fn_decls: Vec::with_capacity(len),
+        variant_fn_inits: Vec::with_capacity(len),
+        global_enum_defs: Vec::new(),
+    };
+
+    let mut builtin_types: Vec<_> = builtin_types_map.values().collect();
+    builtin_types.sort_by_key(|info| info.value);
+
+    // Note: NIL is not part of this iteration, it will be added manually
+    for ty in builtin_types {
+        // Note: both are token streams, containing multiple function declarations/initializations
+        
