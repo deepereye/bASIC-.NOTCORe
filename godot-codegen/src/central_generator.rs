@@ -277,4 +277,14 @@ fn make_central_items(api: &ExtensionApi, build_config: &str, ctx: &mut Context)
     let variant_operators = collect_variant_operators(api);
 
     // Generate builtin methods, now with info for all types available.
-    // Separate vectors because that 
+    // Separate vectors because that makes usage in quote! easier.
+    let len = builtin_types_map.len();
+
+    let mut result = CentralItems {
+        opaque_types,
+        variant_ty_enumerators_pascal: Vec::with_capacity(len),
+        variant_ty_enumerators_rust: Vec::with_capacity(len),
+        variant_ty_enumerators_ord: Vec::with_capacity(len),
+        variant_op_enumerators_pascal: Vec::new(),
+        variant_op_enumerators_ord: Vec::new(),
+        variant_fn_decls: Vec::with_cap
