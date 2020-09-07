@@ -264,4 +264,17 @@ fn make_core_code(central_items: &CentralItems) -> String {
 fn make_central_items(api: &ExtensionApi, build_config: &str, ctx: &mut Context) -> CentralItems {
     let mut opaque_types = vec![];
     for class in &api.builtin_class_sizes {
-        if class.build_c
+        if class.build_configuration == build_config {
+            for ClassSize { name, size } in &class.sizes {
+                opaque_types.push(make_opaque_type(name, *size));
+            }
+
+            break;
+        }
+    }
+
+    let builtin_types_map = collect_builtin_types(api);
+    let variant_operators = collect_variant_operators(api);
+
+    // Generate builtin methods, now with info for all types available.
+    // Separate vectors because that 
