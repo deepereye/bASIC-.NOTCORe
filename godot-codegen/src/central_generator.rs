@@ -298,4 +298,15 @@ fn make_central_items(api: &ExtensionApi, build_config: &str, ctx: &mut Context)
     // Note: NIL is not part of this iteration, it will be added manually
     for ty in builtin_types {
         // Note: both are token streams, containing multiple function declarations/initializations
-        
+        let (decls, inits) = make_variant_fns(
+            &ty.type_names,
+            ty.has_destructor,
+            ty.constructors,
+            ty.operators,
+            &builtin_types_map,
+        );
+
+        let (pascal_name, rust_ty, ord) = make_enumerator(&ty.type_names, ty.value, ctx);
+
+        result.variant_ty_enumerators_pascal.push(pascal_name);
+        result.variant_ty_enumerators_rust.push(ru
