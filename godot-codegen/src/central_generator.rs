@@ -309,4 +309,22 @@ fn make_central_items(api: &ExtensionApi, build_config: &str, ctx: &mut Context)
         let (pascal_name, rust_ty, ord) = make_enumerator(&ty.type_names, ty.value, ctx);
 
         result.variant_ty_enumerators_pascal.push(pascal_name);
-        result.variant_ty_enumerators_rust.push(ru
+        result.variant_ty_enumerators_rust.push(rust_ty);
+        result.variant_ty_enumerators_ord.push(ord);
+        result.variant_fn_decls.push(decls);
+        result.variant_fn_inits.push(inits);
+    }
+
+    for op in variant_operators {
+        let name = op
+            .name
+            .strip_prefix("OP_")
+            .expect("expected `OP_` prefix for variant operators");
+
+        if name == "MAX" {
+            continue;
+        }
+
+        result
+            .variant_op_enumerators_pascal
+ 
