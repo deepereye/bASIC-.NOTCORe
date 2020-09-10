@@ -339,4 +339,15 @@ fn make_central_items(api: &ExtensionApi, build_config: &str, ctx: &mut Context)
             continue;
         }
 
-        let def = util::make_
+        let def = util::make_enum_definition(enum_);
+        result.global_enum_defs.push(def);
+    }
+
+    result
+}
+
+/// Creates a map from "normalized" class names (lowercase without underscore, makes it easy to map from different conventions)
+/// to meta type information, including all the type name variants
+fn collect_builtin_classes(api: &ExtensionApi) -> HashMap<String, &BuiltinClass> {
+    let mut class_map = HashMap::new();
+    for class in &api
