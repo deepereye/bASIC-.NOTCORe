@@ -327,4 +327,16 @@ fn make_central_items(api: &ExtensionApi, build_config: &str, ctx: &mut Context)
 
         result
             .variant_op_enumerators_pascal
- 
+            .push(ident(&shout_to_pascal(name)));
+        result
+            .variant_op_enumerators_ord
+            .push(Literal::i32_unsuffixed(op.value));
+    }
+
+    for enum_ in api.global_enums.iter() {
+        // Skip those enums which are already explicitly handled
+        if matches!(enum_.name.as_str(), "Variant.Type" | "Variant.Operator") {
+            continue;
+        }
+
+        let def = util::make_
