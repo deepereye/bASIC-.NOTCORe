@@ -366,4 +366,19 @@ pub(crate) fn collect_builtin_types(api: &ExtensionApi) -> HashMap<String, Built
     let variant_type_enum = api
         .global_enums
         .iter()
-        .fi
+        .find(|e| &e.name == "Variant.Type")
+        .expect("missing enum for VariantType in JSON");
+
+    // Collect all `BuiltinTypeInfo`s
+    let mut builtin_types_map = HashMap::new();
+    for ty in &variant_type_enum.values {
+        let shout_case = ty
+            .name
+            .strip_prefix("TYPE_")
+            .expect("enum name begins with 'TYPE_'");
+
+        if shout_case == "NIL" || shout_case == "MAX" {
+            continue;
+        }
+
+        // Lowercase without under
