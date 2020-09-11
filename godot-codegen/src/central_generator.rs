@@ -350,4 +350,20 @@ fn make_central_items(api: &ExtensionApi, build_config: &str, ctx: &mut Context)
 /// to meta type information, including all the type name variants
 fn collect_builtin_classes(api: &ExtensionApi) -> HashMap<String, &BuiltinClass> {
     let mut class_map = HashMap::new();
-    for class in &api
+    for class in &api.builtin_classes {
+        let normalized_name = class.name.to_ascii_lowercase();
+
+        class_map.insert(normalized_name, class);
+    }
+
+    class_map
+}
+
+/// Returns map from "PackedStringArray" to all the info
+pub(crate) fn collect_builtin_types(api: &ExtensionApi) -> HashMap<String, BuiltinTypeInfo<'_>> {
+    let class_map = collect_builtin_classes(api);
+
+    let variant_type_enum = api
+        .global_enums
+        .iter()
+        .fi
