@@ -381,4 +381,13 @@ pub(crate) fn collect_builtin_types(api: &ExtensionApi) -> HashMap<String, Built
             continue;
         }
 
-        // Lowercase without under
+        // Lowercase without underscore, to map SHOUTY_CASE to shoutycase
+        let normalized = shout_case.to_ascii_lowercase().replace('_', "");
+
+        // TODO cut down on the number of cached functions generated
+        // e.g. there's no point in providing operator< for int
+        let class_name: String;
+        let has_destructor: bool;
+        let constructors: Option<&Vec<Constructor>>;
+        let operators: Option<&Vec<Operator>>;
+        if let Some(class) = class_map.get(&normalize
