@@ -414,4 +414,23 @@ pub(crate) fn collect_builtin_types(api: &ExtensionApi) -> HashMap<String, Built
 
         builtin_types_map.insert(
             type_names.json_builtin_name.clone(),
-            BuiltinTypeInfo 
+            BuiltinTypeInfo {
+                value,
+                type_names,
+                has_destructor,
+                constructors,
+                operators,
+            },
+        );
+    }
+    builtin_types_map
+}
+
+fn collect_variant_operators(api: &ExtensionApi) -> Vec<&EnumConstant> {
+    let variant_operator_enum = api
+        .global_enums
+        .iter()
+        .find(|e| &e.name == "Variant.Operator")
+        .expect("missing enum for VariantOperator in JSON");
+
+    variant_operat
