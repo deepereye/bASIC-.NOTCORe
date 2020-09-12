@@ -403,4 +403,15 @@ pub(crate) fn collect_builtin_types(api: &ExtensionApi) -> HashMap<String, Built
             operators = None;
         }
 
-        let type
+        let type_names = TypeNames {
+            json_builtin_name: class_name.clone(),
+            snake_case: to_snake_case(&class_name),
+            //shout_case: shout_case.to_string(),
+            sys_variant_type: format_ident!("GDEXTENSION_VARIANT_TYPE_{}", shout_case),
+        };
+
+        let value = ty.value;
+
+        builtin_types_map.insert(
+            type_names.json_builtin_name.clone(),
+            BuiltinTypeInfo 
