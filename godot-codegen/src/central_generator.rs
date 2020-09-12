@@ -390,4 +390,17 @@ pub(crate) fn collect_builtin_types(api: &ExtensionApi) -> HashMap<String, Built
         let has_destructor: bool;
         let constructors: Option<&Vec<Constructor>>;
         let operators: Option<&Vec<Operator>>;
-        if let Some(class) = class_map.get(&normalize
+        if let Some(class) = class_map.get(&normalized) {
+            class_name = class.name.clone();
+            has_destructor = class.has_destructor;
+            constructors = Some(&class.constructors);
+            operators = Some(&class.operators);
+        } else {
+            assert_eq!(normalized, "object");
+            class_name = "Object".to_string();
+            has_destructor = false;
+            constructors = None;
+            operators = None;
+        }
+
+        let type
