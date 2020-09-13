@@ -448,3 +448,19 @@ fn make_enumerator(
 
     (ident(&pascal_name), rust_ty.to_token_stream(), ord)
 }
+
+fn make_opaque_type(name: &str, size: usize) -> TokenStream {
+    let name = to_pascal_case(name);
+    let (first, rest) = name.split_at(1);
+
+    // Capitalize: "int" -> "Int"
+    let ident = format_ident!("Opaque{}{}", first.to_ascii_uppercase(), rest);
+    quote! {
+        pub type #ident = crate::opaque::Opaque<#size>;
+    }
+}
+
+fn make_variant_fns(
+    type_names: &TypeNames,
+    has_destructor: bool,
+    constructors: Option<&Vec
