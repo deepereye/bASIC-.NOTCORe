@@ -433,4 +433,18 @@ fn collect_variant_operators(api: &ExtensionApi) -> Vec<&EnumConstant> {
         .find(|e| &e.name == "Variant.Operator")
         .expect("missing enum for VariantOperator in JSON");
 
-    variant_operat
+    variant_operator_enum.values.iter().collect()
+}
+
+fn make_enumerator(
+    type_names: &TypeNames,
+    value: i32,
+    ctx: &mut Context,
+) -> (Ident, TokenStream, Literal) {
+    let enumerator_name = &type_names.json_builtin_name;
+    let pascal_name = to_pascal_case(enumerator_name);
+    let rust_ty = to_rust_type(enumerator_name, ctx);
+    let ord = Literal::i32_unsuffixed(value);
+
+    (ident(&pascal_name), rust_ty.to_token_stream(), ord)
+}
