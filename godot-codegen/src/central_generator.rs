@@ -463,4 +463,12 @@ fn make_opaque_type(name: &str, size: usize) -> TokenStream {
 fn make_variant_fns(
     type_names: &TypeNames,
     has_destructor: bool,
-    constructors: Option<&Vec
+    constructors: Option<&Vec<Constructor>>,
+    operators: Option<&Vec<Operator>>,
+    builtin_types: &HashMap<String, BuiltinTypeInfo>,
+) -> (TokenStream, TokenStream) {
+    let (construct_decls, construct_inits) =
+        make_construct_fns(type_names, constructors, builtin_types);
+    let (destroy_decls, destroy_inits) = make_destroy_fns(type_names, has_destructor);
+    let (op_eq_decls, op_eq_inits) = make_operator_fns(type_names, operators, "==", "EQUAL");
+    let (op_lt_decls, op
