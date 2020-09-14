@@ -471,4 +471,13 @@ fn make_variant_fns(
         make_construct_fns(type_names, constructors, builtin_types);
     let (destroy_decls, destroy_inits) = make_destroy_fns(type_names, has_destructor);
     let (op_eq_decls, op_eq_inits) = make_operator_fns(type_names, operators, "==", "EQUAL");
-    let (op_lt_decls, op
+    let (op_lt_decls, op_lt_inits) = make_operator_fns(type_names, operators, "<", "LESS");
+
+    let to_variant = format_ident!("{}_to_variant", type_names.snake_case);
+    let from_variant = format_ident!("{}_from_variant", type_names.snake_case);
+
+    let to_variant_error = format_load_error(&to_variant);
+    let from_variant_error = format_load_error(&from_variant);
+
+    let variant_type = &type_names.sys_variant_type;
+    let variant_type = quote! { crate:: #vari
