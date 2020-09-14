@@ -480,4 +480,19 @@ fn make_variant_fns(
     let from_variant_error = format_load_error(&from_variant);
 
     let variant_type = &type_names.sys_variant_type;
-    let variant_type = quote! { crate:: #vari
+    let variant_type = quote! { crate:: #variant_type };
+
+    // Field declaration
+    let decl = quote! {
+        pub #to_variant: unsafe extern "C" fn(GDExtensionVariantPtr, GDExtensionTypePtr),
+        pub #from_variant: unsafe extern "C" fn(GDExtensionTypePtr, GDExtensionVariantPtr),
+        #op_eq_decls
+        #op_lt_decls
+        #construct_decls
+        #destroy_decls
+    };
+
+    // Field initialization in new()
+    let init = quote! {
+        #to_variant: {
+            let ct
