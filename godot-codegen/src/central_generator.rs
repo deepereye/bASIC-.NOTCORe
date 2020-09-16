@@ -512,4 +512,18 @@ fn make_variant_fns(
 }
 
 fn make_construct_fns(
-    t
+    type_names: &TypeNames,
+    constructors: Option<&Vec<Constructor>>,
+    builtin_types: &HashMap<String, BuiltinTypeInfo>,
+) -> (TokenStream, TokenStream) {
+    let constructors = match constructors {
+        Some(c) => c,
+        None => return (TokenStream::new(), TokenStream::new()),
+    };
+
+    if is_trivial(type_names) {
+        return (TokenStream::new(), TokenStream::new());
+    }
+
+    // Constructor vec layout:
+    // 
