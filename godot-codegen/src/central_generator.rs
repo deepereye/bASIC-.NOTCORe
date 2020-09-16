@@ -526,4 +526,16 @@ fn make_construct_fns(
     }
 
     // Constructor vec layout:
-    // 
+    //   [0]: default constructor
+    //   [1]: copy constructor
+    //   [2]: (optional) typically the most common conversion constructor (e.g. StringName -> String)
+    //  rest: (optional) other conversion constructors and multi-arg constructors (e.g. Vector3(x, y, z))
+
+    // Sanity checks -- ensure format is as expected
+    for (i, c) in constructors.iter().enumerate() {
+        assert_eq!(i, c.index);
+    }
+
+    assert!(constructors[0].arguments.is_none());
+
+    if let Some(args
