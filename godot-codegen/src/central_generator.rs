@@ -495,4 +495,21 @@ fn make_variant_fns(
     // Field initialization in new()
     let init = quote! {
         #to_variant: {
-            let ct
+            let ctor_fn = interface.get_variant_from_type_constructor.unwrap();
+            ctor_fn(#variant_type).expect(#to_variant_error)
+        },
+        #from_variant:  {
+            let ctor_fn = interface.get_variant_to_type_constructor.unwrap();
+            ctor_fn(#variant_type).expect(#from_variant_error)
+        },
+        #op_eq_inits
+        #op_lt_inits
+        #construct_inits
+        #destroy_inits
+    };
+
+    (decl, init)
+}
+
+fn make_construct_fns(
+    t
