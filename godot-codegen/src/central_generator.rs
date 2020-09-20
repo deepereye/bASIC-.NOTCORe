@@ -538,4 +538,16 @@ fn make_construct_fns(
 
     assert!(constructors[0].arguments.is_none());
 
-    if let Some(args
+    if let Some(args) = &constructors[1].arguments {
+        assert_eq!(args.len(), 1);
+        assert_eq!(args[0].name, "from");
+        assert_eq!(args[0].type_, type_names.json_builtin_name);
+    } else {
+        panic!(
+            "type {}: no constructor args found for copy constructor",
+            type_names.json_builtin_name
+        );
+    }
+
+    let construct_default = format_ident!("{}_construct_default", type_names.snake_case);
+    l
