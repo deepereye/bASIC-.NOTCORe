@@ -567,4 +567,18 @@ fn make_construct_fns(
 
     let inits = quote! {
         #construct_default: {
-            let ctor_fn = interface.var
+            let ctor_fn = interface.variant_get_ptr_constructor.unwrap();
+            ctor_fn(crate:: #variant_type, 0i32).expect(#construct_default_error)
+        },
+        #construct_copy: {
+            let ctor_fn = interface.variant_get_ptr_constructor.unwrap();
+            ctor_fn(crate:: #variant_type, 1i32).expect(#construct_copy_error)
+        },
+        #(#construct_extra_inits)*
+    };
+
+    (decls, inits)
+}
+
+/// Lists special cases for useful constructors
+fn make_extra_constr
