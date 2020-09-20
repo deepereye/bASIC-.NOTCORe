@@ -558,4 +558,13 @@ fn make_construct_fns(
     let (construct_extra_decls, construct_extra_inits) =
         make_extra_constructors(type_names, constructors, builtin_types);
 
-    // Generic signature:  fn(base: GDExtensionTypePtr, args: *
+    // Generic signature:  fn(base: GDExtensionTypePtr, args: *const GDExtensionTypePtr)
+    let decls = quote! {
+        pub #construct_default: unsafe extern "C" fn(GDExtensionTypePtr, *const GDExtensionConstTypePtr),
+        pub #construct_copy: unsafe extern "C" fn(GDExtensionTypePtr, *const GDExtensionConstTypePtr),
+        #(#construct_extra_decls)*
+    };
+
+    let inits = quote! {
+        #construct_default: {
+            let ctor_fn = interface.var
