@@ -550,4 +550,12 @@ fn make_construct_fns(
     }
 
     let construct_default = format_ident!("{}_construct_default", type_names.snake_case);
-    l
+    let construct_copy = format_ident!("{}_construct_copy", type_names.snake_case);
+    let construct_default_error = format_load_error(&construct_default);
+    let construct_copy_error = format_load_error(&construct_copy);
+    let variant_type = &type_names.sys_variant_type;
+
+    let (construct_extra_decls, construct_extra_inits) =
+        make_extra_constructors(type_names, constructors, builtin_types);
+
+    // Generic signature:  fn(base: GDExtensionTypePtr, args: *
