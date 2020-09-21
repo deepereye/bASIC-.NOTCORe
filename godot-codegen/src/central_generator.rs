@@ -581,4 +581,14 @@ fn make_construct_fns(
 }
 
 /// Lists special cases for useful constructors
-fn make_extra_constr
+fn make_extra_constructors(
+    type_names: &TypeNames,
+    constructors: &Vec<Constructor>,
+    builtin_types: &HashMap<String, BuiltinTypeInfo>,
+) -> (Vec<TokenStream>, Vec<TokenStream>) {
+    let mut extra_decls = Vec::with_capacity(constructors.len() - 2);
+    let mut extra_inits = Vec::with_capacity(constructors.len() - 2);
+    let variant_type = &type_names.sys_variant_type;
+
+    for (i, ctor) in constructors.iter().enumerate().skip(2) {
+        if le
