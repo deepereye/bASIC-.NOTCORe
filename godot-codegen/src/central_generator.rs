@@ -591,4 +591,11 @@ fn make_extra_constructors(
     let variant_type = &type_names.sys_variant_type;
 
     for (i, ctor) in constructors.iter().enumerate().skip(2) {
-        if le
+        if let Some(args) = &ctor.arguments {
+            let type_name = &type_names.snake_case;
+            let ident = if args.len() == 1 && args[0].name == "from" {
+                // Conversion constructor is named according to the source type
+                // String(NodePath from) => string_from_node_path
+                let arg_type = &builtin_types[&args[0].type_].type_names.snake_case;
+                format_ident!("{type_name}_from_{arg_type}")
+  
