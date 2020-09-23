@@ -617,4 +617,18 @@ fn make_extra_constructors(
             extra_inits.push(quote! {
                #ident: {
                     let ctor_fn = interface.variant_get_ptr_constructor.unwrap();
-                    ctor_fn(cra
+                    ctor_fn(crate:: #variant_type, #i).expect(#err)
+                },
+            });
+        }
+    }
+
+    (extra_decls, extra_inits)
+}
+
+fn make_destroy_fns(type_names: &TypeNames, has_destructor: bool) -> (TokenStream, TokenStream) {
+    if !has_destructor || is_trivial(type_names) {
+        return (TokenStream::new(), TokenStream::new());
+    }
+
+    let destroy = format_ident!("{}_destroy", type_names.snake_case);
