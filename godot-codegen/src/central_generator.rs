@@ -606,4 +606,15 @@ fn make_extra_constructors(
                     .fold(String::new(), |acc, arg| acc + &arg.name + "_");
                 arg_names.pop(); // remove trailing '_'
                 format_ident!("{type_name}_from_{arg_names}")
-          
+            };
+
+            let err = format_load_error(&ident);
+            extra_decls.push(quote! {
+                pub #ident: unsafe extern "C" fn(GDExtensionTypePtr, *const GDExtensionConstTypePtr),
+            });
+
+            let i = i as i32;
+            extra_inits.push(quote! {
+               #ident: {
+                    let ctor_fn = interface.variant_get_ptr_constructor.unwrap();
+                    ctor_fn(cra
