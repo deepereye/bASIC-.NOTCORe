@@ -598,4 +598,12 @@ fn make_extra_constructors(
                 // String(NodePath from) => string_from_node_path
                 let arg_type = &builtin_types[&args[0].type_].type_names.snake_case;
                 format_ident!("{type_name}_from_{arg_type}")
-  
+            } else {
+                // Type-specific constructor is named according to the argument names
+                // Vector3(float x, float y, float z) => vector3_from_x_y_z
+                let mut arg_names = args
+                    .iter()
+                    .fold(String::new(), |acc, arg| acc + &arg.name + "_");
+                arg_names.pop(); // remove trailing '_'
+                format_ident!("{type_name}_from_{arg_names}")
+          
