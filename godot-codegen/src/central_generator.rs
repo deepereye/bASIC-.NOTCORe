@@ -632,3 +632,22 @@ fn make_destroy_fns(type_names: &TypeNames, has_destructor: bool) -> (TokenStrea
     }
 
     let destroy = format_ident!("{}_destroy", type_names.snake_case);
+    let variant_type = &type_names.sys_variant_type;
+
+    let decls = quote! {
+        pub #destroy: unsafe extern "C" fn(GDExtensionTypePtr),
+    };
+
+    let inits = quote! {
+        #destroy: {
+            let dtor_fn = interface.variant_get_ptr_destructor.unwrap();
+            dtor_fn(crate:: #variant_type).unwrap()
+        },
+    };
+
+    (decls, inits)
+}
+
+fn make_operator_fns(
+    type_names: &TypeNames,
+    opera
