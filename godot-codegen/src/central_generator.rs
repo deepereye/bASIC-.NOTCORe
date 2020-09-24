@@ -664,4 +664,17 @@ fn make_operator_fns(
     let operator = format_ident!(
         "{}_operator_{}",
         type_names.snake_case,
-        sys_name.to_ascii_l
+        sys_name.to_ascii_lowercase()
+    );
+    let error = format_load_error(&operator);
+
+    let variant_type = &type_names.sys_variant_type;
+    let variant_type = quote! { crate:: #variant_type };
+    let sys_ident = format_ident!("GDEXTENSION_VARIANT_OP_{}", sys_name);
+
+    // Field declaration
+    let decl = quote! {
+        pub #operator: unsafe extern "C" fn(GDExtensionConstTypePtr, GDExtensionConstTypePtr, GDExtensionTypePtr),
+    };
+
+    // Fi
