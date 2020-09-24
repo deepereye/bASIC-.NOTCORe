@@ -650,4 +650,18 @@ fn make_destroy_fns(type_names: &TypeNames, has_destructor: bool) -> (TokenStrea
 
 fn make_operator_fns(
     type_names: &TypeNames,
-    opera
+    operators: Option<&Vec<Operator>>,
+    json_name: &str,
+    sys_name: &str,
+) -> (TokenStream, TokenStream) {
+    if operators.is_none()
+        || !operators.unwrap().iter().any(|op| op.name == json_name)
+        || is_trivial(type_names)
+    {
+        return (TokenStream::new(), TokenStream::new());
+    }
+
+    let operator = format_ident!(
+        "{}_operator_{}",
+        type_names.snake_case,
+        sys_name.to_ascii_l
