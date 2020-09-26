@@ -705,4 +705,20 @@ fn is_trivial(type_names: &TypeNames) -> bool {
 }
 
 fn shout_to_pascal(shout_case: &str) -> String {
-    let mut result = String
+    let mut result = String::with_capacity(shout_case.len());
+    let mut next_upper = true;
+
+    for ch in shout_case.chars() {
+        if next_upper {
+            assert_ne!(ch, '_'); // no double underscore
+            result.push(ch); // unchanged
+            next_upper = false;
+        } else if ch == '_' {
+            next_upper = true;
+        } else {
+            result.push(ch.to_ascii_lowercase());
+        }
+    }
+
+    result
+}
