@@ -677,4 +677,20 @@ fn make_operator_fns(
         pub #operator: unsafe extern "C" fn(GDExtensionConstTypePtr, GDExtensionConstTypePtr, GDExtensionTypePtr),
     };
 
-    // Fi
+    // Field initialization in new()
+    let init = quote! {
+        #operator: {
+            let op_finder = interface.variant_get_ptr_operator_evaluator.unwrap();
+            op_finder(
+                crate::#sys_ident,
+                #variant_type,
+                #variant_type,
+            ).expect(#error)
+        },
+    };
+
+    (decl, init)
+}
+
+fn format_load_error(ident: &impl std::fmt::Display) -> String {
+    format!("failed to load GDExtension func
