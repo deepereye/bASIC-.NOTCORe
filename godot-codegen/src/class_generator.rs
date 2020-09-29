@@ -473,3 +473,434 @@ fn is_method_excluded(method: &ClassMethod, #[allow(unused_variables)] ctx: &mut
     //
     // * Methods accepting pointers are often supplementary
     //   E.g.: TextServer::font_set_data_ptr() -- in addition to TextServer::font_set_data().
+    //   These are anyway not accessible in GDScript since that language has no pointers.
+    //   As such support could be added later (if at all), with possibly safe interfaces (e.g. Vec for void*+size pairs)
+
+    // -- FIXME remove when impl complete
+    #[cfg(not(feature = "codegen-full"))]
+    if method
+        .return_value
+        .as_ref()
+        .map_or(false, |ret| is_type_excluded(ret.type_.as_str(), ctx))
+        || method.arguments.as_ref().map_or(false, |args| {
+            args.iter()
+                .any(|arg| is_type_excluded(arg.type_.as_str(), ctx))
+        })
+    {
+        return true;
+    }
+    // -- end.
+
+    method.name.starts_with('_')
+        || method
+            .return_value
+            .as_ref()
+            .map_or(false, |ret| ret.type_.contains('*'))
+        || method
+            .arguments
+            .as_ref()
+            .map_or(false, |args| args.iter().any(|arg| arg.type_.contains('*')))
+}
+
+#[cfg(feature = "codegen-full")]
+fn is_function_excluded(_function: &UtilityFunction, _ctx: &mut Context) -> bool {
+    false
+}
+
+#[cfg(not(feature = "codegen-full"))]
+fn is_function_excluded(function: &UtilityFunction, ctx: &mut Context) -> bool {
+    function
+        .return_type
+        .as_ref()
+        .map_or(false, |ret| is_type_excluded(ret.as_str(), ctx))
+        || function.arguments.as_ref().map_or(false, |args| {
+            args.iter()
+                .any(|arg| is_type_excluded(arg.type_.as_str(), ctx))
+        })
+}
+
+fn make_method_definition(
+    method: &ClassMethod,
+    class_name: &TyName,
+    ctx: &mut Context,
+) -> TokenStream {
+    if is_method_excluded(method, ctx) || special_cases::is_deleted(class_name, &method.name) {
+        return TokenStream::new();
+    }
+    /*if method.map_args(|args| args.is_empty()) {
+        // Getters (i.e. 0 arguments) will be stripped of their `get_` prefix, to conform to Rust convention
+        if let Some(remainder) = method_name.strip_prefix("get_") {
+            // TODO Do not apply for FileAccess::get_16, StreamPeer::get_u16, etc
+            if !remainder.chars().nth(0).unwrap().is_ascii_digit() {
+                method_name = remainder;
+            }
+        }
+    }*/
+
+    let method_name_str = special_cases::maybe_renamed(class_name, &method.name);
+
+    let (receiver, receiver_arg) = make_receiver(
+        method.is_static,
+        method.is_const,
+        quote! { self.object_ptr },
+    );
+
+    let hash = method.hash;
+    let is_varcall = method.is_vararg;
+
+    let variant_ffi = is_varcall.then(VariantFfi::variant_ptr);
+    let function_provider = if is_varcall {
+        ident("object_method_bind_call")
+    } else {
+        ident("object_method_bind_ptrcall")
+    };
+
+    let class_name_str = &class_name.godot_ty;
+    let init_code = quote! {
+        let __class_name = StringName::from(#class_name_str);
+        let __method_name = StringName::from(#method_name_str);
+        let __method_bind = sys::interface_fn!(classdb_get_method_bind)(
+            __class_name.string_sys(),
+            __method_name.string_sys(),
+            #hash
+        );
+        let __call_fn = sys::interface_fn!(#function_provider);
+    };
+    let varcall_invocation = quote! {
+        __call_fn(__method_bind, #receiver_arg, __args_ptr, __args.len() as i64, return_ptr, std::ptr::addr_of_mut!(__err));
+    };
+    let ptrcall_invocation = quote! {
+        __call_fn(__method_bind, #receiver_arg, __args_ptr, return_ptr);
+    };
+
+    make_function_definition(
+        method_name_str,
+        special_cases::is_private(class_name, &method.name),
+        receiver,
+        &method.arguments,
+        method.return_value.as_ref(),
+        variant_ffi,
+        init_code,
+        &varcall_invocation,
+        &ptrcall_invocation,
+        ctx,
+    )
+}
+
+fn make_builtin_method_definition(
+    method: &BuiltinClassMethod,
+    class_name: &TyName,
+    type_info: &BuiltinTypeInfo,
+    ctx: &mut Context,
+) -> TokenStream {
+    // TODO implement varcalls
+    if method.is_vararg {
+        return TokenStream::new();
+    }
+
+    let method_name_str = &method.name;
+
+    let (receiver, receiver_arg) =
+        make_receiver(method.is_static, method.is_const, quote! { self.sys_ptr });
+
+    let return_value = method.return_type.as_deref().map(MethodReturn::from_type);
+    let hash = method.hash;
+    let is_varcall = method.is_vararg;
+    let variant_ffi = is_varcall.then(VariantFfi::type_ptr);
+
+    let variant_type = &type_info.type_names.sys_variant_type;
+    let init_code = quote! {
+        let __variant_type = sys::#variant_type;
+        let __method_name = StringName::from(#method_name_str);
+        let __call_fn = sys::interface_fn!(variant_get_ptr_builtin_method)(
+            __variant_type,
+            __method_name.string_sys(),
+            #hash
+        );
+        let __call_fn = __call_fn.unwrap_unchecked();
+    };
+    let ptrcall_invocation = quote! {
+        __call_fn(#receiver_arg, __args_ptr, return_ptr, __args.len() as i32);
+    };
+
+    make_function_definition(
+        method_name_str,
+        special_cases::is_private(class_name, &method.name),
+        receiver,
+        &method.arguments,
+        return_value.as_ref(),
+        variant_ffi,
+        init_code,
+        &ptrcall_invocation,
+        &ptrcall_invocation,
+        ctx,
+    )
+}
+
+pub(crate) fn make_utility_function_definition(
+    function: &UtilityFunction,
+    ctx: &mut Context,
+) -> TokenStream {
+    if is_function_excluded(function, ctx) {
+        return TokenStream::new();
+    }
+
+    let function_name_str = &function.name;
+    let return_value = function.return_type.as_deref().map(MethodReturn::from_type);
+    let hash = function.hash;
+    let variant_ffi = function.is_vararg.then_some(VariantFfi::type_ptr());
+    let init_code = quote! {
+        let __function_name = StringName::from(#function_name_str);
+        let __call_fn = sys::interface_fn!(variant_get_ptr_utility_function)(__function_name.string_sys(), #hash);
+        let __call_fn = __call_fn.unwrap_unchecked();
+    };
+    let invocation = quote! {
+        __call_fn(return_ptr, __args_ptr, __args.len() as i32);
+    };
+
+    make_function_definition(
+        &function.name,
+        false,
+        TokenStream::new(),
+        &function.arguments,
+        return_value.as_ref(),
+        variant_ffi,
+        init_code,
+        &invocation,
+        &invocation,
+        ctx,
+    )
+}
+
+/// Defines which methods to use to convert between `Variant` and FFI (either variant ptr or type ptr)
+struct VariantFfi {
+    sys_method: Ident,
+    from_sys_init_method: Ident,
+}
+impl VariantFfi {
+    fn variant_ptr() -> Self {
+        Self {
+            sys_method: ident("var_sys_const"),
+            from_sys_init_method: ident("from_var_sys_init"),
+        }
+    }
+    fn type_ptr() -> Self {
+        Self {
+            sys_method: ident("sys_const"),
+            from_sys_init_method: ident("from_sys_init_default"),
+        }
+    }
+}
+
+#[allow(clippy::too_many_arguments)] // adding a struct/trait that's used only here, one time, reduces complexity by precisely 0%
+fn make_function_definition(
+    function_name: &str,
+    is_private: bool,
+    receiver: TokenStream,
+    method_args: &Option<Vec<MethodArg>>,
+    return_value: Option<&MethodReturn>,
+    variant_ffi: Option<VariantFfi>,
+    init_code: TokenStream,
+    varcall_invocation: &TokenStream,
+    ptrcall_invocation: &TokenStream,
+    ctx: &mut Context,
+) -> TokenStream {
+    let vis = if is_private {
+        quote! { pub(crate) }
+    } else {
+        quote! { pub }
+    };
+
+    let is_varcall = variant_ffi.is_some();
+    let fn_name = safe_ident(function_name);
+    let [params, variant_types, arg_exprs, arg_names] = make_params(method_args, is_varcall, ctx);
+
+    let (prepare_arg_types, error_fn_context);
+    if variant_ffi.is_some() {
+        // varcall (using varargs)
+        prepare_arg_types = quote! {
+            let mut __arg_types = Vec::with_capacity(__explicit_args.len() + varargs.len());
+            // __arg_types.extend(__explicit_args.iter().map(Variant::get_type));
+            __arg_types.extend(varargs.iter().map(Variant::get_type));
+            let __vararg_str = varargs.iter().map(|v| format!("{v}")).collect::<Vec<_>>().join(", ");
+        };
+
+        let joined = arg_names
+            .iter()
+            .map(|n| format!("{{{n}:?}}"))
+            .collect::<Vec<_>>()
+            .join(", ");
+
+        let fmt = format!("{function_name}({joined}; {{__vararg_str}})");
+        error_fn_context = quote! { &format!(#fmt) };
+    } else {
+        // ptrcall
+        prepare_arg_types = quote! {
+            let __arg_types = [
+                #( #variant_types ),*
+            ];
+        };
+        error_fn_context = function_name.to_token_stream();
+    };
+
+    let (return_decl, call_code) = make_return(
+        return_value,
+        variant_ffi.as_ref(),
+        varcall_invocation,
+        ptrcall_invocation,
+        prepare_arg_types,
+        error_fn_context,
+        ctx,
+    );
+
+    if let Some(variant_ffi) = variant_ffi.as_ref() {
+        // varcall (using varargs)
+        let sys_method = &variant_ffi.sys_method;
+        quote! {
+            #vis fn #fn_name( #receiver #( #params, )* varargs: &[Variant]) #return_decl {
+                unsafe {
+                    #init_code
+
+                    let __explicit_args = [
+                        #( #arg_exprs ),*
+                    ];
+
+                    let mut __args = Vec::with_capacity(__explicit_args.len() + varargs.len());
+                    __args.extend(__explicit_args.iter().map(Variant::#sys_method));
+                    __args.extend(varargs.iter().map(Variant::#sys_method));
+
+                    let __args_ptr = __args.as_ptr();
+
+                    #call_code
+                }
+            }
+        }
+    } else {
+        // ptrcall
+        quote! {
+            #vis fn #fn_name( #receiver #( #params, )* ) #return_decl {
+                unsafe {
+                    #init_code
+
+                    let __args = [
+                        #( #arg_exprs ),*
+                    ];
+
+                    let __args_ptr = __args.as_ptr();
+
+                    #call_code
+                }
+            }
+        }
+    }
+}
+
+fn make_receiver(
+    is_static: bool,
+    is_const: bool,
+    receiver_arg: TokenStream,
+) -> (TokenStream, TokenStream) {
+    let receiver = if is_static {
+        quote! {}
+    } else if is_const {
+        quote! { &self, }
+    } else {
+        quote! { &mut self, }
+    };
+
+    let receiver_arg = if is_static {
+        quote! { std::ptr::null_mut() }
+    } else {
+        receiver_arg
+    };
+
+    (receiver, receiver_arg)
+}
+
+fn make_params(
+    method_args: &Option<Vec<MethodArg>>,
+    is_varcall: bool,
+    ctx: &mut Context,
+) -> [Vec<TokenStream>; 4] {
+    let empty = vec![];
+    let method_args = method_args.as_ref().unwrap_or(&empty);
+
+    let mut params = vec![];
+    let mut variant_types = vec![];
+    let mut arg_exprs = vec![];
+    let mut arg_names = vec![];
+    for arg in method_args.iter() {
+        let param_name = safe_ident(&arg.name);
+        let param_ty = to_rust_type(&arg.type_, ctx);
+
+        let arg_expr = if is_varcall {
+            quote! { <#param_ty as ToVariant>::to_variant(&#param_name) }
+        } else if let RustTy::EngineClass { tokens: path, .. } = &param_ty {
+            quote! { <#path as AsArg>::as_arg_ptr(&#param_name) }
+        } else {
+            quote! { <#param_ty as sys::GodotFfi>::sys_const(&#param_name) }
+        };
+
+        params.push(quote! { #param_name: #param_ty });
+        variant_types.push(quote! { <#param_ty as VariantMetadata>::variant_type() });
+        arg_exprs.push(arg_expr);
+        arg_names.push(quote! { #param_name });
+    }
+    [params, variant_types, arg_exprs, arg_names]
+}
+
+fn make_return(
+    return_value: Option<&MethodReturn>,
+    variant_ffi: Option<&VariantFfi>,
+    varcall_invocation: &TokenStream,
+    ptrcall_invocation: &TokenStream,
+    prepare_arg_types: TokenStream,
+    error_fn_context: TokenStream, // only for panic message
+    ctx: &mut Context,
+) -> (TokenStream, TokenStream) {
+    let return_decl: TokenStream;
+    let return_ty: Option<RustTy>;
+
+    if let Some(ret) = return_value {
+        let ty = to_rust_type(&ret.type_, ctx);
+        return_decl = ty.return_decl();
+        return_ty = Some(ty);
+    } else {
+        return_decl = TokenStream::new();
+        return_ty = None;
+    }
+
+    let call = match (variant_ffi, return_ty) {
+        (Some(variant_ffi), Some(return_ty)) => {
+            // If the return type is not Variant, then convert to concrete target type
+            let return_expr = match return_ty {
+                RustTy::BuiltinIdent(ident) if ident == "Variant" => quote! { variant },
+                _ => quote! { variant.to() },
+            };
+            let from_sys_init_method = &variant_ffi.from_sys_init_method;
+
+            // Note: __err may remain unused if the #call does not handle errors (e.g. utility fn, ptrcall, ...)
+            // TODO use Result instead of panic on error
+            quote! {
+                let variant = Variant::#from_sys_init_method(|return_ptr| {
+                    let mut __err = sys::default_call_error();
+                    #varcall_invocation
+                    if __err.error != sys::GDEXTENSION_CALL_OK {
+                        #prepare_arg_types
+                        sys::panic_call_error(&__err, #error_fn_context, &__arg_types);
+                    }
+                });
+                #return_expr
+            }
+        }
+        (Some(_), None) => {
+            // Note: __err may remain unused if the #call does not handle errors (e.g. utility fn, ptrcall, ...)
+            // TODO use Result instead of panic on error
+            quote! {
+                let mut __err = sys::default_call_error();
+                let return_ptr = std::ptr::null_mut();
+                #varcall_invocation
+                if __err.error != sys::GDEXTENSION_CALL_OK {
+                    #prepare_arg_types
+                    sys::panic_call_error(&__err, #error_fn_context, &__arg_types);
+                }
