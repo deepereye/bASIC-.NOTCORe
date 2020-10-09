@@ -904,3 +904,30 @@ fn make_return(
                     #prepare_arg_types
                     sys::panic_call_error(&__err, #error_fn_context, &__arg_types);
                 }
+            }
+        }
+        (None, Some(RustTy::EngineClass { tokens, .. })) => {
+            let return_ty = tokens;
+            quote! {
+                <#return_ty>::from_sys_init_opt(|return_ptr| {
+                    #ptrcall_invocation
+                })
+            }
+        }
+        (None, Some(return_ty)) => {
+            quote! {
+                <#return_ty as sys::GodotFfi>::from_sys_init_default(|return_ptr| {
+                    #ptrcall_invocation
+                })
+            }
+        }
+        (None, None) => {
+            quote! {
+                let return_ptr = std::ptr::null_mut();
+                #ptrcall_invocation
+            }
+        }
+    };
+
+    (return_decl, call)
+}
