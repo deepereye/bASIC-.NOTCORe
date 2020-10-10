@@ -19,4 +19,20 @@ use crate::TyName;
 
 #[rustfmt::skip]
 pub(crate) fn is_deleted(class_name: &TyName, godot_method_name: &str) -> bool {
-    
+    match (class_name.godot_ty.as_str(), godot_method_name) {
+        // Already covered by manual APIs
+        //| ("Object", "to_string")
+        | ("Object", "get_instance_id")
+
+        // Thread APIs
+        | ("ResourceLoader", "load_threaded_get")
+        | ("ResourceLoader", "load_threaded_get_status")
+        | ("ResourceLoader", "load_threaded_request")
+        // also: enum ThreadLoadStatus
+
+        => true, _ => false
+    }
+}
+
+#[rustfmt::skip]
+pub
