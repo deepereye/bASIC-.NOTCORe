@@ -35,4 +35,19 @@ pub(crate) fn is_deleted(class_name: &TyName, godot_method_name: &str) -> bool {
 }
 
 #[rustfmt::skip]
-pub
+pub(crate) fn is_class_deleted(class_name: &TyName) -> bool {
+    match class_name.godot_ty.as_str() {
+        // Thread APIs
+        | "Thread"
+        | "Mutex"
+        | "Semaphore"
+
+        => true, _ => false
+    }
+}
+
+#[rustfmt::skip]
+pub(crate) fn is_private(class_name: &TyName, godot_method_name: &str) -> bool {
+    match (class_name.godot_ty.as_str(), godot_method_name) {
+        // Already covered by manual APIs
+       
