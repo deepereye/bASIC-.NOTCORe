@@ -50,4 +50,20 @@ pub(crate) fn is_class_deleted(class_name: &TyName) -> bool {
 pub(crate) fn is_private(class_name: &TyName, godot_method_name: &str) -> bool {
     match (class_name.godot_ty.as_str(), godot_method_name) {
         // Already covered by manual APIs
-       
+        | ("Object", "to_string")
+        | ("RefCounted", "init_ref")
+        | ("RefCounted", "reference")
+        | ("RefCounted", "unreference")
+
+        => true, _ => false
+    }
+}
+
+/// True if builtin type is excluded (`NIL` or scalars)
+pub(crate) fn is_builtin_type_deleted(class_name: &TyName) -> bool {
+    let name = class_name.godot_ty.as_str();
+    name == "Nil" || is_builtin_scalar(name)
+}
+
+/// True if `int`, `float`, `bool`, ...
+pu
