@@ -66,4 +66,14 @@ pub(crate) fn is_builtin_type_deleted(class_name: &TyName) -> bool {
 }
 
 /// True if `int`, `float`, `bool`, ...
-pu
+pub(crate) fn is_builtin_scalar(name: &str) -> bool {
+    name.chars().next().unwrap().is_ascii_lowercase()
+}
+
+pub(crate) fn maybe_renamed<'m>(class_name: &TyName, godot_method_name: &'m str) -> &'m str {
+    match (class_name.godot_ty.as_str(), godot_method_name) {
+        // GDScript, GDScriptNativeClass, possibly more in the future
+        (_, "new") => "instantiate",
+        _ => godot_method_name,
+    }
+}
