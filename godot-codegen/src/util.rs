@@ -13,4 +13,14 @@ use quote::{format_ident, quote};
 pub fn make_enum_definition(enum_: &Enum) -> TokenStream {
     // TODO enums which have unique ords could be represented as Rust enums
     // This would allow exhaustive matches (or at least auto-completed matches + #[non_exhaustive]). But even without #[non_exhaustive],
-    // this might be a forward compa
+    // this might be a forward compatibility hazard, if Godot deprecates enumerators and adds new ones with existing ords.
+
+    let enum_name = ident(&enum_.name);
+
+    let values = &enum_.values;
+    let mut enumerators = Vec::with_capacity(values.len());
+    // let mut matches = Vec::with_capacity(values.len());
+    let mut unique_ords = Vec::with_capacity(values.len());
+
+    for enumerator in values {
+        let name = make_enumerator_name(&enumerator.name, &enum_.na
