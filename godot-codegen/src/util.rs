@@ -23,4 +23,18 @@ pub fn make_enum_definition(enum_: &Enum) -> TokenStream {
     let mut unique_ords = Vec::with_capacity(values.len());
 
     for enumerator in values {
-        let name = make_enumerator_name(&enumerator.name, &enum_.na
+        let name = make_enumerator_name(&enumerator.name, &enum_.name);
+        let ordinal = Literal::i32_unsuffixed(enumerator.value);
+
+        enumerators.push(quote! {
+            pub const #name: Self = Self { ord: #ordinal };
+        });
+        // matches.push(quote! {
+        //     #ordinal => Some(Self::#name),
+        // });
+        unique_ords.push(enumerator.value);
+    }
+
+    // They are not necessarily in order
+    unique_ords.sort();
+ 
