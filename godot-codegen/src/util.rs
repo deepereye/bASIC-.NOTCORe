@@ -37,4 +37,18 @@ pub fn make_enum_definition(enum_: &Enum) -> TokenStream {
 
     // They are not necessarily in order
     unique_ords.sort();
- 
+    unique_ords.dedup();
+
+    let bitfield_ops = if enum_.is_bitfield {
+        let tokens = quote! {
+            // impl #enum_name {
+            //     pub const UNSET: Self = Self { ord: 0 };
+            // }
+            impl std::ops::BitOr for #enum_name {
+                type Output = Self;
+
+                fn bitor(self, rhs: Self) -> Self::Output {
+                    Self { ord: self.ord | rhs.ord }
+                }
+            }
+      
