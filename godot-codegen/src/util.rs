@@ -51,4 +51,17 @@ pub fn make_enum_definition(enum_: &Enum) -> TokenStream {
                     Self { ord: self.ord | rhs.ord }
                 }
             }
+        };
+
+        Some(tokens)
+    } else {
+        None
+    };
+
+    // Enumerator ordinal stored as i32, since that's enough to hold all current values and the default repr in C++.
+    // Public interface is i64 though, for consistency (and possibly forward compatibility?).
+    // TODO maybe generalize GodotFfi over EngineEnum trait
+    quote! {
+        #[repr(transparent)]
+        #[derive(Copy, Clone, Eq, PartialEq, Debug, Hash)]
       
