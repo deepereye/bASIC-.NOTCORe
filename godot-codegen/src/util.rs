@@ -81,3 +81,18 @@ pub fn make_enum_definition(enum_: &Enum) -> TokenStream {
             //         _ => None,
             //     }
             // }
+            fn try_from_ord(ord: i32) -> Option<Self> {
+                match ord {
+                    #( ord @ #unique_ords )|* => Some(Self { ord }),
+                    _ => None,
+                }
+            }
+            fn ord(self) -> i32 {
+                self.ord
+            }
+        }
+        impl sys::GodotFfi for #enum_name {
+            sys::ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
+        }
+        #bitfield_ops
+    
