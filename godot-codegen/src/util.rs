@@ -64,4 +64,20 @@ pub fn make_enum_definition(enum_: &Enum) -> TokenStream {
     quote! {
         #[repr(transparent)]
         #[derive(Copy, Clone, Eq, PartialEq, Debug, Hash)]
-      
+        pub struct #enum_name {
+            ord: i32
+        }
+        impl #enum_name {
+            #(
+                #enumerators
+            )*
+        }
+        impl crate::obj::EngineEnum for #enum_name {
+            // fn try_from_ord(ord: i32) -> Option<Self> {
+            //     match ord {
+            //         #(
+            //             #matches
+            //         )*
+            //         _ => None,
+            //     }
+            // }
