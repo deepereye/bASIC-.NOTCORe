@@ -95,4 +95,23 @@ pub fn make_enum_definition(enum_: &Enum) -> TokenStream {
             sys::ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
         }
         #bitfield_ops
-    
+    }
+}
+
+fn make_enum_name(enum_name: &str) -> Ident {
+    // TODO clean up enum name
+
+    ident(enum_name)
+}
+
+fn make_enumerator_name(enumerator_name: &str, _enum_name: &str) -> Ident {
+    // TODO strip prefixes of `enum_name` appearing in `enumerator_name`
+    // tons of variantions, see test cases in lib.rs
+
+    ident(enumerator_name)
+}
+
+pub fn to_snake_case(class_name: &str) -> String {
+    use heck::ToSnakeCase;
+
+    // Speci
