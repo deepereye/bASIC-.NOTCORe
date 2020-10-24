@@ -114,4 +114,23 @@ fn make_enumerator_name(enumerator_name: &str, _enum_name: &str) -> Ident {
 pub fn to_snake_case(class_name: &str) -> String {
     use heck::ToSnakeCase;
 
-    // Speci
+    // Special cases
+    #[allow(clippy::single_match)]
+    match class_name {
+        "JSONRPC" => return "json_rpc".to_string(),
+        _ => {}
+    }
+
+    class_name
+        .replace("2D", "_2d")
+        .replace("3D", "_3d")
+        .replace("GDNative", "Gdnative")
+        .replace("GDExtension", "Gdextension")
+        .to_snake_case()
+}
+
+pub fn to_pascal_case(class_name: &str) -> String {
+    use heck::ToPascalCase;
+
+    // Special cases
+  
