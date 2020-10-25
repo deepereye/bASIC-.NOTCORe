@@ -161,4 +161,20 @@ pub fn safe_ident(s: &str) -> Ident {
         // Lexer 2018+
         | "async" | "await" | "dyn"
 
-        // Rese
+        // Reserved
+        | "abstract" | "become" | "box" | "do" | "final" | "macro" | "override" | "priv" | "typeof" | "unsized" | "virtual" | "yield"
+
+        // Reserved 2018+
+        | "try"
+           => format_ident!("{}_", s),
+
+         _ => ident(s)
+    }
+}
+
+fn to_hardcoded_rust_type(ty: &str) -> Option<&str> {
+    let result = match ty {
+        "int" => "i64",
+        "float" => "f64",
+        "String" => "GodotString",
+        "Array" => "Varia
