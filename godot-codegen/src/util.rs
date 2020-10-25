@@ -133,4 +133,22 @@ pub fn to_pascal_case(class_name: &str) -> String {
     use heck::ToPascalCase;
 
     // Special cases
-  
+    #[allow(clippy::single_match)]
+    match class_name {
+        "JSONRPC" => return "JsonRpc".to_string(),
+        _ => {}
+    }
+
+    class_name
+        .to_pascal_case()
+        .replace("GdExtension", "GDExtension")
+        .replace("GdNative", "GDNative")
+}
+
+pub fn ident(s: &str) -> Ident {
+    format_ident!("{}", s)
+}
+
+#[rustfmt::skip]
+pub fn safe_ident(s: &str) -> Ident {
+    // See also: https://doc.rust-lang.org/reference/keywords.
