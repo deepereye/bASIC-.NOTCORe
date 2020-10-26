@@ -177,4 +177,16 @@ fn to_hardcoded_rust_type(ty: &str) -> Option<&str> {
         "int" => "i64",
         "float" => "f64",
         "String" => "GodotString",
-        "Array" => "Varia
+        "Array" => "VariantArray",
+        //"enum::Error" => "GodotError",
+        "enum::Variant.Type" => "VariantType",
+        "enum::Variant.Operator" => "VariantOperator",
+        "enum::Vector3.Axis" => "Vector3Axis",
+        _ => return None,
+    };
+    Some(result)
+}
+
+/// Maps an _input_ type from the Godot JSON to the corresponding Rust type (wrapping some sort of a token stream).
+///
+/// Uses an internal cache (via `ctx`), as several types 
