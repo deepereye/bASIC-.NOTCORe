@@ -189,4 +189,12 @@ fn to_hardcoded_rust_type(ty: &str) -> Option<&str> {
 
 /// Maps an _input_ type from the Godot JSON to the corresponding Rust type (wrapping some sort of a token stream).
 ///
-/// Uses an internal cache (via `ctx`), as several types 
+/// Uses an internal cache (via `ctx`), as several types are ubiquitous.
+// TODO take TyName as input
+pub(crate) fn to_rust_type(ty: &str, ctx: &mut Context<'_>) -> RustTy {
+    // Separate find + insert slightly slower, but much easier with lifetimes
+    // The insert path will be hit less often and thus doesn't matter
+    if let Some(rust_ty) = ctx.find_rust_type(ty) {
+        rust_ty.clone()
+    } else {
+        let rust_ty = to_rust_type_uncache
