@@ -197,4 +197,20 @@ pub(crate) fn to_rust_type(ty: &str, ctx: &mut Context<'_>) -> RustTy {
     if let Some(rust_ty) = ctx.find_rust_type(ty) {
         rust_ty.clone()
     } else {
-        let rust_ty = to_rust_type_uncache
+        let rust_ty = to_rust_type_uncached(ty, ctx);
+        ctx.insert_rust_type(ty, rust_ty.clone());
+        rust_ty
+    }
+}
+
+fn to_rust_type_uncached(ty: &str, ctx: &mut Context) -> RustTy {
+    /// Transforms a Godot class/builtin/enum IDENT (without `::` or other syntax) to a Rust one
+    fn rustify_ty(ty: &str) -> Ident {
+        if is_builtin_scalar(ty) {
+            ident(ty)
+        } else {
+            TyName::from_godot(ty).rust_ty
+        }
+    }
+
+    if let Some(hardcoded)
