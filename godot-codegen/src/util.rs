@@ -213,4 +213,16 @@ fn to_rust_type_uncached(ty: &str, ctx: &mut Context) -> RustTy {
         }
     }
 
-    if let Some(hardcoded)
+    if let Some(hardcoded) = to_hardcoded_rust_type(ty) {
+        return RustTy::BuiltinIdent(ident(hardcoded));
+    }
+
+    let qualified_enum = ty
+        .strip_prefix("enum::")
+        .or_else(|| ty.strip_prefix("bitfield::"));
+
+    if let Some(qualified_enum) = qualified_enum {
+        return if let Some((class, enum_)) = qualified_enum.split_once('.') {
+            // Class-local enum
+            let module = ModName::from_godot(class);
+            let enum_ty = make_enum_name
