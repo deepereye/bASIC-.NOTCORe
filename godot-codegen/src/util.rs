@@ -225,4 +225,19 @@ fn to_rust_type_uncached(ty: &str, ctx: &mut Context) -> RustTy {
         return if let Some((class, enum_)) = qualified_enum.split_once('.') {
             // Class-local enum
             let module = ModName::from_godot(class);
-            let enum_ty = make_enum_name
+            let enum_ty = make_enum_name(enum_);
+
+            RustTy::EngineEnum {
+                tokens: quote! { #module::#enum_ty },
+                surrounding_class: Some(class.to_string()),
+            }
+        } else {
+            // Global enum
+            let enum_ty = make_enum_name(qualified_enum);
+
+            RustTy::EngineEnum {
+                tokens: quote! { global::#enum_ty },
+                surrounding_class: None,
+            }
+        };
+    } else if 
