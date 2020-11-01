@@ -250,4 +250,16 @@ fn to_rust_type_uncached(ty: &str, ctx: &mut Context) -> RustTy {
             return RustTy::BuiltinIdent(rustify_ty(elem_ty));
         }
 
-        let rust_elem_ty = to_rust_type(elem_ty, ctx)
+        let rust_elem_ty = to_rust_type(elem_ty, ctx);
+        return if ctx.is_builtin(elem_ty) {
+            RustTy::BuiltinArray(quote! { Array<#rust_elem_ty> })
+        } else {
+            RustTy::EngineArray {
+                tokens: quote! { Array<#rust_elem_ty> },
+                elem_class: elem_ty.to_string(),
+            }
+        };
+    }
+
+    // Note: do not check if it's a known engine class, because that will not work in minimal mode (since not all classes are stored)
+    if ctx.is_built
