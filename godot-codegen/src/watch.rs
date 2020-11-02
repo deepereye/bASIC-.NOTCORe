@@ -21,4 +21,21 @@ impl StopWatch {
     pub fn start() -> Self {
         Self {
             last_instant: Instant::now(),
-            metrics
+            metrics: vec![],
+            lwidth: 0,
+        }
+    }
+
+    pub fn record(&mut self, what: &'static str) {
+        let now = Instant::now();
+        let duration = now - self.last_instant;
+        self.last_instant = now;
+        self.lwidth = usize::max(self.lwidth, what.len());
+        self.metrics.push(Metric {
+            name: what,
+            duration,
+        });
+    }
+
+    pub fn write_stats_to(self, to_file: &Path) {
+        let file = File::create(
