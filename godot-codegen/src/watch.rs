@@ -38,4 +38,19 @@ impl StopWatch {
     }
 
     pub fn write_stats_to(self, to_file: &Path) {
-        let file = File::create(
+        let file = File::create(to_file).expect("failed to create stats file");
+        let mut writer = BufWriter::new(file);
+
+        // Accumulate total
+        let mut total = Duration::ZERO;
+        for metric in self.metrics.iter() {
+            total += metric.duration;
+        }
+        let rwidth = log10(total.as_millis());
+        let total_metric = Metric {
+            name: "total",
+            duration: total,
+        };
+
+        // Write to file
+        for metric in self.metrics
