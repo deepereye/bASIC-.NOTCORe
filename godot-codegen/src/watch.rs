@@ -53,4 +53,14 @@ impl StopWatch {
         };
 
         // Write to file
-        for metric in self.metrics
+        for metric in self.metrics.iter() {
+            Self::write_metric(&mut writer, metric, self.lwidth, rwidth);
+        }
+        writeln!(&mut writer, "{}", "-".repeat(self.lwidth + rwidth + 5))
+            .expect("failed to write to stats file");
+        Self::write_metric(&mut writer, &total_metric, self.lwidth, rwidth);
+    }
+
+    fn write_metric(writer: &mut BufWriter<File>, metric: &Metric, lwidth: usize, rwidth: usize) {
+        writeln!(
+  
