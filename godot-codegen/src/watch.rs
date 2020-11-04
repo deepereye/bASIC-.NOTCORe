@@ -63,4 +63,22 @@ impl StopWatch {
 
     fn write_metric(writer: &mut BufWriter<File>, metric: &Metric, lwidth: usize, rwidth: usize) {
         writeln!(
-  
+            writer,
+            "{: >l$}: {: >r$} ms",
+            metric.name,
+            metric.duration.as_millis(),
+            l = lwidth,
+            r = rwidth,
+        )
+        .expect("failed to write to stats file");
+    }
+}
+
+fn log10(n: u128) -> usize {
+    std::iter::successors(Some(n), |&n| (n >= 10).then_some(n / 10)).count()
+}
+
+struct Metric {
+    name: &'static str,
+    duration: Duration,
+}
