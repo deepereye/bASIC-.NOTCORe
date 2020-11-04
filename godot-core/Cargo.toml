@@ -1,3 +1,18 @@
 [package]
 name = "godot-core"
-ve
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.63"
+license = "MPL-2.0"
+keywords = ["gamedev", "godot", "engine", "2d", "3d"] # possibly: "ffi"
+categories = ["game-engines", "graphics"]
+
+[features]
+default = []
+trace = []
+codegen-fmt = ["godot-ffi/codegen-fmt"]
+codegen-full = ["godot-codegen/codegen-full"]
+double-precision = ["godot-codegen/double-precision"]
+
+[dependencies]
+godot-ffi = { path = "../godot-ffi" }
