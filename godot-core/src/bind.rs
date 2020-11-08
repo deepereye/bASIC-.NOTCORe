@@ -28,4 +28,23 @@ use crate::obj::GodotClass;
 #[allow(clippy::unimplemented)] // TODO consider using panic! with specific message, possibly generated code
 pub trait GodotExt: crate::private::You_forgot_the_attribute__godot_api
 where
-    Sel
+    Self: GodotClass,
+{
+    // Note: keep in sync with VIRTUAL_METHOD_NAMES in godot_api.rs
+
+    // Some methods that were called:
+    // _enter_tree
+    // _input
+    // _shortcut_input
+    // _unhandled_input
+    // _unhandled_key_input
+    // _process
+    // _physics_process
+    // _ready
+
+    fn register_class(builder: &mut ClassBuilder<Self>) {}
+
+    fn init(base: Base<Self::Base>) -> Self {
+        unimplemented!()
+    }
+
