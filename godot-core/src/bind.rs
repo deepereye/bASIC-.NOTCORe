@@ -13,4 +13,11 @@ use crate::obj::GodotClass;
 ///
 /// Helps with adding custom functionality:
 /// * `init` constructors
-/// * `to_string` 
+/// * `to_string` method
+/// * Custom register methods (builder style)
+/// * All the lifecycle methods like `ready`, `process` etc.
+///
+/// This trait is special in that it needs to be used in combination with the `#[godot_api]`
+/// proc-macro attribute to ensure proper registration of its methods. All methods have
+/// default implementations, so you can select precisely which functionality you want to have.
+/// Those default implementations are never called howe
