@@ -20,4 +20,12 @@ use crate::obj::GodotClass;
 /// This trait is special in that it needs to be used in combination with the `#[godot_api]`
 /// proc-macro attribute to ensure proper registration of its methods. All methods have
 /// default implementations, so you can select precisely which functionality you want to have.
-/// Those default implementations are never called howe
+/// Those default implementations are never called however, the proc-macro detects what you implement.
+///
+/// Do not call any of these methods directly -- they are an interface to Godot. Functionality
+/// described here is available through other means (e.g. `init` via `Gd::new_default`).
+#[allow(unused_variables)]
+#[allow(clippy::unimplemented)] // TODO consider using panic! with specific message, possibly generated code
+pub trait GodotExt: crate::private::You_forgot_the_attribute__godot_api
+where
+    Sel
