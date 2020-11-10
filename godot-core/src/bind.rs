@@ -48,3 +48,16 @@ where
         unimplemented!()
     }
 
+    fn ready(&mut self) {
+        unimplemented!()
+    }
+    fn process(&mut self, delta: f64) {
+        unimplemented!()
+    }
+    fn physics_process(&mut self, delta: f64) {
+        unimplemented!()
+    }
+    fn to_string(&self) -> GodotString {
+        unimplemented!()
+    }
+}
