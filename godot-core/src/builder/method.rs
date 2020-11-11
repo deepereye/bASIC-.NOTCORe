@@ -51,4 +51,17 @@ macro_rules! count_idents {
     () => {
         0
     };
-    ($name:ident, $($other:ident,)*) =
+    ($name:ident, $($other:ident,)*) => {
+        1 + $crate::gdext_count_idents!($($other,)*)
+    }
+}
+
+macro_rules! impl_code_method {
+// 	( $( $Param:ident ),* ) => {
+    ( $( $Param:ident $arg:ident ),* ) => {
+        impl<C, F, R, $( $Param ),*> CodeMethod<C, R, ( $( $Param, )* )> for F
+        where
+            C: $crate::GodotClass + $crate::GodotDefault, // TODO only GodotClass
+            F: Fn(&C, $( $Param ),* ) -> R,
+            $(
+         
