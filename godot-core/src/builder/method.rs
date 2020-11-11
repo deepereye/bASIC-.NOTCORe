@@ -33,4 +33,22 @@ where
         &mut self,
         instance: sys::GDExtensionClassInstancePtr,
         args: *const sys::GDExtensionTypePtr,
-   
+        ret: sys::GDExtensionTypePtr,
+        err: *mut sys::GDExtensionCallError,
+    );
+
+    unsafe fn ptrcall(
+        &mut self,
+        instance: sys::GDExtensionClassInstancePtr,
+        args: *const sys::GDExtensionTypePtr,
+        ret: sys::GDExtensionTypePtr,
+    );
+}
+
+
+// TODO code duplication ((2))
+macro_rules! count_idents {
+    () => {
+        0
+    };
+    ($name:ident, $($other:ident,)*) =
