@@ -64,4 +64,16 @@ macro_rules! impl_code_method {
             C: $crate::GodotClass + $crate::GodotDefault, // TODO only GodotClass
             F: Fn(&C, $( $Param ),* ) -> R,
             $(
-         
+                $Param: sys::GodotFfi,
+            )*
+            R: sys::GodotFfi + 'static,
+        {
+            const PARAM_COUNT: usize = count_idents!($( $Param, )*);
+
+            // Varcall
+            #[inline]
+            #[allow(unused_variables, unused_assignments, unused_mut)]
+            unsafe fn varcall(
+                &mut self,
+                instance: sys::GDExtensionClassInstancePtr,
+                args: *const sys::GDExtensi
