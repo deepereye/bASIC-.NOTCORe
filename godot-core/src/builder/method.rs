@@ -18,4 +18,19 @@
 //     fn ptrcall(&mut self, instance: &mut C, args: Self::ParamTypes) -> Self::ReturnType;
 // }
 
-// -----------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+/*
+
+/// Method known at compile time (statically), either a Rust `fn` or closure.
+pub trait CodeMethod<C, R, Ps>
+where
+    C: GodotClass,
+{
+    const PARAM_COUNT: usize;
+    const NAME: &'static str;
+
+    unsafe fn varcall(
+        &mut self,
+        instance: sys::GDExtensionClassInstancePtr,
+        args: *const sys::GDExtensionTypePtr,
+   
