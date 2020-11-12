@@ -87,4 +87,21 @@ macro_rules! impl_code_method {
 
                 $(
                     let $arg = <$Param as FromVariant::from_variant(&*(*args.offset(idx) as *mut Variant));
-                    idx += 1
+                    idx += 1;
+                )*
+
+                let ret_val = self(&instance, $(
+                    $arg,
+                )*);
+
+                *(ret as *mut Variant) = Variant::from(ret_val);
+                (*err).error = sys::GDExtensionCallErrorType_GDEXTENSION_CALL_OK;
+            }
+
+
+            // Ptrcall
+            #[inline]
+            #[allow(unused_variables, unused_assignments, unused_mut)]
+            unsafe fn ptrcall(
+                &mut self,
+   
