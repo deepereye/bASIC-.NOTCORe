@@ -76,4 +76,15 @@ macro_rules! impl_code_method {
             unsafe fn varcall(
                 &mut self,
                 instance: sys::GDExtensionClassInstancePtr,
-                args: *const sys::GDExtensi
+                args: *const sys::GDExtensionTypePtr,
+                ret: sys::GDExtensionTypePtr,
+                err: *mut sys::GDExtensionCallError,
+            ) {
+                let storage = ::godot_core::private::as_storage::<C>(instance);
+                let instance = storage.get_mut_lateinit();
+
+                let mut idx = 0;
+
+                $(
+                    let $arg = <$Param as FromVariant::from_variant(&*(*args.offset(idx) as *mut Variant));
+                    idx += 1
