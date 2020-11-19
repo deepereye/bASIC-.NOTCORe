@@ -125,4 +125,15 @@ macro_rules! impl_code_method {
                     $arg,
                 )*);
 
-                <R as sys:
+                <R as sys::GodotFfi>::write_sys(&ret_val, ret);
+            }
+        }
+
+    };
+}
+
+impl_code_method!();
+impl_code_method!(P0 arg0);
+impl_code_method!(P0 arg0, P1 arg1);
+impl_code_method!(P0 arg0, P1 arg1, P2 arg2);
+*/
