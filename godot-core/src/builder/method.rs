@@ -104,4 +104,15 @@ macro_rules! impl_code_method {
             #[allow(unused_variables, unused_assignments, unused_mut)]
             unsafe fn ptrcall(
                 &mut self,
-   
+                instance: sys::GDExtensionClassInstancePtr,
+                args: *const sys::GDExtensionTypePtr,
+                ret: sys::GDExtensionTypePtr,
+            ) {
+                let storage = $crate::private::as_storage::<C>(instance);
+                let instance = storage.get_mut_lateinit();
+
+                // TODO reuse code, see ((1))
+                let mut idx = 0;
+
+                $(
+                    let $arg = <$Param as sys::G
