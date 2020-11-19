@@ -115,4 +115,14 @@ macro_rules! impl_code_method {
                 let mut idx = 0;
 
                 $(
-                    let $arg = <$Param as sys::G
+                    let $arg = <$Param as sys::GodotFfi>::from_sys(*args.offset(idx));
+                    // FIXME update refcount, e.g. Gd::ready() or T::Mem::maybe_inc_ref(&result);
+                    // possibly in from_sys() directly; what about from_sys_init() and from_{obj|str}_sys()?
+                    idx += 1;
+                )*
+
+                let ret_val = self(&instance, $(
+                    $arg,
+                )*);
+
+                <R as sys:
