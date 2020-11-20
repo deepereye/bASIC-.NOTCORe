@@ -671,3 +671,207 @@ impl<T: VariantMetadata + ToVariant, const N: usize> From<&[T; N]> for Array<T> 
 
 /// Creates a `Array` from the given slice.
 impl<T: VariantMetadata + ToVariant> From<&[T]> for Array<T> {
+    fn from(slice: &[T]) -> Self {
+        let mut array = Self::new();
+        let len = slice.len();
+        if len == 0 {
+            return array;
+        }
+        array.resize(len);
+        let ptr = array.ptr_mut(0);
+        for (i, element) in slice.iter().enumerate() {
+            // SAFETY: The array contains exactly `len` elements, stored contiguously in memory.
+            unsafe {
+                *ptr.offset(to_isize(i)) = element.to_variant();
+            }
+        }
+        array
+    }
+}
+
+/// Creates a `Array` from an iterator.
+impl<T: VariantMetadata + ToVariant> FromIterator<T> for Array<T> {
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
+        let mut array = Self::new();
+        array.extend(iter);
+        array
+    }
+}
+
+/// Extends a `Array` with the contents of an iterator.
+impl<T: VariantMetadata + ToVariant> Extend<T> for Array<T> {
+    fn extend<I: IntoIterator<Item = T>>(&mut self, iter: I) {
+        // Unfortunately the GDExtension API does not offer the equivalent of `Vec::reserve`.
+        // Otherwise we could use it to pre-allocate based on `iter.size_hint()`.
+        //
+        // A faster implementation using `resize()` and direct pointer writes might still be
+        // possible.
+        for item in iter.into_iter() {
+            self.push(item);
+        }
+    }
+}
+
+/// Converts this array to a strongly typed Rust vector.
+impl<T: VariantMetadata + FromVariant> From<&Array<T>> for Vec<T> {
+    fn from(array: &Array<T>) -> Vec<T> {
+        let len = array.len();
+        let mut vec = Vec::with_capacity(len);
+        let ptr = array.ptr(0);
+        for offset in 0..to_isize(len) {
+            // SAFETY: Arrays are stored contiguously in memory, so we can use pointer arithmetic
+            // instead of going through `array_operator_index_const` for every index.
+            let variant = unsafe { &*ptr.offset(offset) };
+            let element = T::from_variant(variant);
+            vec.push(element);
+        }
+        vec
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+pub struct Iter<'a, T: VariantMetadata> {
+    array: &'a Array<T>,
+    next_idx: usize,
+}
+
+impl<'a, T: VariantMetadata + FromVariant> Iterator for Iter<'a, T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.next_idx < self.array.len() {
+            let idx = self.next_idx;
+            self.next_idx += 1;
+            // Using `ptr_unchecked` rather than going through `get()` so we can avoid a second
+            // bounds check.
+            // SAFETY: We just checked that the index is not out of bounds.
+            let variant = unsafe { &*self.array.ptr_unchecked(idx) };
+            let element = T::from_variant(variant);
+            Some(element)
+        } else {
+            None
+        }
+    }
+}
+
+// TODO There's a macro for this, but it doesn't support generics yet; add support and use it
+impl<T: VariantMetadata> PartialEq for Array<T> {
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        unsafe {
+            let mut result = false;
+            sys::builtin_call! {
+                array_operator_equal(self.sys(), other.sys(), result.sys_mut())
+            }
+            result
+        }
+    }
+}
+
+impl<T: VariantMetadata> PartialOrd for Array<T> {
+    #[inline]
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        let op_less = |lhs, rhs| unsafe {
+            let mut result = false;
+            sys::builtin_call! {
+                array_operator_less(lhs, rhs, result.sys_mut())
+            };
+            result
+        };
+
+        if op_less(self.sys(), other.sys()) {
+            Some(std::cmp::Ordering::Less)
+        } else if op_less(other.sys(), self.sys()) {
+            Some(std::cmp::Ordering::Greater)
+        } else if self.eq(other) {
+            Some(std::cmp::Ordering::Equal)
+        } else {
+            None
+        }
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+/// Constructs [`Array`] literals, similar to Rust's standard `vec!` macro.
+///
+/// The type of the array is inferred from the arguments.
+///
+/// Example:
+/// ```no_run
+/// # use godot::prelude::*;
+/// let arr = array![3, 1, 4];  // Array<i32>
+/// ```
+///
+/// To create an `Array` of variants, see the [`varray!`] macro.
+#[macro_export]
+macro_rules! array {
+    ($($elements:expr),* $(,)?) => {
+        {
+            let mut array = $crate::builtin::Array::default();
+            $(
+                array.push($elements);
+            )*
+            array
+        }
+    };
+}
+
+/// Constructs [`VariantArray`] literals, similar to Rust's standard `vec!` macro.
+///
+/// The type of the array is always [`Variant`].
+///
+/// Example:
+/// ```no_run
+/// # use godot::prelude::*;
+/// let arr: VariantArray = varray![42_i64, "hello", true];
+/// ```
+///
+/// To create a typed `Array` with a single element type, see the [`array!`] macro.
+#[macro_export]
+macro_rules! varray {
+    // Note: use to_variant() and not Variant::from(), as that works with both references and values
+    ($($elements:expr),* $(,)?) => {
+        {
+            use $crate::builtin::ToVariant as _;
+            let mut array = $crate::builtin::VariantArray::default();
+            $(
+                array.push($elements.to_variant());
+            )*
+            array
+        }
+    };
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+/// Represents the type information of a Godot array. See
+/// [`set_typed`](https://docs.godotengine.org/en/latest/classes/class_array.html#class-array-method-set-typed).
+///
+/// We ignore the `script` parameter because it has no impact on typing in Godot.
+#[derive(Debug, PartialEq, Eq)]
+struct TypeInfo {
+    variant_type: VariantType,
+    class_name: StringName,
+}
+
+impl TypeInfo {
+    fn new<T: VariantMetadata>() -> Self {
+        let variant_type = T::variant_type();
+        let class_name = match variant_type {
+            VariantType::Object => StringName::from(T::class_name()),
+            // TODO for variant types other than Object, class_name() returns "(no base)"; just
+            // make it return "" instead?
+            _ => StringName::default(),
+        };
+        Self {
+            variant_type,
+            class_name,
+        }
+    }
+
+    fn is_typed(&self) -> bool {
+        self.variant_type != VariantType::Nil
+    }
+}
