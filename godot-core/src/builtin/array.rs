@@ -201,3 +201,473 @@ impl<T: VariantMetadata> Array<T> {
     ///
     /// This is marked `unsafe` since it can be used to break the invariant that a `TypedArray<T>`
     /// always holds a Godot array whose runtime type is `T`.
+    ///
+    /// # Safety
+    ///
+    /// In and of itself, calling this does not result in undefined behavior. However:
+    /// - If `T` is not `Variant`, the returned array should not be written to, because the runtime
+    ///   type check may fail.
+    /// - If `U` is not `Variant`, the returned array should not be read from, because conversion
+    ///   from variants may fail.
+    /// In the current implementation, both cases will produce a panic rather than undefined
+    /// behavior, but this should not be relied upon.
+    unsafe fn assume_type<U: VariantMetadata>(self) -> Array<U> {
+        // SAFETY: The memory layout of `TypedArray<T>` does not depend on `T`.
+        unsafe { std::mem::transmute(self) }
+    }
+}
+
+impl<T: VariantMetadata> Array<T> {
+    /// Constructs an empty `Array`.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Returns a shallow copy of the array. All array elements are copied, but any reference types
+    /// (such as `Array`, `Dictionary` and `Object`) will still refer to the same value.
+    ///
+    /// To create a deep copy, use [`duplicate_deep()`] instead. To create a new reference to the
+    /// same array data, use [`share()`].
+    pub fn duplicate_shallow(&self) -> Self {
+        let duplicate: VariantArray = self.as_inner().duplicate(false);
+        // SAFETY: duplicate() returns a typed array with the same type as Self
+        unsafe { duplicate.assume_type() }
+    }
+
+    /// Returns a deep copy of the array. All nested arrays and dictionaries are duplicated and
+    /// will not be shared with the original array. Note that any `Object`-derived elements will
+    /// still be shallow copied.
+    ///
+    /// To create a shallow copy, use [`duplicate_shallow()`] instead. To create a new reference to
+    /// the same array data, use [`share()`].
+    pub fn duplicate_deep(&self) -> Self {
+        let duplicate: VariantArray = self.as_inner().duplicate(true);
+        // SAFETY: duplicate() returns a typed array with the same type as Self
+        unsafe { duplicate.assume_type() }
+    }
+
+    /// Returns a slice of the `Array`, from `begin` (inclusive) to `end` (exclusive), as a
+    /// new `Array`.
+    ///
+    /// The values of `begin` and `end` will be clamped to the array size.
+    ///
+    /// If specified, `step` is the relative index between source elements. It can be negative,
+    /// in which case `begin` must be higher than `end`. For example,
+    /// `TypedArray::from(&[0, 1, 2, 3, 4, 5]).slice(5, 1, -2)` returns `[5, 3]`.
+    ///
+    /// Array elements are copied to the slice, but any reference types (such as `Array`,
+    /// `Dictionary` and `Object`) will still refer to the same value. To create a deep copy, use
+    /// [`slice_deep()`] instead.
+    pub fn slice_shallow(&self, begin: usize, end: usize, step: Option<isize>) -> Self {
+        self.slice_impl(begin, end, step, false)
+    }
+
+    /// Returns a slice of the `Array`, from `begin` (inclusive) to `end` (exclusive), as a
+    /// new `Array`.
+    ///
+    /// The values of `begin` and `end` will be clamped to the array size.
+    ///
+    /// If specified, `step` is the relative index between source elements. It can be negative,
+    /// in which case `begin` must be higher than `end`. For example,
+    /// `TypedArray::from(&[0, 1, 2, 3, 4, 5]).slice(5, 1, -2)` returns `[5, 3]`.
+    ///
+    /// All nested arrays and dictionaries are duplicated and will not be shared with the original
+    /// array. Note that any `Object`-derived elements will still be shallow copied. To create a
+    /// shallow copy, use [`slice_shallow()`] instead.
+    pub fn slice_deep(&self, begin: usize, end: usize, step: Option<isize>) -> Self {
+        self.slice_impl(begin, end, step, true)
+    }
+
+    fn slice_impl(&self, begin: usize, end: usize, step: Option<isize>, deep: bool) -> Self {
+        assert_ne!(step, Some(0), "slice: step cannot be zero");
+
+        let len = self.len();
+        let begin = begin.min(len);
+        let end = end.min(len);
+        let step = step.unwrap_or(1);
+
+        let slice: VariantArray =
+            self.as_inner()
+                .slice(to_i64(begin), to_i64(end), step.try_into().unwrap(), deep);
+
+        // SAFETY: slice() returns a typed array with the same type as Self
+        unsafe { slice.assume_type() }
+    }
+
+    /// Appends another array at the end of this array. Equivalent of `append_array` in GDScript.
+    pub fn extend_array(&mut self, other: Array<T>) {
+        // SAFETY: Read-only arrays are covariant: conversion to a variant array is fine as long as
+        // we don't insert values into it afterwards, and `append_array()` doesn't do that.
+        let other: VariantArray = unsafe { other.assume_type::<Variant>() };
+        self.as_inner().append_array(other);
+    }
+
+    /// Returns the runtime type info of this array.
+    fn type_info(&self) -> TypeInfo {
+        let variant_type = VariantType::from_sys(
+            self.as_inner().get_typed_builtin() as sys::GDExtensionVariantType
+        );
+        let class_name = self.as_inner().get_typed_class_name();
+
+        TypeInfo {
+            variant_type,
+            class_name,
+        }
+    }
+
+    /// Checks that the inner array has the correct type set on it for storing elements of type `T`.
+    ///
+    /// # Panics
+    ///
+    /// If the inner type doesn't match `T` or no type is set at all.
+    fn with_checked_type(self) -> Self {
+        assert_eq!(self.type_info(), TypeInfo::new::<T>());
+        self
+    }
+
+    /// Sets the type of the inner array. Can only be called once, directly after creation.
+    fn init_inner_type(&mut self) {
+        debug_assert!(self.is_empty());
+        debug_assert!(!self.type_info().is_typed());
+
+        let type_info = TypeInfo::new::<T>();
+        if type_info.is_typed() {
+            let script = Variant::nil();
+            unsafe {
+                interface_fn!(array_set_typed)(
+                    self.sys(),
+                    type_info.variant_type.sys(),
+                    type_info.class_name.string_sys(),
+                    script.var_sys(),
+                );
+            }
+        }
+    }
+}
+
+impl<T: VariantMetadata + FromVariant> Array<T> {
+    /// Returns an iterator over the elements of the `Array`. Note that this takes the array
+    /// by reference but returns its elements by value, since they are internally converted from
+    /// `Variant`.
+    ///
+    /// Notice that it's possible to modify the `Array` through another reference while
+    /// iterating over it. This will not result in unsoundness or crashes, but will cause the
+    /// iterator to behave in an unspecified way.
+    pub fn iter_shared(&self) -> Iter<'_, T> {
+        Iter {
+            array: self,
+            next_idx: 0,
+        }
+    }
+
+    /// Returns the value at the specified index.
+    ///
+    /// # Panics
+    ///
+    /// If `index` is out of bounds.
+    pub fn get(&self, index: usize) -> T {
+        let ptr = self.ptr(index);
+
+        // SAFETY: `ptr()` just verified that the index is not out of bounds.
+        let variant = unsafe { &*ptr };
+        T::from_variant(variant)
+    }
+
+    /// Returns the first element in the array, or `None` if the array is empty. Equivalent of
+    /// `front()` in GDScript.
+    pub fn first(&self) -> Option<T> {
+        (!self.is_empty()).then(|| {
+            let variant = self.as_inner().front();
+            T::from_variant(&variant)
+        })
+    }
+
+    /// Returns the last element in the array, or `None` if the array is empty. Equivalent of
+    /// `back()` in GDScript.
+    pub fn last(&self) -> Option<T> {
+        (!self.is_empty()).then(|| {
+            let variant = self.as_inner().back();
+            T::from_variant(&variant)
+        })
+    }
+
+    /// Returns the minimum value contained in the array if all elements are of comparable types.
+    /// If the elements can't be compared or the array is empty, `None` is returned.
+    pub fn min(&self) -> Option<T> {
+        let min = self.as_inner().min();
+        (!min.is_nil()).then(|| T::from_variant(&min))
+    }
+
+    /// Returns the maximum value contained in the array if all elements are of comparable types.
+    /// If the elements can't be compared or the array is empty, `None` is returned.
+    pub fn max(&self) -> Option<T> {
+        let max = self.as_inner().max();
+        (!max.is_nil()).then(|| T::from_variant(&max))
+    }
+
+    /// Returns a random element from the array, or `None` if it is empty.
+    pub fn pick_random(&self) -> Option<T> {
+        (!self.is_empty()).then(|| {
+            let variant = self.as_inner().pick_random();
+            T::from_variant(&variant)
+        })
+    }
+
+    /// Removes and returns the last element of the array. Returns `None` if the array is empty.
+    /// Equivalent of `pop_back` in GDScript.
+    pub fn pop(&mut self) -> Option<T> {
+        (!self.is_empty()).then(|| {
+            let variant = self.as_inner().pop_back();
+            T::from_variant(&variant)
+        })
+    }
+
+    /// Removes and returns the first element of the array. Returns `None` if the array is empty.
+    ///
+    /// Note: On large arrays, this method is much slower than `pop` as it will move all the
+    /// array's elements. The larger the array, the slower `pop_front` will be.
+    pub fn pop_front(&mut self) -> Option<T> {
+        (!self.is_empty()).then(|| {
+            let variant = self.as_inner().pop_front();
+            T::from_variant(&variant)
+        })
+    }
+
+    /// Removes and returns the element at the specified index. Equivalent of `pop_at` in GDScript.
+    ///
+    /// On large arrays, this method is much slower than `pop_back` as it will move all the array's
+    /// elements after the removed element. The larger the array, the slower `remove` will be.
+    ///
+    /// # Panics
+    ///
+    /// If `index` is out of bounds.
+    pub fn remove(&mut self, index: usize) -> T {
+        self.check_bounds(index);
+        let variant = self.as_inner().pop_at(to_i64(index));
+        T::from_variant(&variant)
+    }
+}
+
+impl<T: VariantMetadata + ToVariant> Array<T> {
+    /// Finds the index of an existing value in a sorted array using binary search. Equivalent of
+    /// `bsearch` in GDScript.
+    ///
+    /// If the value is not present in the array, returns the insertion index that would maintain
+    /// sorting order.
+    ///
+    /// Calling `binary_search` on an unsorted array results in unspecified behavior.
+    pub fn binary_search(&self, value: &T) -> usize {
+        to_usize(self.as_inner().bsearch(value.to_variant(), true))
+    }
+
+    /// Returns the number of times a value is in the array.
+    pub fn count(&self, value: &T) -> usize {
+        to_usize(self.as_inner().count(value.to_variant()))
+    }
+
+    /// Returns `true` if the array contains the given value. Equivalent of `has` in GDScript.
+    pub fn contains(&self, value: &T) -> bool {
+        self.as_inner().has(value.to_variant())
+    }
+
+    /// Searches the array for the first occurrence of a value and returns its index, or `None` if
+    /// not found. Starts searching at index `from`; pass `None` to search the entire array.
+    pub fn find(&self, value: &T, from: Option<usize>) -> Option<usize> {
+        let from = to_i64(from.unwrap_or(0));
+        let index = self.as_inner().find(value.to_variant(), from);
+        if index >= 0 {
+            Some(index.try_into().unwrap())
+        } else {
+            None
+        }
+    }
+
+    /// Searches the array backwards for the last occurrence of a value and returns its index, or
+    /// `None` if not found. Starts searching at index `from`; pass `None` to search the entire
+    /// array.
+    pub fn rfind(&self, value: &T, from: Option<usize>) -> Option<usize> {
+        let from = from.map(to_i64).unwrap_or(-1);
+        let index = self.as_inner().rfind(value.to_variant(), from);
+        // It's not documented, but `rfind` returns -1 if not found.
+        if index >= 0 {
+            Some(to_usize(index))
+        } else {
+            None
+        }
+    }
+
+    /// Sets the value at the specified index.
+    ///
+    /// # Panics
+    ///
+    /// If `index` is out of bounds.
+    pub fn set(&mut self, index: usize, value: T) {
+        let ptr_mut = self.ptr_mut(index);
+        // SAFETY: `ptr_mut` just checked that the index is not out of bounds.
+        unsafe {
+            *ptr_mut = value.to_variant();
+        }
+    }
+
+    /// Appends an element to the end of the array. Equivalent of `append` and `push_back` in
+    /// GDScript.
+    pub fn push(&mut self, value: T) {
+        self.as_inner().push_back(value.to_variant());
+    }
+
+    /// Adds an element at the beginning of the array. See also `push`.
+    ///
+    /// Note: On large arrays, this method is much slower than `push` as it will move all the
+    /// array's elements. The larger the array, the slower `push_front` will be.
+    pub fn push_front(&mut self, value: T) {
+        self.as_inner().push_front(value.to_variant());
+    }
+
+    /// Inserts a new element at a given index in the array. The index must be valid, or at the end
+    /// of the array (`index == len()`).
+    ///
+    /// Note: On large arrays, this method is much slower than `push` as it will move all the
+    /// array's elements after the inserted element. The larger the array, the slower `insert` will
+    /// be.
+    pub fn insert(&mut self, index: usize, value: T) {
+        let len = self.len();
+        assert!(
+            index <= len,
+            "TypedArray insertion index {index} is out of bounds: length is {len}",
+        );
+        self.as_inner().insert(to_i64(index), value.to_variant());
+    }
+
+    /// Removes the first occurrence of a value from the array. If the value does not exist in the
+    /// array, nothing happens. To remove an element by index, use `remove` instead.
+    ///
+    /// On large arrays, this method is much slower than `pop_back` as it will move all the array's
+    /// elements after the removed element. The larger the array, the slower `remove` will be.
+    pub fn erase(&mut self, value: &T) {
+        self.as_inner().erase(value.to_variant());
+    }
+
+    /// Assigns the given value to all elements in the array. This can be used together with
+    /// `resize` to create an array with a given size and initialized elements.
+    pub fn fill(&mut self, value: &T) {
+        self.as_inner().fill(value.to_variant());
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+// Traits
+
+// Godot has some inconsistent behavior around NaN values. In GDScript, `NAN == NAN` is `false`,
+// but `[NAN] == [NAN]` is `true`. If they decide to make all NaNs equal, we can implement `Eq` and
+// `Ord`; if they decide to make all NaNs unequal, we can remove this comment.
+//
+// impl<T> Eq for TypedArray<T> {}
+//
+// impl<T> Ord for TypedArray<T> {
+//     ...
+// }
+
+impl<T: VariantMetadata> GodotFfi for Array<T> {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Opaque; .. }
+
+    unsafe fn from_sys_init_default(init_fn: impl FnOnce(sys::GDExtensionTypePtr)) -> Self {
+        let mut result = Self::default();
+        init_fn(result.sys_mut());
+        result
+    }
+}
+
+impl<T: VariantMetadata> fmt::Debug for Array<T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // Going through `Variant` because there doesn't seem to be a direct way.
+        write!(f, "{:?}", self.to_variant().stringify())
+    }
+}
+
+/// Creates a new reference to the data in this array. Changes to the original array will be
+/// reflected in the copy and vice versa.
+///
+/// To create a (mostly) independent copy instead, see [`VariantArray::duplicate_shallow()`] and
+/// [`VariantArray::duplicate_deep()`].
+impl<T: VariantMetadata> Share for Array<T> {
+    fn share(&self) -> Self {
+        let array = unsafe {
+            Self::from_sys_init(|self_ptr| {
+                let ctor = ::godot_ffi::builtin_fn!(array_construct_copy);
+                let args = [self.sys_const()];
+                ctor(self_ptr, args.as_ptr());
+            })
+        };
+        array.with_checked_type()
+    }
+}
+
+impl<T: VariantMetadata> Default for Array<T> {
+    #[inline]
+    fn default() -> Self {
+        let mut array = unsafe {
+            Self::from_sys_init(|self_ptr| {
+                let ctor = sys::builtin_fn!(array_construct_default);
+                ctor(self_ptr, std::ptr::null_mut())
+            })
+        };
+        array.init_inner_type();
+        array
+    }
+}
+
+impl<T: VariantMetadata> Drop for Array<T> {
+    #[inline]
+    fn drop(&mut self) {
+        unsafe {
+            let array_destroy = sys::builtin_fn!(array_destroy);
+            array_destroy(self.sys_mut());
+        }
+    }
+}
+
+impl<T: VariantMetadata> VariantMetadata for Array<T> {
+    fn variant_type() -> VariantType {
+        VariantType::Array
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+// Conversion traits
+
+impl<T: VariantMetadata> ToVariant for Array<T> {
+    fn to_variant(&self) -> Variant {
+        unsafe {
+            Variant::from_var_sys_init(|variant_ptr| {
+                let array_to_variant = sys::builtin_fn!(array_to_variant);
+                array_to_variant(variant_ptr, self.sys());
+            })
+        }
+    }
+}
+
+impl<T: VariantMetadata> FromVariant for Array<T> {
+    fn try_from_variant(variant: &Variant) -> Result<Self, VariantConversionError> {
+        if variant.get_type() != Self::variant_type() {
+            return Err(VariantConversionError);
+        }
+        let array = unsafe {
+            Self::from_sys_init_default(|self_ptr| {
+                let array_from_variant = sys::builtin_fn!(array_from_variant);
+                array_from_variant(self_ptr, variant.var_sys());
+            })
+        };
+
+        Ok(array.with_checked_type())
+    }
+}
+
+/// Creates a `Array` from the given Rust array.
+impl<T: VariantMetadata + ToVariant, const N: usize> From<&[T; N]> for Array<T> {
+    fn from(arr: &[T; N]) -> Self {
+        Self::from(&arr[..])
+    }
+}
+
+/// Creates a `Array` from the given slice.
+impl<T: VariantMetadata + ToVariant> From<&[T]> for Array<T> {
