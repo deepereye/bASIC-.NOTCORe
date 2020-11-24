@@ -702,3 +702,136 @@ mod test {
             Vector3::is_equal_approx,
         );
         assert_eq_approx!(
+            Basis::from_axis_angle(Vector3::FORWARD, FRAC_PI_2) * Vector3::RIGHT,
+            Vector3::DOWN,
+            Vector3::is_equal_approx,
+        );
+        assert_eq_approx!(
+            Basis::from_axis_angle(Vector3::FORWARD, PI) * Vector3::RIGHT,
+            Vector3::LEFT,
+            Vector3::is_equal_approx,
+        );
+        assert_eq_approx!(
+            Basis::from_axis_angle(Vector3::FORWARD, PI + FRAC_PI_2) * Vector3::RIGHT,
+            Vector3::UP,
+            Vector3::is_equal_approx,
+        );
+    }
+
+    // Translated from Godot
+    #[test]
+    fn basis_euler_conversions() {
+        let euler_order_to_test: Vec<EulerOrder> = vec![
+            EulerOrder::XYZ,
+            EulerOrder::XZY,
+            EulerOrder::YZX,
+            EulerOrder::YXZ,
+            EulerOrder::ZXY,
+            EulerOrder::ZYX,
+        ];
+
+        let vectors_to_test: Vec<Vector3> = vec![
+            Vector3::new(0.0, 0.0, 0.0),
+            Vector3::new(0.5, 0.5, 0.5),
+            Vector3::new(-0.5, -0.5, -0.5),
+            Vector3::new(40.0, 40.0, 40.0),
+            Vector3::new(-40.0, -40.0, -40.0),
+            Vector3::new(0.0, 0.0, -90.0),
+            Vector3::new(0.0, -90.0, 0.0),
+            Vector3::new(-90.0, 0.0, 0.0),
+            Vector3::new(0.0, 0.0, 90.0),
+            Vector3::new(0.0, 90.0, 0.0),
+            Vector3::new(90.0, 0.0, 0.0),
+            Vector3::new(0.0, 0.0, -30.0),
+            Vector3::new(0.0, -30.0, 0.0),
+            Vector3::new(-30.0, 0.0, 0.0),
+            Vector3::new(0.0, 0.0, 30.0),
+            Vector3::new(0.0, 30.0, 0.0),
+            Vector3::new(30.0, 0.0, 0.0),
+            Vector3::new(0.5, 50.0, 20.0),
+            Vector3::new(-0.5, -50.0, -20.0),
+            Vector3::new(0.5, 0.0, 90.0),
+            Vector3::new(0.5, 0.0, -90.0),
+            Vector3::new(360.0, 360.0, 360.0),
+            Vector3::new(-360.0, -360.0, -360.0),
+            Vector3::new(-90.0, 60.0, -90.0),
+            Vector3::new(90.0, 60.0, -90.0),
+            Vector3::new(90.0, -60.0, -90.0),
+            Vector3::new(-90.0, -60.0, -90.0),
+            Vector3::new(-90.0, 60.0, 90.0),
+            Vector3::new(90.0, 60.0, 90.0),
+            Vector3::new(90.0, -60.0, 90.0),
+            Vector3::new(-90.0, -60.0, 90.0),
+            Vector3::new(60.0, 90.0, -40.0),
+            Vector3::new(60.0, -90.0, -40.0),
+            Vector3::new(-60.0, -90.0, -40.0),
+            Vector3::new(-60.0, 90.0, 40.0),
+            Vector3::new(60.0, 90.0, 40.0),
+            Vector3::new(60.0, -90.0, 40.0),
+            Vector3::new(-60.0, -90.0, 40.0),
+            Vector3::new(-90.0, 90.0, -90.0),
+            Vector3::new(90.0, 90.0, -90.0),
+            Vector3::new(90.0, -90.0, -90.0),
+            Vector3::new(-90.0, -90.0, -90.0),
+            Vector3::new(-90.0, 90.0, 90.0),
+            Vector3::new(90.0, 90.0, 90.0),
+            Vector3::new(90.0, -90.0, 90.0),
+            Vector3::new(20.0, 150.0, 30.0),
+            Vector3::new(20.0, -150.0, 30.0),
+            Vector3::new(-120.0, -150.0, 30.0),
+            Vector3::new(-120.0, -150.0, -130.0),
+            Vector3::new(120.0, -150.0, -130.0),
+            Vector3::new(120.0, 150.0, -130.0),
+            Vector3::new(120.0, 150.0, 130.0),
+        ];
+
+        for order in euler_order_to_test.iter() {
+            for vector in vectors_to_test.iter() {
+                test_rotation(*vector, *order);
+            }
+        }
+    }
+
+    // Translated from Godot
+    #[test]
+    fn basis_finite_number_test() {
+        let x: Vector3 = Vector3::new(0.0, 1.0, 2.0);
+        let infinite: Vector3 = Vector3::new(real::NAN, real::NAN, real::NAN);
+
+        assert!(
+            Basis::from_cols(x, x, x).is_finite(),
+            "Basis with all components finite should be finite"
+        );
+
+        assert!(
+            !Basis::from_cols(infinite, x, x).is_finite(),
+            "Basis with one component infinite should not be finite."
+        );
+        assert!(
+            !Basis::from_cols(x, infinite, x).is_finite(),
+            "Basis with one component infinite should not be finite."
+        );
+        assert!(
+            !Basis::from_cols(x, x, infinite).is_finite(),
+            "Basis with one component infinite should not be finite."
+        );
+
+        assert!(
+            !Basis::from_cols(infinite, infinite, x).is_finite(),
+            "Basis with two components infinite should not be finite."
+        );
+        assert!(
+            !Basis::from_cols(infinite, x, infinite).is_finite(),
+            "Basis with two components infinite should not be finite."
+        );
+        assert!(
+            !Basis::from_cols(x, infinite, infinite).is_finite(),
+            "Basis with two components infinite should not be finite."
+        );
+
+        assert!(
+            !Basis::from_cols(infinite, infinite, infinite).is_finite(),
+            "Basis with three components infinite should not be finite."
+        );
+    }
+}
