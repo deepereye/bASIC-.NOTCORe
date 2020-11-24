@@ -245,3 +245,460 @@ impl Basis {
                 vec
             }
             EulerOrder::YZX => {
+                -Self::to_euler_inner(major, row_b.zy(), col_a.zx(), row_c.yz()).yzx()
+            }
+            EulerOrder::ZXY => {
+                -Self::to_euler_inner(major, row_c.xz(), col_b.xy(), row_a.zx()).xyz()
+            }
+            EulerOrder::ZYX => {
+                Self::to_euler_inner(major, col_a.yx(), row_c.yz(), col_b.xy()).zxy()
+            }
+        }
+        .to_front()
+    }
+
+    fn is_between_neg1_1(f: real) -> Ordering {
+        if f >= (1.0 - CMP_EPSILON) {
+            Ordering::Greater
+        } else if f <= -(1.0 - CMP_EPSILON) {
+            Ordering::Less
+        } else {
+            Ordering::Equal
+        }
+    }
+
+    /// Check if the element at `basis_{i,i}` is 1, and all the other values in
+    /// that row and column are 0.
+    fn is_identity_index(&self, index: usize) -> bool {
+        let row = self.rows[index];
+        let col = self.transposed().rows[index];
+        if row != col {
+            return false;
+        }
+        match index {
+            0 => row == Vector3::RIGHT,
+            1 => row == Vector3::UP,
+            2 => row == Vector3::BACK,
+            _ => panic!("Unknown Index {index}"),
+        }
+    }
+
+    #[allow(clippy::wrong_self_convention)]
+    fn to_euler_pure_rotation(
+        &self,
+        major: real,
+        index: usize,
+        rotation_vec: RVec2,
+    ) -> Option<RVec3> {
+        if Self::is_between_neg1_1(major).is_ne() {
+            return None;
+        }
+
+        if !self.is_identity_index(index) {
+            return None;
+        }
+
+        Some(RVec3::new(
+            real::atan2(rotation_vec.x, rotation_vec.y),
+            0.0,
+            0.0,
+        ))
+    }
+
+    fn to_euler_inner(major: real, pair0: RVec2, pair1: RVec2, pair2: RVec2) -> RVec3 {
+        match Self::is_between_neg1_1(major) {
+            // It's -1
+            Ordering::Less => RVec3::new(FRAC_PI_2, -real::atan2(pair2.x, pair2.y), 0.0),
+            // Is it a pure rotation?
+            Ordering::Equal => RVec3::new(
+                real::asin(-major),
+                real::atan2(pair0.x, pair0.y),
+                real::atan2(pair1.x, pair1.y),
+            ),
+            // It's 1
+            Ordering::Greater => RVec3::new(-FRAC_PI_2, -real::atan2(pair2.x, pair2.y), 0.0),
+        }
+    }
+
+    /// Returns the determinant of the matrix.
+    ///
+    /// _Godot equivalent: `Basis.determinant()`_
+    pub fn determinant(&self) -> real {
+        self.to_glam().determinant()
+    }
+
+    /// Introduce an additional scaling specified by the given 3D scaling factor.
+    ///
+    /// _Godot equivalent: `Basis.scaled()`_
+    #[must_use]
+    pub fn scaled(self, scale: Vector3) -> Self {
+        Self::from_diagonal(scale.x, scale.y, scale.z) * self
+    }
+
+    /// Returns the inverse of the matrix.
+    ///
+    /// _Godot equivalent: `Basis.inverse()`_
+    #[must_use]
+    pub fn inverse(self) -> Basis {
+        self.glam(|mat| mat.inverse())
+    }
+
+    /// Returns the transposed version of the matrix.
+    ///
+    /// _Godot equivalent: `Basis.transposed()`_
+    #[must_use]
+    pub fn transposed(self) -> Self {
+        Self::from_cols(self.rows[0], self.rows[1], self.rows[2])
+    }
+
+    /// Returns the orthonormalized version of the matrix (useful to call from
+    /// time to time to avoid rounding error for orthogonal matrices). This
+    /// performs a Gram-Schmidt orthonormalization on the basis of the matrix.
+    ///
+    /// _Godot equivalent: `Basis.orthonormalized()`_
+    #[must_use]
+    pub fn orthonormalized(self) -> Self {
+        assert!(
+            !is_equal_approx(self.determinant(), 0.0),
+            "Determinant should not be zero."
+        );
+
+        // Gram-Schmidt Process
+        let mut x = self.col_a();
+        let mut y = self.col_b();
+        let mut z = self.col_c();
+
+        x = x.normalized();
+        y = y - x * x.dot(y);
+        y = y.normalized();
+        z = z - x * x.dot(z) - y * y.dot(z);
+        z = z.normalized();
+
+        Self::from_cols(x, y, z)
+    }
+
+    /// Introduce an additional rotation around the given `axis` by `angle`
+    /// (in radians). The axis must be a normalized vector.
+    ///
+    /// _Godot equivalent: `Basis.rotated()`_
+    #[must_use]
+    pub fn rotated(self, axis: Vector3, angle: real) -> Self {
+        Self::from_axis_angle(axis, angle) * self
+    }
+
+    /// Assuming that the matrix is a proper rotation matrix, slerp performs
+    /// a spherical-linear interpolation with another rotation matrix.
+    ///
+    /// _Godot equivalent: `Basis.slerp()`_
+    #[must_use]
+    pub fn slerp(self, other: Self, weight: real) -> Self {
+        let from = self.to_quat();
+        let to = other.to_quat();
+
+        let mut result = Self::from_quat(from.slerp(to, weight));
+
+        for i in 0..3 {
+            result.rows[i] *= lerp(self.rows[i].length(), other.rows[i].length(), weight);
+        }
+
+        result
+    }
+
+    /// Transposed dot product with the X axis (column) of the matrix.
+    ///
+    /// _Godot equivalent: `Basis.tdotx()`_
+    #[must_use]
+    pub fn tdotx(&self, with: Vector3) -> real {
+        self.col_a().dot(with)
+    }
+
+    /// Transposed dot product with the Y axis (column) of the matrix.
+    ///
+    /// _Godot equivalent: `Basis.tdoty()`_
+    #[must_use]
+    pub fn tdoty(&self, with: Vector3) -> real {
+        self.col_b().dot(with)
+    }
+
+    /// Transposed dot product with the Z axis (column) of the matrix.
+    ///
+    /// _Godot equivalent: `Basis.tdotz()`_
+    #[must_use]
+    pub fn tdotz(&self, with: Vector3) -> real {
+        self.col_c().dot(with)
+    }
+
+    /// Returns `true` if this basis is finite. Meaning each element of the
+    /// matrix is not `NaN`, positive infinity, or negative infinity.
+    ///
+    /// _Godot equivalent: `Basis.is_finite()`_
+    pub fn is_finite(&self) -> bool {
+        self.rows[0].is_finite() && self.rows[1].is_finite() && self.rows[2].is_finite()
+    }
+
+    /// Returns `true` if this basis and `other` are approximately equal,
+    /// by calling `is_equal_approx` on each row.
+    ///
+    /// _Godot equivalent: `Basis.is_equal_approx(Basis b)`_
+    pub fn is_equal_approx(&self, other: &Self) -> bool {
+        self.rows[0].is_equal_approx(other.rows[0])
+            && self.rows[1].is_equal_approx(other.rows[1])
+            && self.rows[2].is_equal_approx(other.rows[2])
+    }
+
+    /// Returns the first column of the matrix,
+    ///
+    /// _Godot equivalent: `Basis.x`_
+    #[must_use]
+    pub fn col_a(&self) -> Vector3 {
+        Vector3::new(self.rows[0].x, self.rows[1].x, self.rows[2].x)
+    }
+
+    /// Set the values of the first column of the matrix.
+    pub fn set_col_a(&mut self, col: Vector3) {
+        self.rows[0].x = col.x;
+        self.rows[1].x = col.y;
+        self.rows[2].x = col.z;
+    }
+
+    /// Returns the second column of the matrix,
+    ///
+    /// _Godot equivalent: `Basis.y`_
+    #[must_use]
+    pub fn col_b(&self) -> Vector3 {
+        Vector3::new(self.rows[0].y, self.rows[1].y, self.rows[2].y)
+    }
+
+    /// Set the values of the second column of the matrix.
+    pub fn set_col_b(&mut self, col: Vector3) {
+        self.rows[0].y = col.x;
+        self.rows[1].y = col.y;
+        self.rows[2].y = col.z;
+    }
+
+    /// Returns the third column of the matrix,
+    ///
+    /// _Godot equivalent: `Basis.z`_
+    #[must_use]
+    pub fn col_c(&self) -> Vector3 {
+        Vector3::new(self.rows[0].z, self.rows[1].z, self.rows[2].z)
+    }
+
+    /// Set the values of the third column of the matrix.
+    pub fn set_col_c(&mut self, col: Vector3) {
+        self.rows[0].z = col.x;
+        self.rows[1].z = col.y;
+        self.rows[2].z = col.z;
+    }
+}
+
+impl Display for Basis {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // Godot output:
+        // [X: (1, 0, 0), Y: (0, 1, 0), Z: (0, 0, 1)]
+        // Where X,Y,Z are the columns
+        let [a, b, c] = self.to_cols();
+
+        write!(f, "[a: {a}, b: {b}, c: {c}]")
+    }
+}
+
+impl GlamConv for Basis {
+    type Glam = RMat3;
+}
+
+impl GlamType for RMat3 {
+    type Mapped = Basis;
+
+    fn to_front(&self) -> Self::Mapped {
+        Basis::from_rows_array(&self.to_cols_array()).transposed()
+    }
+
+    fn from_front(mapped: &Self::Mapped) -> Self {
+        Self::from_cols_array(&mapped.to_rows_array()).transpose()
+    }
+}
+
+#[cfg(not(feature = "double-precision"))]
+impl GlamType for glam::Mat3A {
+    type Mapped = Basis;
+
+    fn to_front(&self) -> Self::Mapped {
+        Basis::from_rows_array(&self.to_cols_array()).transposed()
+    }
+
+    fn from_front(mapped: &Self::Mapped) -> Self {
+        Self::from_cols_array(&mapped.to_rows_array()).transpose()
+    }
+}
+
+impl Default for Basis {
+    fn default() -> Self {
+        Self::IDENTITY
+    }
+}
+
+impl Mul for Basis {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        self.glam2(&rhs, |a, b| a * b)
+    }
+}
+
+impl Mul<real> for Basis {
+    type Output = Self;
+
+    fn mul(mut self, rhs: real) -> Self::Output {
+        self *= rhs;
+        self
+    }
+}
+
+impl MulAssign<real> for Basis {
+    fn mul_assign(&mut self, rhs: real) {
+        self.rows[0] *= rhs;
+        self.rows[1] *= rhs;
+        self.rows[2] *= rhs;
+    }
+}
+
+impl Mul<Vector3> for Basis {
+    type Output = Vector3;
+
+    fn mul(self, rhs: Vector3) -> Self::Output {
+        self.glam2(&rhs, |a, b| a * b)
+    }
+}
+
+impl GodotFfi for Basis {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
+}
+
+/// The ordering used to interpret a set of euler angles as extrinsic
+/// rotations.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(C)]
+pub enum EulerOrder {
+    XYZ = 0,
+    XZY = 1,
+    YXZ = 2,
+    YZX = 3,
+    ZXY = 4,
+    ZYX = 5,
+}
+
+#[cfg(test)]
+mod test {
+    use crate::builtin::real_consts::{FRAC_PI_2, PI};
+
+    use crate::assert_eq_approx;
+
+    use super::*;
+
+    fn deg_to_rad(rotation: Vector3) -> Vector3 {
+        Vector3::new(
+            rotation.x.to_radians(),
+            rotation.y.to_radians(),
+            rotation.z.to_radians(),
+        )
+    }
+
+    // Translated from Godot
+    fn test_rotation(deg_original_euler: Vector3, rot_order: EulerOrder) {
+        // This test:
+        // 1. Converts the rotation vector from deg to rad.
+        // 2. Converts euler to basis.
+        // 3. Converts the above basis back into euler.
+        // 4. Converts the above euler into basis again.
+        // 5. Compares the basis obtained in step 2 with the basis of step 4
+        //
+        // The conversion "basis to euler", done in the step 3, may be different from
+        // the original euler, even if the final rotation are the same.
+        // This happens because there are more ways to represents the same rotation,
+        // both valid, using eulers.
+        // For this reason is necessary to convert that euler back to basis and finally
+        // compares it.
+        //
+        // In this way we can assert that both functions: basis to euler / euler to basis
+        // are correct.
+
+        // Euler to rotation
+        let original_euler: Vector3 = deg_to_rad(deg_original_euler);
+        let to_rotation: Basis = Basis::from_euler(rot_order, original_euler);
+
+        // Euler from rotation
+        let euler_from_rotation: Vector3 = to_rotation.to_euler(rot_order);
+        let rotation_from_computed_euler: Basis = Basis::from_euler(rot_order, euler_from_rotation);
+
+        let res: Basis = to_rotation.inverse() * rotation_from_computed_euler;
+        assert!(
+            (res.col_a() - Vector3::RIGHT).length() <= 0.1,
+            "Fail due to X {} with {deg_original_euler} using {rot_order:?}",
+            res.col_a()
+        );
+        assert!(
+            (res.col_b() - Vector3::UP).length() <= 0.1,
+            "Fail due to Y {} with {deg_original_euler} using {rot_order:?}",
+            res.col_b()
+        );
+        assert!(
+            (res.col_c() - Vector3::BACK).length() <= 0.1,
+            "Fail due to Z {} with {deg_original_euler} using {rot_order:?}",
+            res.col_c()
+        );
+
+        // Double check `to_rotation` decomposing with XYZ rotation order.
+        let euler_xyz_from_rotation: Vector3 = to_rotation.to_euler(EulerOrder::XYZ);
+        let rotation_from_xyz_computed_euler: Basis =
+            Basis::from_euler(EulerOrder::XYZ, euler_xyz_from_rotation);
+
+        let res = to_rotation.inverse() * rotation_from_xyz_computed_euler;
+
+        assert!(
+        (res.col_a() - Vector3::new(1.0, 0.0, 0.0)).length() <= 0.1,
+        "Double check with XYZ rot order failed, due to X {} with {deg_original_euler} using {rot_order:?}",
+        res.col_a(),
+    );
+        assert!(
+        (res.col_b() - Vector3::new(0.0, 1.0, 0.0)).length() <= 0.1,
+        "Double check with XYZ rot order failed, due to Y {} with {deg_original_euler} using {rot_order:?}",
+        res.col_b(),
+    );
+        assert!(
+        (res.col_c() - Vector3::new(0.0, 0.0, 1.0)).length() <= 0.1,
+        "Double check with XYZ rot order failed, due to Z {} with {deg_original_euler} using {rot_order:?}",
+        res.col_c(),
+    );
+    }
+
+    #[test]
+    fn consts_behavior_correct() {
+        let v = Vector3::new(1.0, 2.0, 3.0);
+
+        assert_eq_approx!(Basis::IDENTITY * v, v, Vector3::is_equal_approx);
+        assert_eq_approx!(
+            Basis::FLIP_X * v,
+            Vector3::new(-v.x, v.y, v.z),
+            Vector3::is_equal_approx
+        );
+        assert_eq_approx!(
+            Basis::FLIP_Y * v,
+            Vector3::new(v.x, -v.y, v.z),
+            Vector3::is_equal_approx
+        );
+        assert_eq_approx!(
+            Basis::FLIP_Z * v,
+            Vector3::new(v.x, v.y, -v.z),
+            Vector3::is_equal_approx
+        );
+    }
+
+    #[test]
+    fn basic_rotation_correct() {
+        assert_eq_approx!(
+            Basis::from_axis_angle(Vector3::FORWARD, 0.0) * Vector3::RIGHT,
+            Vector3::RIGHT,
+            Vector3::is_equal_approx,
+        );
+        assert_eq_approx!(
