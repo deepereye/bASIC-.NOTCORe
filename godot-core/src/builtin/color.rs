@@ -19,4 +19,17 @@ use sys::{ffi_methods, GodotFfi};
 pub struct Color {
     /// The color's red component.
     pub r: f32,
-    /// The 
+    /// The color's green component.
+    pub g: f32,
+    /// The color's blue component.
+    pub b: f32,
+    /// The color's alpha component. A value of 0 means that the color is fully transparent. A
+    /// value of 1 means that the color is fully opaque.
+    pub a: f32,
+}
+
+impl Color {
+    // TODO implement all the other color constants using code generation
+
+    /// Transparent black.
+    pu
