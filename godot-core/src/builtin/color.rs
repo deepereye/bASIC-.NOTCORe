@@ -6,4 +6,17 @@
 
 use crate::builtin::inner::InnerColor;
 use crate::builtin::GodotString;
-use godot_ffi as sy
+use godot_ffi as sys;
+use std::ops;
+use sys::{ffi_methods, GodotFfi};
+
+/// Color built-in type, in floating-point RGBA format.
+///
+/// Channel values are _typically_ in the range of 0 to 1, but this is not a requirement, and
+/// values outside this range are explicitly allowed for e.g. High Dynamic Range (HDR).
+#[repr(C)]
+#[derive(Copy, Clone, Debug, PartialEq, PartialOrd)]
+pub struct Color {
+    /// The color's red component.
+    pub r: f32,
+    /// The 
