@@ -32,4 +32,15 @@ impl Color {
     // TODO implement all the other color constants using code generation
 
     /// Transparent black.
-    pu
+    pub const TRANSPARENT_BLACK: Color = Self::from_rgba(0.0, 0.0, 0.0, 0.0);
+
+    /// Transparent white.
+    ///
+    /// _Godot equivalent: `Color.TRANSPARENT`_
+    pub const TRANSPARENT_WHITE: Color = Self::from_rgba(1.0, 1.0, 1.0, 0.0);
+
+    /// Opaque black.
+    pub const BLACK: Color = Self::from_rgba(0.0, 0.0, 0.0, 1.0);
+
+    /// Opaque white.
+    pub const WHITE: Color = Self::from_rgb
