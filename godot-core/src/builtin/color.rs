@@ -43,4 +43,16 @@ impl Color {
     pub const BLACK: Color = Self::from_rgba(0.0, 0.0, 0.0, 1.0);
 
     /// Opaque white.
-    pub const WHITE: Color = Self::from_rgb
+    pub const WHITE: Color = Self::from_rgba(1.0, 1.0, 1.0, 1.0);
+
+    /// Constructs a new `Color` with the given components.
+    pub const fn from_rgba(r: f32, g: f32, b: f32, a: f32) -> Self {
+        Self { r, g, b, a }
+    }
+
+    /// Constructs a new `Color` with the given color components, and the alpha channel set to 1.
+    pub const fn from_rgb(r: f32, g: f32, b: f32) -> Self {
+        Self::from_rgba(r, g, b, 1.0)
+    }
+
+    /// Constructs a new `Color` with the
