@@ -55,4 +55,14 @@ impl Color {
         Self::from_rgba(r, g, b, 1.0)
     }
 
-    /// Constructs a new `Color` with the
+    /// Constructs a new `Color` with the given components as bytes. 0 is mapped to 0.0, 255 is
+    /// mapped to 1.0.
+    ///
+    /// _Godot equivalent: the global `Color8` function_
+    pub fn from_rgba8(r: u8, g: u8, b: u8, a: u8) -> Self {
+        Self::from_rgba(from_u8(r), from_u8(g), from_u8(b), from_u8(a))
+    }
+
+    /// Constructs a new `Color` with the given components as `u16` words. 0 is mapped to 0.0,
+    /// 65535 (`0xffff`) is mapped to 1.0.
+    pub fn from_rgba
