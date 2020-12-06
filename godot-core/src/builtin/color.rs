@@ -65,4 +65,13 @@ impl Color {
 
     /// Constructs a new `Color` with the given components as `u16` words. 0 is mapped to 0.0,
     /// 65535 (`0xffff`) is mapped to 1.0.
-    pub fn from_rgba
+    pub fn from_rgba16(r: u16, g: u16, b: u16, a: u16) -> Self {
+        Self::from_rgba(from_u16(r), from_u16(g), from_u16(b), from_u16(a))
+    }
+
+    /// Constructs a new `Color` from a 32-bits value with the given channel `order`.
+    ///
+    /// _Godot equivalent: `Color.hex`, if `ColorChannelOrder::Rgba` is used_
+    pub fn from_u32_rgba(u: u32, order: ColorChannelOrder) -> Self {
+        let [r, g, b, a] = order.unpack(u.to_be_bytes());
+        Color:
