@@ -74,4 +74,15 @@ impl Color {
     /// _Godot equivalent: `Color.hex`, if `ColorChannelOrder::Rgba` is used_
     pub fn from_u32_rgba(u: u32, order: ColorChannelOrder) -> Self {
         let [r, g, b, a] = order.unpack(u.to_be_bytes());
-        Color:
+        Color::from_rgba8(r, g, b, a)
+    }
+
+    /// Constructs a new `Color` from a 64-bits value with the given channel `order`.
+    ///
+    /// _Godot equivalent: `Color.hex64`, if `ColorChannelOrder::Rgba` is used_
+    pub fn from_u64_rgba(u: u64, order: ColorChannelOrder) -> Self {
+        let [r, g, b, a] = order.unpack(to_be_words(u));
+        Color::from_rgba16(r, g, b, a)
+    }
+
+    /// Constructs a `Color` from an HTML color code string. Valid values for the s
