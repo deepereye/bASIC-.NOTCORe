@@ -85,4 +85,11 @@ impl Color {
         Color::from_rgba16(r, g, b, a)
     }
 
-    /// Constructs a `Color` from an HTML color code string. Valid values for the s
+    /// Constructs a `Color` from an HTML color code string. Valid values for the string are:
+    ///
+    /// - `#RRGGBBAA` and `RRGGBBAA` where each of `RR`, `GG`, `BB` and `AA` stands for two hex
+    ///   digits (case insensitive).
+    /// - `#RRGGBB` and `RRGGBB`. Equivalent to `#RRGGBBff`.
+    /// - `#RGBA` and `RGBA` where each of `R`, `G`, `B` and `A` stands for a single hex digit.
+    ///   Equivalent to `#RRGGBBAA`, i.e. each digit is repeated twice.
+    /// - `#RGB` and `RGB`. Equivalent to `#
