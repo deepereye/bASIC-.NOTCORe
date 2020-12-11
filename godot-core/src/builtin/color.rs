@@ -92,4 +92,15 @@ impl Color {
     /// - `#RRGGBB` and `RRGGBB`. Equivalent to `#RRGGBBff`.
     /// - `#RGBA` and `RGBA` where each of `R`, `G`, `B` and `A` stands for a single hex digit.
     ///   Equivalent to `#RRGGBBAA`, i.e. each digit is repeated twice.
-    /// - `#RGB` and `RGB`. Equivalent to `#
+    /// - `#RGB` and `RGB`. Equivalent to `#RRGGBBff`.
+    ///
+    /// Returns `None` if the format is invalid.
+    pub fn from_html<S: Into<GodotString>>(html: S) -> Option<Self> {
+        let html = html.into();
+        InnerColor::html_is_valid(html.clone()).then(|| InnerColor::html(html))
+    }
+
+    /// Constructs a `Color` from a string, which can be either:
+    ///
+    /// - An HTML color code as accepted by [`Color::from_html`].
+    /// - The name of a built-in color cons
