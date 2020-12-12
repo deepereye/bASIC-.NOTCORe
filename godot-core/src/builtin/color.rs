@@ -103,4 +103,11 @@ impl Color {
     /// Constructs a `Color` from a string, which can be either:
     ///
     /// - An HTML color code as accepted by [`Color::from_html`].
-    /// - The name of a built-in color cons
+    /// - The name of a built-in color constant, such as `BLUE` or `lawn-green`. Matching is case
+    ///   insensitive and hyphens can be used interchangeably with underscores. See the [list of
+    ///   color constants][color_constants] in the Godot API documentation, or the visual [cheat
+    ///   sheet][cheat_sheet] for the full list.
+    ///
+    /// Returns `None` if the string is neither a valid HTML color code nor an existing color name.
+    ///
+    /// Most col
