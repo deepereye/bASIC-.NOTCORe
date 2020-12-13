@@ -117,4 +117,16 @@ impl Color {
     pub fn from_string<S: Into<GodotString>>(string: S) -> Option<Self> {
         let color = InnerColor::from_string(
             string.into(),
-         
+            Self::from_rgba(f32::NAN, f32::NAN, f32::NAN, f32::NAN),
+        );
+        // Assumption: the implementation of `from_string` in the engine will never return any NaN
+        // upon success.
+        if color.r.is_nan() {
+            None
+        } else {
+            Some(color)
+        }
+    }
+
+    /// Constructs a `Color` from an [HSV profile](https://en.wikipedia.org/wiki/HSL_and_HSV). The
+    /// hue (`h`), saturation (`s
