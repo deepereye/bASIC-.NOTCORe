@@ -110,4 +110,11 @@ impl Color {
     ///
     /// Returns `None` if the string is neither a valid HTML color code nor an existing color name.
     ///
-    /// Most col
+    /// Most color constants have an alpha of 1; use [`Color::with_alpha`] to change it.
+    ///
+    /// [color_constants]: https://docs.godotengine.org/en/latest/classes/class_color.html#constants
+    /// [cheat_sheet]: https://raw.githubusercontent.com/godotengine/godot-docs/master/img/color_constants.png
+    pub fn from_string<S: Into<GodotString>>(string: S) -> Option<Self> {
+        let color = InnerColor::from_string(
+            string.into(),
+         
