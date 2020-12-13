@@ -138,4 +138,13 @@ impl Color {
     /// Constructs a `Color` from an [OK HSL
     /// profile](https://bottosson.github.io/posts/colorpicker/). The hue (`h`), saturation (`s`),
     /// and lightness (`l`) are typically between 0.0 and 1.0. Alpha is set to 1; use
-    /// [`Color::wit
+    /// [`Color::with_alpha`] to change it.
+    pub fn from_ok_hsl(h: f64, s: f64, l: f64) -> Self {
+        InnerColor::from_ok_hsl(h, s, l, 1.0)
+    }
+
+    /// Constructs a `Color` from an RGBE9995 format integer. This is a special OpenGL texture
+    /// format where the three color components have 9 bits of precision and all three share a
+    /// single 5-bit exponent.
+    pub fn from_rgbe9995(rgbe: u32) -> Self {
+        Inne
