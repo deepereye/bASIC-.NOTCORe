@@ -129,4 +129,13 @@ impl Color {
     }
 
     /// Constructs a `Color` from an [HSV profile](https://en.wikipedia.org/wiki/HSL_and_HSV). The
-    /// hue (`h`), saturation (`s
+    /// hue (`h`), saturation (`s`), and value (`v`) are typically between 0.0 and 1.0. Alpha is
+    /// set to 1; use [`Color::with_alpha`] to change it.
+    pub fn from_hsv(h: f64, s: f64, v: f64) -> Self {
+        InnerColor::from_hsv(h, s, v, 1.0)
+    }
+
+    /// Constructs a `Color` from an [OK HSL
+    /// profile](https://bottosson.github.io/posts/colorpicker/). The hue (`h`), saturation (`s`),
+    /// and lightness (`l`) are typically between 0.0 and 1.0. Alpha is set to 1; use
+    /// [`Color::wit
