@@ -147,4 +147,16 @@ impl Color {
     /// format where the three color components have 9 bits of precision and all three share a
     /// single 5-bit exponent.
     pub fn from_rgbe9995(rgbe: u32) -> Self {
-        Inne
+        InnerColor::from_rgbe9995(rgbe as i64)
+    }
+
+    /// Returns a copy of this color with the given alpha value. Useful for chaining with
+    /// constructors like [`Color::from_string`] and [`Color::from_hsv`].
+    #[must_use]
+    pub fn with_alpha(mut self, a: f32) -> Self {
+        self.a = a;
+        self
+    }
+
+    /// Returns the red channel value as a byte. If `self.r` is outside the range from 0 to 1, the
+    /// returned byte is clamped.
