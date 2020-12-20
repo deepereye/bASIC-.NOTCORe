@@ -160,3 +160,20 @@ impl Color {
 
     /// Returns the red channel value as a byte. If `self.r` is outside the range from 0 to 1, the
     /// returned byte is clamped.
+    pub fn r8(self) -> u8 {
+        to_u8(self.r)
+    }
+
+    /// Returns the green channel value as a byte. If `self.g` is outside the range from 0 to 1,
+    /// the returned byte is clamped.
+    pub fn g8(self) -> u8 {
+        to_u8(self.g)
+    }
+
+    /// Returns the blue channel value as a byte. If `self.b` is outside the range from 0 to 1, the
+    /// returned byte is clamped.
+    pub fn b8(self) -> u8 {
+        to_u8(self.b)
+    }
+
+    /// Returns t
