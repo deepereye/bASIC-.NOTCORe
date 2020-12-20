@@ -188,4 +188,18 @@ impl Color {
     }
 
     /// Sets the green channel value as a byte, mapped to the range from 0 to 1.
-    pub fn s
+    pub fn set_g8(&mut self, g: u8) {
+        self.g = from_u8(g);
+    }
+
+    /// Sets the blue channel value as a byte, mapped to the range from 0 to 1.
+    pub fn set_b8(&mut self, b: u8) {
+        self.b = from_u8(b);
+    }
+
+    /// Sets the alpha channel value as a byte, mapped to the range from 0 to 1.
+    pub fn set_a8(&mut self, a: u8) {
+        self.a = from_u8(a);
+    }
+
+    // TODO add getters and 
