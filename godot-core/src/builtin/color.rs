@@ -176,4 +176,16 @@ impl Color {
         to_u8(self.b)
     }
 
-    /// Returns t
+    /// Returns the alpha channel value as a byte. If `self.a` is outside the range from 0 to 1,
+    /// the returned byte is clamped.
+    pub fn a8(self) -> u8 {
+        to_u8(self.a)
+    }
+
+    /// Sets the red channel value as a byte, mapped to the range from 0 to 1.
+    pub fn set_r8(&mut self, r: u8) {
+        self.r = from_u8(r);
+    }
+
+    /// Sets the green channel value as a byte, mapped to the range from 0 to 1.
+    pub fn s
