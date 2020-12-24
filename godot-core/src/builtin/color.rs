@@ -202,4 +202,11 @@ impl Color {
         self.a = from_u8(a);
     }
 
-    // TODO add getters and 
+    // TODO add getters and setters for h, s, v (needs generated property wrappers)
+
+    /// Returns the light intensity of the color, as a value between 0.0 and 1.0 (inclusive). This
+    /// is useful when determining whether a color is light or dark. Colors with a luminance
+    /// smaller than 0.5 can be generally considered dark.
+    ///
+    /// Note: `luminance` relies on the color being in the linear color space to return an
+    /// accurate relative l
