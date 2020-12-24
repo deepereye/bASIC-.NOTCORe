@@ -209,4 +209,16 @@ impl Color {
     /// smaller than 0.5 can be generally considered dark.
     ///
     /// Note: `luminance` relies on the color being in the linear color space to return an
-    /// accurate relative l
+    /// accurate relative luminance value. If the color is in the sRGB color space, use
+    /// [`Color::srgb_to_linear`] to convert it to the linear color space first.
+    pub fn luminance(self) -> f64 {
+        self.as_inner().get_luminance()
+    }
+
+    /// Blends the given color on top of this color, taking its alpha into account.
+    #[must_use]
+    pub fn blend(self, over: Color) -> Self {
+        self.as_inner().blend(over)
+    }
+
+    /// Returns the linear interpola
