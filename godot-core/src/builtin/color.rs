@@ -221,4 +221,14 @@ impl Color {
         self.as_inner().blend(over)
     }
 
-    /// Returns the linear interpola
+    /// Returns the linear interpolation between `self`'s components and `to`'s components. The
+    /// interpolation factor `weight` should be between 0.0 and 1.0 (inclusive).
+    #[must_use]
+    pub fn lerp(self, to: Color, weight: f64) -> Self {
+        self.as_inner().lerp(to, weight)
+    }
+
+    /// Returns a new color with all components clamped between the components of `min` and `max`.
+    #[must_use]
+    pub fn clamp(self, min: Color, max: Color) -> Self {
+        self.as_i
