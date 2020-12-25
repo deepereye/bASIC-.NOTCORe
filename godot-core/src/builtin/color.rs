@@ -231,4 +231,15 @@ impl Color {
     /// Returns a new color with all components clamped between the components of `min` and `max`.
     #[must_use]
     pub fn clamp(self, min: Color, max: Color) -> Self {
-        self.as_i
+        self.as_inner().clamp(min, max)
+    }
+
+    /// Creates a new color resulting by making this color darker by the specified amount (ratio
+    /// from 0.0 to 1.0). See also [`lightened`].
+    #[must_use]
+    pub fn darkened(self, amount: f64) -> Self {
+        self.as_inner().darkened(amount)
+    }
+
+    /// Creates a new color resulting by making this color lighter by the specified amount, which
+    /// should be a 
