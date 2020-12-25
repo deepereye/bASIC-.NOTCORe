@@ -264,4 +264,14 @@ impl Color {
     }
 
     /// Returns the color converted to the linear color space. This method assumes the original
-    /// color is in the sRGB color sp
+    /// color is in the sRGB color space. See also [`Color::linear_to_srgb`] which performs the
+    /// opposite operation.
+    #[must_use]
+    pub fn srgb_to_linear(self) -> Self {
+        self.as_inner().srgb_to_linear()
+    }
+
+    /// Returns the HTML color code representation of this color, as 8 lowercase hex digits in the
+    /// order `RRGGBBAA`, without the `#` prefix.
+    pub fn to_html(self) -> GodotString {
+        self.as_inner().to_html(true)
