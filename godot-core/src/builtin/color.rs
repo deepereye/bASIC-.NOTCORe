@@ -255,4 +255,13 @@ impl Color {
         self.as_inner().inverted()
     }
 
-    /// Returns the color converted to the [sRG
+    /// Returns the color converted to the [sRGB](https://en.wikipedia.org/wiki/SRGB) color space.
+    /// This method assumes the original color is in the linear color space. See also
+    /// [`Color::srgb_to_linear`] which performs the opposite operation.
+    #[must_use]
+    pub fn linear_to_srgb(self) -> Self {
+        self.as_inner().linear_to_srgb()
+    }
+
+    /// Returns the color converted to the linear color space. This method assumes the original
+    /// color is in the sRGB color sp
