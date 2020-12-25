@@ -242,4 +242,17 @@ impl Color {
     }
 
     /// Creates a new color resulting by making this color lighter by the specified amount, which
-    /// should be a 
+    /// should be a ratio from 0.0 to 1.0. See also [`darken`].
+    #[must_use]
+    pub fn lightened(self, amount: f64) -> Self {
+        self.as_inner().lightened(amount)
+    }
+
+    /// Returns the color with its `r`, `g`, and `b` components inverted:
+    /// `Color::from_rgba(1 - r, 1 - g, 1 - b, a)`.
+    #[must_use]
+    pub fn inverted(self) -> Self {
+        self.as_inner().inverted()
+    }
+
+    /// Returns the color converted to the [sRG
