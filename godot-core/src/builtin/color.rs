@@ -285,4 +285,14 @@ impl Color {
 
     /// Returns true if `self` and `to` are approximately equal, within the tolerance used by
     /// the global `is_equal_approx` function in GDScript.
-    pub f
+    pub fn is_equal_approx(self, to: Color) -> bool {
+        self.as_inner().is_equal_approx(to)
+    }
+
+    /// Returns the color converted to a 32-bit integer (each component is 8 bits) with the given
+    /// `order` of channels (from most to least significant byte).
+    pub fn to_u32(self, order: ColorChannelOrder) -> u32 {
+        u32::from_be_bytes(order.pack([to_u8(self.r), to_u8(self.g), to_u8(self.b), to_u8(self.a)]))
+    }
+
+    /// Returns th
