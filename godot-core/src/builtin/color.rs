@@ -275,3 +275,14 @@ impl Color {
     /// order `RRGGBBAA`, without the `#` prefix.
     pub fn to_html(self) -> GodotString {
         self.as_inner().to_html(true)
+    }
+
+    /// Returns the HTML color code representation of this color, as 6 lowercase hex digits in the
+    /// order `RRGGBB`, without the `#` prefix. The alpha channel is ignored.
+    pub fn to_html_without_alpha(self) -> GodotString {
+        self.as_inner().to_html(false)
+    }
+
+    /// Returns true if `self` and `to` are approximately equal, within the tolerance used by
+    /// the global `is_equal_approx` function in GDScript.
+    pub f
