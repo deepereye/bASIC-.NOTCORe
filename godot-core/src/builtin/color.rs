@@ -307,3 +307,23 @@ impl Color {
     }
 
     fn as_inner(&self) -> InnerColor {
+        InnerColor::from_outer(self)
+    }
+}
+
+impl GodotFfi for Color {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ColorChannelOrder {
+    /// RGBA channel order. Godot's default.
+    Rgba,
+    /// ABGR channel order. Reverse of the default RGBA order.
+    Abgr,
+    /// ARGB channel order. More compatible with DirectX.
+    Argb,
+}
+
+impl ColorChannelOrder {
+    fn pack<T>(self, 
