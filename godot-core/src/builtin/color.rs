@@ -295,4 +295,15 @@ impl Color {
         u32::from_be_bytes(order.pack([to_u8(self.r), to_u8(self.g), to_u8(self.b), to_u8(self.a)]))
     }
 
-    /// Returns th
+    /// Returns the color converted to a 64-bit integer (each component is 16 bits) with the given
+    /// `order` of channels (from most to least significant word).
+    pub fn to_u64(self, order: ColorChannelOrder) -> u64 {
+        from_be_words(order.pack([
+            to_u16(self.r),
+            to_u16(self.g),
+            to_u16(self.b),
+            to_u16(self.a),
+        ]))
+    }
+
+    fn as_inner(&self) -> InnerColor {
