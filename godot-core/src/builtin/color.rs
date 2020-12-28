@@ -326,4 +326,17 @@ pub enum ColorChannelOrder {
 }
 
 impl ColorChannelOrder {
-    fn pack<T>(self, 
+    fn pack<T>(self, rgba: [T; 4]) -> [T; 4] {
+        let [r, g, b, a] = rgba;
+        match self {
+            ColorChannelOrder::Rgba => [r, g, b, a],
+            ColorChannelOrder::Abgr => [a, b, g, r],
+            ColorChannelOrder::Argb => [a, r, g, b],
+        }
+    }
+
+    fn unpack<T>(self, xyzw: [T; 4]) -> [T; 4] {
+        let [x, y, z, w] = xyzw;
+        match self {
+            ColorChannelOrder::Rgba => [x, y, z, w],
+            ColorChannelOrder::Abgr => 
