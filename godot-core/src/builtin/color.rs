@@ -339,4 +339,27 @@ impl ColorChannelOrder {
         let [x, y, z, w] = xyzw;
         match self {
             ColorChannelOrder::Rgba => [x, y, z, w],
-            ColorChannelOrder::Abgr => 
+            ColorChannelOrder::Abgr => [w, z, y, x],
+            ColorChannelOrder::Argb => [y, z, w, x],
+        }
+    }
+}
+
+/// Constructs a default `Color` which is opaque black.
+impl Default for Color {
+    fn default() -> Self {
+        Self::BLACK
+    }
+}
+
+impl ops::Mul<Color> for Color {
+    type Output = Color;
+    fn mul(mut self, rhs: Color) -> Self::Output {
+        self *= rhs;
+        self
+    }
+}
+
+impl ops::MulAssign<Color> for Color {
+    fn mul_assign(&mut self, rhs: Color) {
+     
