@@ -386,4 +386,25 @@ impl ops::Mul<f32> for Color {
 }
 
 impl ops::MulAssign<f32> for Color {
-    fn mul_assign(&mut self, f: f32)
+    fn mul_assign(&mut self, f: f32) {
+        self.r *= f;
+        self.g *= f;
+        self.b *= f;
+        self.a *= f;
+    }
+}
+
+impl ops::Div<Color> for Color {
+    type Output = Color;
+    fn div(mut self, rhs: Color) -> Self::Output {
+        self /= rhs;
+        self
+    }
+}
+
+impl ops::DivAssign<Color> for Color {
+    fn div_assign(&mut self, rhs: Color) {
+        self.r /= rhs.r;
+        self.g /= rhs.g;
+        self.b /= rhs.b;
+        self.a /= rh
