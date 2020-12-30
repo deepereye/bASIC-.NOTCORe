@@ -407,4 +407,27 @@ impl ops::DivAssign<Color> for Color {
         self.r /= rhs.r;
         self.g /= rhs.g;
         self.b /= rhs.b;
-        self.a /= rh
+        self.a /= rhs.a;
+    }
+}
+
+impl ops::Add<Color> for Color {
+    type Output = Color;
+    fn add(mut self, rhs: Color) -> Self::Output {
+        self += rhs;
+        self
+    }
+}
+
+impl ops::AddAssign<Color> for Color {
+    fn add_assign(&mut self, rhs: Color) {
+        self.r += rhs.r;
+        self.g += rhs.g;
+        self.b += rhs.b;
+        self.a += rhs.a;
+    }
+}
+
+impl ops::Sub<Color> for Color {
+    type Output = Color;
+    fn sub(mut self, rhs: Color) -> Self::Outp
