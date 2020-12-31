@@ -430,4 +430,26 @@ impl ops::AddAssign<Color> for Color {
 
 impl ops::Sub<Color> for Color {
     type Output = Color;
-    fn sub(mut self, rhs: Color) -> Self::Outp
+    fn sub(mut self, rhs: Color) -> Self::Output {
+        self -= rhs;
+        self
+    }
+}
+
+impl ops::SubAssign<Color> for Color {
+    fn sub_assign(&mut self, rhs: Color) {
+        self.r -= rhs.r;
+        self.g -= rhs.g;
+        self.b -= rhs.b;
+        self.a -= rhs.a;
+    }
+}
+
+impl ops::Neg for Color {
+    type Output = Self;
+    fn neg(self) -> Self {
+        Self::from_rgba(-self.r, -self.g, -self.b, -self.a)
+    }
+}
+
+/// Converts a single channel byte to a float in the ra
