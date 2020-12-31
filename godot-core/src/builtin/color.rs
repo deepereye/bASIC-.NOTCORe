@@ -452,4 +452,19 @@ impl ops::Neg for Color {
     }
 }
 
-/// Converts a single channel byte to a float in the ra
+/// Converts a single channel byte to a float in the range 0 to 1.
+fn from_u8(byte: u8) -> f32 {
+    byte as f32 / 255.0
+}
+
+/// Converts a single channel `u16` word to a float in the range 0 to 1.
+fn from_u16(byte: u16) -> f32 {
+    byte as f32 / 65535.0
+}
+
+/// Converts a float in the range 0 to 1 to a byte. Matches rounding behavior of the engine.
+fn to_u8(v: f32) -> u8 {
+    // core/math/color.h:
+    // _FORCE_INLINE_ int32_t get_r8() const { return int32_t(CLAMP(Math::round(r * 255.0f), 0.0f, 255.0f)); }
+    const MAX: f32 = 255.0;
+   
