@@ -467,4 +467,17 @@ fn to_u8(v: f32) -> u8 {
     // core/math/color.h:
     // _FORCE_INLINE_ int32_t get_r8() const { return int32_t(CLAMP(Math::round(r * 255.0f), 0.0f, 255.0f)); }
     const MAX: f32 = 255.0;
-   
+    (v * MAX).round().clamp(0.0, MAX) as u8
+}
+
+/// Converts a float in the range 0 to 1 to a `u16` word. Matches rounding behavior of the engine.
+fn to_u16(v: f32) -> u16 {
+    // core/math/color.cpp:
+    // uint64_t c = (uint16_t)Math::round(a * 65535.0f);
+    // It does not clamp, but we do.
+    const MAX: f32 = 65535.0;
+    (v * MAX).round().clamp(0.0, MAX) as u16
+}
+
+/// Packs four `u16` words into a `u64` in big-endian order.
+fn from_be_words(word
