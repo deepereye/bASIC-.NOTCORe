@@ -12,4 +12,18 @@ use std::fmt;
 use std::marker::PhantomData;
 use std::ptr::addr_of_mut;
 use sys::types::OpaqueDictionary;
-use sys::{ffi_methods, interface_fn, Godo
+use sys::{ffi_methods, interface_fn, GodotFfi};
+
+use super::VariantArray;
+
+/// Godot's `Dictionary` type.
+///
+/// The keys and values of the dictionary are all `Variant`s, so they can be of different types.
+/// Variants are designed to be generally cheap to clone.
+///
+/// # Thread safety
+///
+/// The same principles apply as for [`VariantArray`]. Consult its documentation for details.
+#[repr(C)]
+pub struct Dictionary {
+    opaque: OpaqueDi
