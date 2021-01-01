@@ -480,4 +480,18 @@ fn to_u16(v: f32) -> u16 {
 }
 
 /// Packs four `u16` words into a `u64` in big-endian order.
-fn from_be_words(word
+fn from_be_words(words: [u16; 4]) -> u64 {
+    (words[0] as u64) << 48 | (words[1] as u64) << 32 | (words[2] as u64) << 16 | (words[3] as u64)
+}
+
+/// Unpacks a `u64` into four `u16` words in big-endian order.
+fn to_be_words(mut u: u64) -> [u16; 4] {
+    let w = (u & 0xffff) as u16;
+    u >>= 16;
+    let z = (u & 0xffff) as u16;
+    u >>= 16;
+    let y = (u & 0xffff) as u16;
+    u >>= 16;
+    let x = (u & 0xffff) as u16;
+    [x, y, z, w]
+}
