@@ -53,4 +53,12 @@ impl Dictionary {
     ///
     /// _Godot equivalent: `dict.duplicate(true)`_
     pub fn duplicate_deep(&self) -> Self {
-        self.as_i
+        self.as_inner().duplicate(true)
+    }
+
+    /// Returns a shallow copy of the dictionary. All dictionary keys and values are copied, but
+    /// any reference types (such as `Array`, `Dictionary` and `Object`) will still refer to the
+    /// same value.
+    ///
+    /// To create a deep copy, use [`Self::duplicate_deep`] instead. To create a new reference to the
+    /// same dictionary data, use [`Share::sha
