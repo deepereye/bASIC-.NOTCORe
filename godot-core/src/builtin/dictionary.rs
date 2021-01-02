@@ -26,4 +26,22 @@ use super::VariantArray;
 /// The same principles apply as for [`VariantArray`]. Consult its documentation for details.
 #[repr(C)]
 pub struct Dictionary {
-    opaque: OpaqueDi
+    opaque: OpaqueDictionary,
+}
+
+impl Dictionary {
+    fn from_opaque(opaque: OpaqueDictionary) -> Self {
+        Self { opaque }
+    }
+
+    /// Constructs an empty `Dictionary`.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Removes all key-value pairs from the dictionary.
+    pub fn clear(&mut self) {
+        self.as_inner().clear()
+    }
+
+    /// Returns a deep copy of the dictionary. All nested arrays and dictionaries are dupl
