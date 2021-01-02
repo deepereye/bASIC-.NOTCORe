@@ -44,4 +44,13 @@ impl Dictionary {
         self.as_inner().clear()
     }
 
-    /// Returns a deep copy of the dictionary. All nested arrays and dictionaries are dupl
+    /// Returns a deep copy of the dictionary. All nested arrays and dictionaries are duplicated and
+    /// will not be shared with the original dictionary. Note that any `Object`-derived elements will
+    /// still be shallow copied.
+    ///
+    /// To create a shallow copy, use [`Self::duplicate_shallow`] instead. To create a new reference to
+    /// the same array data, use [`Share::share`].
+    ///
+    /// _Godot equivalent: `dict.duplicate(true)`_
+    pub fn duplicate_deep(&self) -> Self {
+        self.as_i
