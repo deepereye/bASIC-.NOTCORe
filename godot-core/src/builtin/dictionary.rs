@@ -98,4 +98,16 @@ impl Dictionary {
     }
 
     /// Returns the value for the given key, or `None`.
-    /
+    ///
+    /// Note that `NIL` values are returned as `Some(Variant::nil())`, while absent values are returned as `None`.
+    /// If you want to treat both as `NIL`, use [`Self::get_or_nil`].
+    pub fn get<K: ToVariant>(&self, key: K) -> Option<Variant> {
+        let key = key.to_variant();
+        if !self.contains_key(key.clone()) {
+            return None;
+        }
+
+        Some(self.get_or_nil(key))
+    }
+
+    /// Ret
