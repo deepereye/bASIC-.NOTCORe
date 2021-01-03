@@ -74,4 +74,14 @@ impl Dictionary {
     /// _Godot equivalent: `erase`_
     pub fn remove<K: ToVariant>(&mut self, key: K) -> Option<Variant> {
         let key = key.to_variant();
-        let old_
+        let old_value = self.get(key.clone());
+        self.as_inner().erase(key);
+        old_value
+    }
+
+    /// Reverse-search a key by its value.
+    ///
+    /// Unlike Godot, this will return `None` if the key does not exist and `Some(Variant::nil())` the key is `NIL`.
+    ///
+    /// This operation is rarely needed and very inefficient. If you find yourself needing it a lot, consider
+    /// using a `HashMap` or `Dictionary` with the in
