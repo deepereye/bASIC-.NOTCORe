@@ -61,4 +61,17 @@ impl Dictionary {
     /// same value.
     ///
     /// To create a deep copy, use [`Self::duplicate_deep`] instead. To create a new reference to the
-    /// same dictionary data, use [`Share::sha
+    /// same dictionary data, use [`Share::share`].
+    ///
+    /// _Godot equivalent: `dict.duplicate(false)`_
+    pub fn duplicate_shallow(&self) -> Self {
+        self.as_inner().duplicate(false)
+    }
+
+    /// Removes a key from the map, and returns the value associated with
+    /// the key if the key was in the dictionary.
+    ///
+    /// _Godot equivalent: `erase`_
+    pub fn remove<K: ToVariant>(&mut self, key: K) -> Option<Variant> {
+        let key = key.to_variant();
+        let old_
