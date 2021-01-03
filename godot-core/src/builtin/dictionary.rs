@@ -84,4 +84,18 @@ impl Dictionary {
     /// Unlike Godot, this will return `None` if the key does not exist and `Some(Variant::nil())` the key is `NIL`.
     ///
     /// This operation is rarely needed and very inefficient. If you find yourself needing it a lot, consider
-    /// using a `HashMap` or `Dictionary` with the in
+    /// using a `HashMap` or `Dictionary` with the inverse mapping (`V` -> `K`).
+    ///
+    /// _Godot equivalent: `find_key`_
+    pub fn find_key_by_value<V: ToVariant>(&self, value: V) -> Option<Variant> {
+        let key = self.as_inner().find_key(value.to_variant());
+
+        if !key.is_nil() || self.contains_key(key.clone()) {
+            Some(key)
+        } else {
+            None
+        }
+    }
+
+    /// Returns the value for the given key, or `None`.
+    /
