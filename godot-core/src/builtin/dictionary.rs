@@ -110,4 +110,14 @@ impl Dictionary {
         Some(self.get_or_nil(key))
     }
 
-    /// Ret
+    /// Returns the value at the key in the dictionary, or `NIL` otherwise.
+    ///
+    /// This method does not let you differentiate `NIL` values stored as values from absent keys.
+    /// If you need that, use [`Self::get`].
+    ///
+    /// _Godot equivalent: `dict.get(key, null)`_
+    pub fn get_or_nil<K: ToVariant>(&self, key: K) -> Variant {
+        self.as_inner().get(key.to_variant(), Variant::nil())
+    }
+
+    /// Returns `true` if the dicti
