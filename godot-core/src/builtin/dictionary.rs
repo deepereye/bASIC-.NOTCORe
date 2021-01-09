@@ -120,4 +120,19 @@ impl Dictionary {
         self.as_inner().get(key.to_variant(), Variant::nil())
     }
 
-    /// Returns `true` if the dicti
+    /// Returns `true` if the dictionary contains the given key.
+    ///
+    /// _Godot equivalent: `has`_
+    pub fn contains_key<K: ToVariant>(&self, key: K) -> bool {
+        let key = key.to_variant();
+        self.as_inner().has(key)
+    }
+
+    /// Returns `true` if the dictionary contains all the given keys.
+    ///
+    /// _Godot equivalent: `has_all`_
+    pub fn contains_all_keys(&self, keys: VariantArray) -> bool {
+        self.as_inner().has_all(keys)
+    }
+
+    /// 
