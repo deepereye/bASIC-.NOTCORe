@@ -147,4 +147,18 @@ impl Dictionary {
         self.as_inner().keys()
     }
 
-    /// Creates a new `Array` containing all t
+    /// Creates a new `Array` containing all the values currently in the dictionary.
+    ///
+    /// _Godot equivalent: `values`_
+    pub fn values_array(&self) -> VariantArray {
+        self.as_inner().values()
+    }
+
+    /// Returns true if the dictionary is empty.
+    pub fn is_empty(&self) -> bool {
+        self.as_inner().is_empty()
+    }
+
+    /// Copies all keys and values from `other` into `self`.
+    ///
+    /// If `overwrite` is true, it will overwrite pre-existing keys.
