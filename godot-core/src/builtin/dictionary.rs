@@ -162,3 +162,17 @@ impl Dictionary {
     /// Copies all keys and values from `other` into `self`.
     ///
     /// If `overwrite` is true, it will overwrite pre-existing keys.
+    ///
+    /// _Godot equivalent: `merge`_
+    pub fn extend_dictionary(&mut self, other: Self, overwrite: bool) {
+        self.as_inner().merge(other, overwrite)
+    }
+
+    /// Returns the number of entries in the dictionary.
+    ///
+    /// This is equivalent to `size` in Godot.
+    pub fn len(&self) -> usize {
+        self.as_inner().size().try_into().unwrap()
+    }
+
+    /// Insert a value at the given key, returning the previous value for th
