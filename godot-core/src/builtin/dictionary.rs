@@ -135,4 +135,16 @@ impl Dictionary {
         self.as_inner().has_all(keys)
     }
 
-    /// 
+    /// Returns a 32-bit integer hash value representing the dictionary and its contents.
+    pub fn hash(&self) -> u32 {
+        self.as_inner().hash().try_into().unwrap()
+    }
+
+    /// Creates a new `Array` containing all the keys currently in the dictionary.
+    ///
+    /// _Godot equivalent: `keys`_
+    pub fn keys_array(&self) -> VariantArray {
+        self.as_inner().keys()
+    }
+
+    /// Creates a new `Array` containing all t
