@@ -187,4 +187,15 @@ impl Dictionary {
 
     /// Set a key to a given value.
     ///
-    /// If you are interested in the previous value, use [`S
+    /// If you are interested in the previous value, use [`Self::insert`] instead.
+    ///
+    /// _Godot equivalent: `dict[key] = value`_
+    pub fn set<K: ToVariant, V: ToVariant>(&mut self, key: K, value: V) {
+        let key = key.to_variant();
+        unsafe {
+            *self.get_ptr_mut(key) = value.to_variant();
+        }
+    }
+
+    /// Returns an iterator over the key-value pairs of the `Dictionary`. The pairs are each of type `(Variant, Variant)`.
+    /// Each pair references the original `Diction
