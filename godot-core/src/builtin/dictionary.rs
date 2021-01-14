@@ -175,4 +175,16 @@ impl Dictionary {
         self.as_inner().size().try_into().unwrap()
     }
 
-    /// Insert a value at the given key, returning the previous value for th
+    /// Insert a value at the given key, returning the previous value for that key (if available).
+    ///
+    /// If you don't need the previous value, use [`Self::set`] instead.
+    pub fn insert<K: ToVariant, V: ToVariant>(&mut self, key: K, value: V) -> Option<Variant> {
+        let key = key.to_variant();
+        let old_value = self.get(key.clone());
+        self.set(key, value);
+        old_value
+    }
+
+    /// Set a key to a given value.
+    ///
+    /// If you are interested in the previous value, use [`S
