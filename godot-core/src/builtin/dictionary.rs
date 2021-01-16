@@ -198,4 +198,11 @@ impl Dictionary {
     }
 
     /// Returns an iterator over the key-value pairs of the `Dictionary`. The pairs are each of type `(Variant, Variant)`.
-    /// Each pair references the original `Diction
+    /// Each pair references the original `Dictionary`, but instead of a `&`-reference to key-value pairs as
+    /// you might expect, the iterator returns a (cheap, shallow) copy of each key-value pair.
+    ///
+    /// Note that it's possible to modify the `Dictionary` through another reference while iterating
+    /// over it. This will not result in unsoundness or crashes, but will cause the iterator to
+    /// behave in an unspecified way.
+    pub fn iter_shared(&self) -> Iter<'_> {
+        It
