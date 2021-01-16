@@ -213,4 +213,17 @@ impl Dictionary {
     /// iterator returns a (cheap, shallow) copy of each key pair.
     ///
     /// Note that it's possible to modify the `Dictionary` through another reference while iterating
-    /// 
+    /// over it. This will not result in unsoundness or crashes, but will cause the iterator to
+    /// behave in an unspecified way.
+    pub fn keys_shared(&self) -> Keys<'_> {
+        Keys::new(self)
+    }
+
+    #[doc(hidden)]
+    pub fn as_inner(&self) -> inner::InnerDictionary {
+        inner::InnerDictionary::from_outer(self)
+    }
+
+    /// Get the pointer corresponding to the given key in the dictionary.
+    ///
+    /// If there exists n
