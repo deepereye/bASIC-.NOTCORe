@@ -205,4 +205,12 @@ impl Dictionary {
     /// over it. This will not result in unsoundness or crashes, but will cause the iterator to
     /// behave in an unspecified way.
     pub fn iter_shared(&self) -> Iter<'_> {
-        It
+        Iter::new(self)
+    }
+
+    /// Returns an iterator over the keys `Dictionary`. The keys are each of type `Variant`. Each key references
+    /// the original `Dictionary`, but instead of a `&`-reference to keys pairs as you might expect, the
+    /// iterator returns a (cheap, shallow) copy of each key pair.
+    ///
+    /// Note that it's possible to modify the `Dictionary` through another reference while iterating
+    /// 
