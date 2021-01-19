@@ -226,4 +226,14 @@ impl Dictionary {
 
     /// Get the pointer corresponding to the given key in the dictionary.
     ///
-    /// If there exists n
+    /// If there exists no value at the given key, a `NIL` variant will be created.
+    fn get_ptr_mut<K: ToVariant>(&mut self, key: K) -> *mut Variant {
+        let key = key.to_variant();
+        let ptr = unsafe {
+            interface_fn!(dictionary_operator_index)(self.sys_mut(), key.var_sys_const())
+        };
+        Variant::ptr_from_sys_mut(ptr)
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------------
