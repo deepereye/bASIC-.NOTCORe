@@ -236,4 +236,19 @@ impl Dictionary {
     }
 }
 
-// ----------------------------------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+// Traits
+
+impl GodotFfi for Dictionary {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Opaque; .. }
+
+    unsafe fn from_sys_init_default(init_fn: impl FnOnce(sys::GDExtensionTypePtr)) -> Self {
+        let mut result = Self::default();
+        init_fn(result.sys_mut());
+        result
+    }
+}
+
+impl_builtin_traits! {
+    for Dictionary {
+        Default => dictionary_construct_default;
