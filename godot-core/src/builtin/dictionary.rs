@@ -266,4 +266,18 @@ impl fmt::Debug for Dictionary {
 /// Creates a new reference to the data in this dictionary. Changes to the original dictionary will be
 /// reflected in the copy and vice versa.
 ///
-/// To create a (mostly) indepen
+/// To create a (mostly) independent copy instead, see [`Dictionary::duplicate_shallow()`] and
+/// [`Dictionary::duplicate_deep()`].
+impl Share for Dictionary {
+    fn share(&self) -> Self {
+        unsafe {
+            Self::from_sys_init(|self_ptr| {
+                let ctor = sys::builtin_fn!(dictionary_construct_copy);
+                let args = [self.sys_const()];
+                ctor(self_ptr, args.as_ptr());
+            })
+        }
+    }
+}
+
+// -------------------
