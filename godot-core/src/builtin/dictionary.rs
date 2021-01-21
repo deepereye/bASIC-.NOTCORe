@@ -280,4 +280,16 @@ impl Share for Dictionary {
     }
 }
 
-// -------------------
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+// Conversion traits
+
+/// Creates a dictionary from the given iterator `I` over a `(&K, &V)` key-value pair.
+///
+/// Each key and value are converted to a `Variant`.
+impl<'a, 'b, K, V, I> From<I> for Dictionary
+where
+    I: IntoIterator<Item = (&'a K, &'b V)>,
+    K: ToVariant + 'a,
+    V: ToVariant + 'b,
+{
+    fn f
