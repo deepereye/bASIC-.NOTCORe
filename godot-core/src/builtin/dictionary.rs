@@ -252,3 +252,18 @@ impl GodotFfi for Dictionary {
 impl_builtin_traits! {
     for Dictionary {
         Default => dictionary_construct_default;
+        Drop => dictionary_destroy;
+        PartialEq => dictionary_operator_equal;
+    }
+}
+
+impl fmt::Debug for Dictionary {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self.to_variant().stringify())
+    }
+}
+
+/// Creates a new reference to the data in this dictionary. Changes to the original dictionary will be
+/// reflected in the copy and vice versa.
+///
+/// To create a (mostly) indepen
