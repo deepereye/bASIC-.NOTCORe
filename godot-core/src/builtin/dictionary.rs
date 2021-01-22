@@ -304,4 +304,16 @@ where
 ///
 /// Inserts all key-value pairs from the iterator into the dictionary. Previous values for keys appearing
 /// in `iter` will be overwritten.
-impl<K: ToVariant, V: ToVariant> Exten
+impl<K: ToVariant, V: ToVariant> Extend<(K, V)> for Dictionary {
+    fn extend<I: IntoIterator<Item = (K, V)>>(&mut self, iter: I) {
+        for (k, v) in iter.into_iter() {
+            self.set(k.to_variant(), v.to_variant())
+        }
+    }
+}
+
+impl<K: ToVariant, V: ToVariant> FromIterator<(K, V)> for Dictionary {
+    fn from_iter<I: IntoIterator<Item = (K, V)>>(iter: I) -> Self {
+        let mut dict = Dictionary::new();
+        dict.extend(iter);
+ 
