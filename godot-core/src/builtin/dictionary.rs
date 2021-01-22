@@ -332,4 +332,22 @@ struct DictionaryIter<'a> {
 impl<'a> DictionaryIter<'a> {
     fn new(dictionary: &'a Dictionary) -> Self {
         Self {
-           
+            last_key: None,
+            dictionary,
+            is_first: true,
+        }
+    }
+
+    fn next_key(&mut self) -> Option<Variant> {
+        let new_key = if self.is_first {
+            self.is_first = false;
+            Self::call_init(self.dictionary)
+        } else {
+            Self::call_next(self.dictionary, self.last_key.take()?)
+        };
+
+        self.last_key = new_key.clone();
+        new_key
+    }
+
+    fn next_key_va
