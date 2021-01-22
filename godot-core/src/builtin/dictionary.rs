@@ -316,4 +316,20 @@ impl<K: ToVariant, V: ToVariant> FromIterator<(K, V)> for Dictionary {
     fn from_iter<I: IntoIterator<Item = (K, V)>>(iter: I) -> Self {
         let mut dict = Dictionary::new();
         dict.extend(iter);
- 
+        dict
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+/// Internal helper for different iterator impls -- not an iterator itself
+struct DictionaryIter<'a> {
+    last_key: Option<Variant>,
+    dictionary: &'a Dictionary,
+    is_first: bool,
+}
+
+impl<'a> DictionaryIter<'a> {
+    fn new(dictionary: &'a Dictionary) -> Self {
+        Self {
+           
