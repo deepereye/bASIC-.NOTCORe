@@ -292,4 +292,16 @@ where
     K: ToVariant + 'a,
     V: ToVariant + 'b,
 {
-    fn f
+    fn from(iterable: I) -> Self {
+        iterable
+            .into_iter()
+            .map(|(key, value)| (key.to_variant(), value.to_variant()))
+            .collect()
+    }
+}
+
+/// Insert iterator range into dictionary.
+///
+/// Inserts all key-value pairs from the iterator into the dictionary. Previous values for keys appearing
+/// in `iter` will be overwritten.
+impl<K: ToVariant, V: ToVariant> Exten
