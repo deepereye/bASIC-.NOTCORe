@@ -371,4 +371,13 @@ impl<'a> DictionaryIter<'a> {
 
     fn call_next(dictionary: &Dictionary, last_key: Variant) -> Option<Variant> {
         // SAFETY:
-        // `dictionary` is a valid `Dictionary` s
+        // `dictionary` is a valid `Dictionary` since we have a reference to it,
+        //    so this will call the implementation for dictionaries.
+        // `last_key` is an initialized and valid `Variant`, since we own a copy of it.
+        unsafe { Self::ffi_iterate(interface_fn!(variant_iter_next), dictionary, last_key) }
+    }
+
+    /// Calls the provided Godot FFI function, in order to iterate the current state.
+    ///
+    /// # Safety:
+    /// `iter_fn` must point to a valid funct
