@@ -350,4 +350,16 @@ impl<'a> DictionaryIter<'a> {
         new_key
     }
 
-    fn next_key_va
+    fn next_key_value(&mut self) -> Option<(Variant, Variant)> {
+        let key = self.next_key()?;
+        if !self.dictionary.contains_key(key.clone()) {
+            return None;
+        }
+
+        let value = self.dictionary.as_inner().get(key.clone(), Variant::nil());
+        Some((key, value))
+    }
+
+    fn call_init(dictionary: &Dictionary) -> Option<Variant> {
+        // SAFETY:
+        // `dictionary` is a valid `Dictionary` since we have a refer
