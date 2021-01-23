@@ -362,4 +362,13 @@ impl<'a> DictionaryIter<'a> {
 
     fn call_init(dictionary: &Dictionary) -> Option<Variant> {
         // SAFETY:
-        // `dictionary` is a valid `Dictionary` since we have a refer
+        // `dictionary` is a valid `Dictionary` since we have a reference to it,
+        //    so this will call the implementation for dictionaries.
+        // `variant` is an initialized and valid `Variant`.
+        let variant: Variant = Variant::nil();
+        unsafe { Self::ffi_iterate(interface_fn!(variant_iter_init), dictionary, variant) }
+    }
+
+    fn call_next(dictionary: &Dictionary, last_key: Variant) -> Option<Variant> {
+        // SAFETY:
+        // `dictionary` is a valid `Dictionary` s
