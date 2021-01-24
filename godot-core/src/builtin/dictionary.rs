@@ -410,4 +410,16 @@ impl<'a> DictionaryIter<'a> {
     }
 }
 
-// ---------------
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+/// An iterator over key-value pairs from a `Dictionary`.
+///
+/// See [Dictionary::iter_shared()] for more information about iteration over dictionaries.
+pub struct Iter<'a> {
+    iter: DictionaryIter<'a>,
+}
+
+impl<'a> Iter<'a> {
+    fn new(dictionary: &'a Dictionary) -> Self {
+        Self {
+            it
