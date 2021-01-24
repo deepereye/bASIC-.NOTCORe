@@ -380,4 +380,14 @@ impl<'a> DictionaryIter<'a> {
     /// Calls the provided Godot FFI function, in order to iterate the current state.
     ///
     /// # Safety:
-    /// `iter_fn` must point to a valid funct
+    /// `iter_fn` must point to a valid function that interprets the parameters according to their type specification.
+    unsafe fn ffi_iterate(
+        iter_fn: unsafe extern "C" fn(
+            sys::GDExtensionConstVariantPtr,
+            sys::GDExtensionVariantPtr,
+            *mut sys::GDExtensionBool,
+        ) -> sys::GDExtensionBool,
+        dictionary: &Dictionary,
+        next_value: Variant,
+    ) -> Option<Variant> {
+        let dictionary = dicti
