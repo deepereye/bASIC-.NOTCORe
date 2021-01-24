@@ -390,4 +390,24 @@ impl<'a> DictionaryIter<'a> {
         dictionary: &Dictionary,
         next_value: Variant,
     ) -> Option<Variant> {
-        let dictionary = dicti
+        let dictionary = dictionary.to_variant();
+        let mut valid: u8 = 0;
+
+        let has_next = iter_fn(
+            dictionary.var_sys(),
+            next_value.var_sys(),
+            addr_of_mut!(valid),
+        );
+        let valid = super::u8_to_bool(valid);
+        let has_next = super::u8_to_bool(has_next);
+
+        if has_next {
+            assert!(valid);
+            Some(next_value)
+        } else {
+            None
+        }
+    }
+}
+
+// ---------------
