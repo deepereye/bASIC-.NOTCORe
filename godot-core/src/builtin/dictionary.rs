@@ -422,4 +422,18 @@ pub struct Iter<'a> {
 impl<'a> Iter<'a> {
     fn new(dictionary: &'a Dictionary) -> Self {
         Self {
-            it
+            iter: DictionaryIter::new(dictionary),
+        }
+    }
+
+    /// Creates an iterator that converts each `(Variant, Variant)` key-value pair into a `(K, V)` key-value
+    /// pair, panicking upon conversion failure.
+    pub fn typed<K: FromVariant, V: FromVariant>(self) -> TypedIter<'a, K, V> {
+        TypedIter::from_untyped(self)
+    }
+}
+
+impl<'a> Iterator for Iter<'a> {
+    type Item = (Variant, Variant);
+
+    fn next(&mut self) -> Opti
