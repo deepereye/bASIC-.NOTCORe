@@ -451,4 +451,17 @@ pub struct Keys<'a> {
 }
 
 impl<'a> Keys<'a> {
-    fn new(dictionary:
+    fn new(dictionary: &'a Dictionary) -> Self {
+        Self {
+            iter: DictionaryIter::new(dictionary),
+        }
+    }
+
+    /// Creates an iterator that will convert each `Variant` key into a key of type `K`,
+    /// panicking upon failure to convert.
+    pub fn typed<K: FromVariant>(self) -> TypedKeys<'a, K> {
+        TypedKeys::from_untyped(self)
+    }
+
+    /// Returns an array of the keys
+    pub fn array(self
