@@ -436,4 +436,19 @@ impl<'a> Iter<'a> {
 impl<'a> Iterator for Iter<'a> {
     type Item = (Variant, Variant);
 
-    fn next(&mut self) -> Opti
+    fn next(&mut self) -> Option<Self::Item> {
+        self.iter.next_key_value()
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+/// An iterator over keys from a `Dictionary`.
+///
+/// See [Dictionary::keys_shared()] for more information about iteration over dictionaries.
+pub struct Keys<'a> {
+    iter: DictionaryIter<'a>,
+}
+
+impl<'a> Keys<'a> {
+    fn new(dictionary:
