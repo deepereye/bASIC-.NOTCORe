@@ -464,4 +464,21 @@ impl<'a> Keys<'a> {
     }
 
     /// Returns an array of the keys
-    pub fn array(self
+    pub fn array(self) -> VariantArray {
+        // Can only be called
+        assert!(self.iter.is_first);
+        self.iter.dictionary.keys_array()
+    }
+}
+
+impl<'a> Iterator for Keys<'a> {
+    type Item = Variant;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.iter.next_key()
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+/// An
