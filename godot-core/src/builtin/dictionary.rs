@@ -481,4 +481,16 @@ impl<'a> Iterator for Keys<'a> {
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------
 
-/// An
+/// An iterator over key-value pairs from a `Dictionary` that will attempt to convert each
+/// key-value pair into a typed `(K, V)`.
+///
+/// See [Dictionary::iter_shared()] for more information about iteration over dictionaries.
+pub struct TypedIter<'a, K, V> {
+    iter: DictionaryIter<'a>,
+    _k: PhantomData<K>,
+    _v: PhantomData<V>,
+}
+
+impl<'a, K, V> TypedIter<'a, K, V> {
+    fn from_untyped(value: Iter<'a>) -> Self {
+        Self {
