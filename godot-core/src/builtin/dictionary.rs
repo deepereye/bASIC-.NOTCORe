@@ -494,3 +494,21 @@ pub struct TypedIter<'a, K, V> {
 impl<'a, K, V> TypedIter<'a, K, V> {
     fn from_untyped(value: Iter<'a>) -> Self {
         Self {
+            iter: value.iter,
+            _k: PhantomData,
+            _v: PhantomData,
+        }
+    }
+}
+
+impl<'a, K: FromVariant, V: FromVariant> Iterator for TypedIter<'a, K, V> {
+    type Item = (K, V);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.iter
+            .next_key_value()
+            .map(|(key, value)| (K::from_variant(&key), V::from_variant(&value)))
+    }
+}
+
+// --------------------------
