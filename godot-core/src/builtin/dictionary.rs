@@ -511,4 +511,15 @@ impl<'a, K: FromVariant, V: FromVariant> Iterator for TypedIter<'a, K, V> {
     }
 }
 
-// --------------------------
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+/// An iterator over keys from a `Dictionary` that will attempt to convert each key into a `K`.
+///
+/// See [Dictionary::iter_shared()] for more information about iteration over dictionaries.
+pub struct TypedKeys<'a, K> {
+    iter: DictionaryIter<'a>,
+    _k: PhantomData<K>,
+}
+
+impl<'a, K> TypedKeys<'a, K> {
+    fn from_untyped(value: Key
