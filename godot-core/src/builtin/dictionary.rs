@@ -559,4 +559,16 @@ impl<'a, K: FromVariant> Iterator for TypedKeys<'a, K> {
 /// ```
 #[macro_export]
 macro_rules! dict {
-    
+    ($($key:tt: $value:expr),* $(,)?) => {
+        {
+            let mut d = $crate::builtin::Dictionary::new();
+            $(
+                // `cargo check` complains that `(1 + 2): true` has unused parens, even though it's not
+                // possible to omit the parens.
+                #[allow(unused_parens)]
+                d.set($key, $value);
+            )*
+            d
+        }
+    };
+}
