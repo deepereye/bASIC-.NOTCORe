@@ -540,4 +540,23 @@ impl<'a, K: FromVariant> Iterator for TypedKeys<'a, K> {
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------
 
-/// Constr
+/// Constructs [`Dictionary`] literals, close to Godot's own syntax.
+///
+/// Any value can be used as a key, but to use an expression you need to surround it
+/// in `()` or `{}`.
+///
+/// Example:
+/// ```no_run
+/// use godot::builtin::{dict, Variant};
+///
+/// let key = "my_key";
+/// let d = dict! {
+///     "key1": 10,
+///     "another": Variant::nil(),
+///     key: true,
+///     (1 + 2): "final",
+/// };
+/// ```
+#[macro_export]
+macro_rules! dict {
+    
