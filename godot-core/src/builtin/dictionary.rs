@@ -522,4 +522,22 @@ pub struct TypedKeys<'a, K> {
 }
 
 impl<'a, K> TypedKeys<'a, K> {
-    fn from_untyped(value: Key
+    fn from_untyped(value: Keys<'a>) -> Self {
+        Self {
+            iter: value.iter,
+            _k: PhantomData,
+        }
+    }
+}
+
+impl<'a, K: FromVariant> Iterator for TypedKeys<'a, K> {
+    type Item = K;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.iter.next_key().map(|k| K::from_variant(&k))
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+/// Constr
