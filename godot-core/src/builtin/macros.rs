@@ -34,4 +34,18 @@ macro_rules! impl_builtin_traits_inner {
             fn clone(&self) -> Self {
                 unsafe {
                     Self::from_sys_init_default(|self_ptr| {
-                        let ctor = ::godot_ffi::builti
+                        let ctor = ::godot_ffi::builtin_fn!($gd_method);
+                        let args = [self.sys_const()];
+                        ctor(self_ptr, args.as_ptr());
+                    })
+                }
+            }
+        }
+    };
+
+    ( Drop for $Type:ty => $gd_method:ident ) => {
+        impl Drop for $Type {
+            #[inline]
+            fn drop(&mut self) {
+                unsafe {
+                    let destructor = ::godot_ffi::builtin_fn!($
