@@ -19,4 +19,19 @@ macro_rules! impl_builtin_traits_inner {
                 unsafe {
                     let self_ptr = (*uninit.as_mut_ptr()).sys_mut();
                     sys::builtin_call! {
-                        $g
+                        $gd_method(self_ptr, std::ptr::null_mut())
+                    };
+
+                    uninit.assume_init()
+                }
+            }
+        }
+    };
+
+    ( Clone for $Type:ty => $gd_method:ident ) => {
+        impl Clone for $Type {
+            #[inline]
+            fn clone(&self) -> Self {
+                unsafe {
+                    Self::from_sys_init_default(|self_ptr| {
+                        let ctor = ::godot_ffi::builti
