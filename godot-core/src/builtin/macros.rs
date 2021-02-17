@@ -77,4 +77,14 @@ macro_rules! impl_builtin_traits_inner {
 
     ( PartialOrd for $Type:ty => $gd_method:ident ) => {
         impl PartialOrd for $Type {
-    
+            #[inline]
+            fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+                let op_less = |lhs, rhs| unsafe {
+                    let mut result = false;
+                    ::godot_ffi::builtin_call! {
+                        $gd_method(lhs, rhs, result.sys_mut())
+                    };
+                    result
+                };
+
+                if op_less(self.sys(), other.sy
