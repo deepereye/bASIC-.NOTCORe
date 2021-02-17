@@ -62,4 +62,19 @@ macro_rules! impl_builtin_traits_inner {
                 unsafe {
                     let mut result = false;
                     ::godot_ffi::builtin_call! {
-     
+                        $gd_method(self.sys(), other.sys(), result.sys_mut())
+                    };
+                    result
+                }
+            }
+        }
+    };
+
+    ( Eq for $Type:ty => $gd_method:ident ) => {
+        impl_builtin_traits_inner!(PartialEq for $Type => $gd_method);
+        impl Eq for $Type {}
+    };
+
+    ( PartialOrd for $Type:ty => $gd_method:ident ) => {
+        impl PartialOrd for $Type {
+    
