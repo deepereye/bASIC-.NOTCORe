@@ -101,4 +101,14 @@ macro_rules! impl_builtin_traits_inner {
     ( Ord for $Type:ty => $gd_method:ident ) => {
         impl_builtin_traits_inner!(PartialOrd for $Type => $gd_method);
         impl Ord for $Type {
-            #[inline
+            #[inline]
+            fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+                PartialOrd::partial_cmp(self, other).expect("PartialOrd::partial_cmp")
+            }
+        }
+    };
+
+    // TODO remove; use godot-core/src/builtin/variant/impls.rs instead (this one is only used for Callable)
+    ( FromVariant for $Type:ty => $gd_method:ident ) => {
+        impl $crate::builtin::variant::FromVariant for $Type {
+            fn try_from_variant(varia
