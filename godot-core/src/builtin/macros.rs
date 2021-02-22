@@ -87,4 +87,18 @@ macro_rules! impl_builtin_traits_inner {
                     result
                 };
 
-                if op_less(self.sys(), other.sy
+                if op_less(self.sys(), other.sys()) {
+                    Some(std::cmp::Ordering::Less)
+                } else if op_less(other.sys(), self.sys()) {
+                    Some(std::cmp::Ordering::Greater)
+                } else {
+                    Some(std::cmp::Ordering::Equal)
+                }
+            }
+        }
+    };
+
+    ( Ord for $Type:ty => $gd_method:ident ) => {
+        impl_builtin_traits_inner!(PartialOrd for $Type => $gd_method);
+        impl Ord for $Type {
+            #[inline
