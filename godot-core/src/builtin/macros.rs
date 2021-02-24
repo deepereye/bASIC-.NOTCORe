@@ -116,4 +116,23 @@ macro_rules! impl_builtin_traits_inner {
                     return Err($crate::builtin::variant::VariantConversionError)
                 }
                 let result = unsafe {
-                    Self::from_sys_init_default(|s
+                    Self::from_sys_init_default(|self_ptr| {
+                        let converter = sys::builtin_fn!($gd_method);
+                        converter(self_ptr, variant.var_sys());
+                    })
+                };
+
+                Ok(result)
+            }
+        }
+    };
+}
+
+macro_rules! impl_builtin_traits {
+    (
+        for $Type:ty {
+            $( $Trait:ident => $gd_method:ident; )*
+        }
+    ) => (
+        $(
+            impl_builtin_traits_in
