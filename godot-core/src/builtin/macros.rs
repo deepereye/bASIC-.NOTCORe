@@ -135,4 +135,21 @@ macro_rules! impl_builtin_traits {
         }
     ) => (
         $(
-            impl_builtin_traits_in
+            impl_builtin_traits_inner! {
+                $Trait for $Type => $gd_method
+            }
+        )*
+    )
+}
+
+macro_rules! impl_builtin_stub {
+    // ($Class:ident, $OpaqueTy:ident $( ; )? $( $Traits:ident ),* ) => {
+    ($Class:ident, $OpaqueTy:ident) => {
+        #[repr(C)]
+        // #[derive(Copy, Clone)]
+        pub struct $Class {
+            opaque: sys::types::$OpaqueTy,
+        }
+
+        impl $Class {
+            fn from_opaque(opaque: sys::types::$OpaqueTy) -> Self {
