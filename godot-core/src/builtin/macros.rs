@@ -153,3 +153,19 @@ macro_rules! impl_builtin_stub {
 
         impl $Class {
             fn from_opaque(opaque: sys::types::$OpaqueTy) -> Self {
+                Self { opaque }
+            }
+        }
+
+        impl GodotFfi for $Class {
+            ffi_methods! { type sys::GDExtensionTypePtr = *mut Opaque; .. }
+        }
+    };
+}
+
+macro_rules! impl_builtin_froms {
+    ($To:ty; $($From:ty => $from_fn:ident),* $(,)?) => {
+        $(impl From<&$From> for $To {
+            fn from(other: &$From) -> Self {
+                unsafe {
+                    Self::from_sys_i
