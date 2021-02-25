@@ -21,4 +21,18 @@ pub fn is_equal_approx(a: real, b: real) -> bool {
     }
     let mut tolerance = CMP_EPSILON * a.abs();
     if tolerance < CMP_EPSILON {
-        tolerance = CM
+        tolerance = CMP_EPSILON;
+    }
+    (a - b).abs() < tolerance
+}
+
+/// Check if two angles are approximately equal, by comparing the distance
+/// between the points on the unit circle with 0 using [`is_equal_approx`].
+pub fn is_angle_equal_approx(a: real, b: real) -> bool {
+    let (x1, y1) = a.sin_cos();
+    let (x2, y2) = b.sin_cos();
+
+    println!("({x1}, {y1}) ({x2}, {y2})");
+
+    is_equal_approx(
+        Vector2::distance_to(Vector2::ne
