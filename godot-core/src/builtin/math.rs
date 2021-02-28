@@ -35,4 +35,24 @@ pub fn is_angle_equal_approx(a: real, b: real) -> bool {
     println!("({x1}, {y1}) ({x2}, {y2})");
 
     is_equal_approx(
-        Vector2::distance_to(Vector2::ne
+        Vector2::distance_to(Vector2::new(x1, y1), Vector2::new(x2, y2)),
+        0.0,
+    )
+}
+
+pub fn is_zero_approx(s: real) -> bool {
+    s.abs() < CMP_EPSILON
+}
+
+pub fn fposmod(x: real, y: real) -> real {
+    let mut value = x % y;
+    if ((value < 0.0) && (y > 0.0)) || ((value > 0.0) && (y < 0.0)) {
+        value += y;
+    }
+    value += 0.0;
+    value
+}
+
+pub fn snapped(mut value: real, step: real) -> real {
+    if step != 0.0 {
+        value = ((value 
