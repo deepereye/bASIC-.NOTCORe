@@ -55,4 +55,30 @@ pub fn fposmod(x: real, y: real) -> real {
 
 pub fn snapped(mut value: real, step: real) -> real {
     if step != 0.0 {
-        value = ((value 
+        value = ((value / step + 0.5) * step).floor()
+    }
+    value
+}
+
+pub fn sign(value: real) -> real {
+    if value == 0.0 {
+        0.0
+    } else if value < 0.0 {
+        -1.0
+    } else {
+        1.0
+    }
+}
+
+pub fn bezier_derivative(
+    start: real,
+    control_1: real,
+    control_2: real,
+    end: real,
+    t: real,
+) -> real {
+    let omt = 1.0 - t;
+    let omt2 = omt * omt;
+    let t2 = t * t;
+    (control_1 - start) * 3.0 * omt2
+        + (control_2 - control_1) * 6.0 * omt *
