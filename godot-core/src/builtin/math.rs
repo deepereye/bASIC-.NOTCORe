@@ -81,4 +81,23 @@ pub fn bezier_derivative(
     let omt2 = omt * omt;
     let t2 = t * t;
     (control_1 - start) * 3.0 * omt2
-        + (control_2 - control_1) * 6.0 * omt *
+        + (control_2 - control_1) * 6.0 * omt * t
+        + (end - control_2) * 3.0 * t2
+}
+
+pub fn bezier_interpolate(
+    start: real,
+    control_1: real,
+    control_2: real,
+    end: real,
+    t: real,
+) -> real {
+    let omt = 1.0 - t;
+    let omt2 = omt * omt;
+    let omt3 = omt2 * omt;
+    let t2 = t * t;
+    let t3 = t2 * t;
+    start * omt3 + control_1 * omt2 * t * 3.0 + control_2 * omt * t2 * 3.0 + end * t3
+}
+
+pub fn cubic_interpolate(from: real, to: real, pre: real
