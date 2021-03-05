@@ -100,4 +100,20 @@ pub fn bezier_interpolate(
     start * omt3 + control_1 * omt2 * t * 3.0 + control_2 * omt * t2 * 3.0 + end * t3
 }
 
-pub fn cubic_interpolate(from: real, to: real, pre: real
+pub fn cubic_interpolate(from: real, to: real, pre: real, post: real, weight: real) -> real {
+    0.5 * ((from * 2.0)
+        + (-pre + to) * weight
+        + (2.0 * pre - 5.0 * from + 4.0 * to - post) * (weight * weight)
+        + (-pre + 3.0 * from - 3.0 * to + post) * (weight * weight * weight))
+}
+
+#[allow(clippy::too_many_arguments)]
+pub fn cubic_interpolate_in_time(
+    from: real,
+    to: real,
+    pre: real,
+    post: real,
+    weight: real,
+    to_t: real,
+    pre_t: real,
+    post_
