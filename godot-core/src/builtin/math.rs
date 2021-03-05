@@ -116,4 +116,23 @@ pub fn cubic_interpolate_in_time(
     weight: real,
     to_t: real,
     pre_t: real,
-    post_
+    post_t: real,
+) -> real {
+    let t = lerp(0.0, to_t, weight);
+    let a1 = lerp(
+        pre,
+        from,
+        if pre_t == 0.0 {
+            0.0
+        } else {
+            (t - pre_t) / -pre_t
+        },
+    );
+    let a2 = lerp(from, to, if to_t == 0.0 { 0.5 } else { t / to_t });
+    let a3 = lerp(
+        to,
+        post,
+        if post_t - to_t == 0.0 {
+            1.0
+        } else {
+            (t - to_t) / (post_
