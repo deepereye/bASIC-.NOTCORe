@@ -135,4 +135,21 @@ pub fn cubic_interpolate_in_time(
         if post_t - to_t == 0.0 {
             1.0
         } else {
-            (t - to_t) / (post_
+            (t - to_t) / (post_t - to_t)
+        },
+    );
+    let b1 = lerp(
+        a1,
+        a2,
+        if to_t - pre_t == 0.0 {
+            0.0
+        } else {
+            (t - pre_t) / (to_t - pre_t)
+        },
+    );
+    let b2 = lerp(a2, a3, if post_t == 0.0 { 1.0 } else { t / post_t });
+    lerp(b1, b2, if to_t == 0.0 { 0.5 } else { t / to_t })
+}
+
+/// Linearly interpolates between two angles (in radians) by a `weight` value
+/// between 
