@@ -152,4 +152,14 @@ pub fn cubic_interpolate_in_time(
 }
 
 /// Linearly interpolates between two angles (in radians) by a `weight` value
-/// between 
+/// between 0.0 and 1.0.
+///
+/// Similar to [`lerp`], but interpolates correctly when the angles wrap around
+/// [`TAU`].
+///
+/// The resulting angle is not normalized.
+///
+/// Note: This function lerps through the shortest path between `from` and
+/// `to`. However, when these two angles are approximately `PI + k * TAU` apart
+/// for any integer `k`, it's not obvious which way they lerp due to
+/// floating-point precision errors. For example, wit
