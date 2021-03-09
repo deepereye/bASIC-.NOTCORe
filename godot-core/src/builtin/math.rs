@@ -162,4 +162,15 @@ pub fn cubic_interpolate_in_time(
 /// Note: This function lerps through the shortest path between `from` and
 /// `to`. However, when these two angles are approximately `PI + k * TAU` apart
 /// for any integer `k`, it's not obvious which way they lerp due to
-/// floating-point precision errors. For example, wit
+/// floating-point precision errors. For example, with single-precision floats
+/// `lerp_angle(0.0, PI, weight)` lerps clockwise, while `lerp_angle(0.0, PI + 3.0 * TAU, weight)`
+/// lerps counter-clockwise.
+///
+/// _Godot equivalent: @GlobalScope.lerp_angle()_
+pub fn lerp_angle(from: real, to: real, weight: real) -> real {
+    let difference = (to - from) % TAU;
+    let distance = (2.0 * difference) % TAU - difference;
+    from + distance * weight
+}
+
+/// Asserts that two values are approximately equal, u
