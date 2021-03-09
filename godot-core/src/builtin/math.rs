@@ -173,4 +173,18 @@ pub fn lerp_angle(from: real, to: real, weight: real) -> real {
     from + distance * weight
 }
 
-/// Asserts that two values are approximately equal, u
+/// Asserts that two values are approximately equal, using the provided `func`
+/// for equality checking.
+#[macro_export]
+macro_rules! assert_eq_approx {
+    ($a:expr, $b:expr, $func:expr $(,)?) => {
+        match ($a, $b) {
+            (a, b) => {
+                assert!(($func)(a,b), "\n  left: {:?},\n right: {:?}", $a, $b);
+            }
+        }
+    };
+    ($a:expr, $b:expr, $func:expr, $($t:tt)+) => {
+        match ($a, $b) {
+            (a, b) => {
+                assert!(($func)(a,b), "\n
