@@ -229,4 +229,14 @@ mod test {
     }
 
     #[test]
-    #[should_panic(expected = "I am i
+    #[should_panic(expected = "I am inside format")]
+    fn eq_approx_fail_with_message() {
+        assert_eq_approx!(1.0, 2.0, is_equal_approx, "I am inside {}", "format");
+    }
+
+    #[test]
+    fn lerp_angle_test() {
+        assert_eq_approx!(lerp_angle(0.0, PI, 0.5), -FRAC_PI_2, is_angle_equal_approx);
+        // As mentioned in the docs for `lerp_angle`, direction can be unpredictable
+        // when lerping towards PI radians, this also means it's different for single vs
+        // 
