@@ -200,4 +200,24 @@ macro_rules! assert_ne_approx {
     ($a:expr, $b:expr, $func:expr $(, $($t:tt)*)?) => {
         #[allow(clippy::redundant_closure_call)]
         {
-            assert_eq_approx!($a, $b, |a,b| !($func)(a,b) 
+            assert_eq_approx!($a, $b, |a,b| !($func)(a,b) $(, $($t)*)?)
+        }
+    };
+}
+
+#[cfg(test)]
+mod test {
+    use crate::builtin::real_consts::{FRAC_PI_2, PI};
+
+    use super::*;
+
+    #[test]
+    fn equal_approx() {
+        assert_eq_approx!(1.0, 1.000001, is_equal_approx);
+        assert_ne_approx!(1.0, 2.0, is_equal_approx);
+        assert_eq_approx!(1.0, 1.000001, is_equal_approx, "Message {}", "formatted");
+        assert_ne_approx!(1.0, 2.0, is_equal_approx, "Message {}", "formatted");
+    }
+
+    #[test]
+    fn angle_
