@@ -187,4 +187,17 @@ macro_rules! assert_eq_approx {
     ($a:expr, $b:expr, $func:expr, $($t:tt)+) => {
         match ($a, $b) {
             (a, b) => {
-                assert!(($func)(a,b), "\n
+                assert!(($func)(a,b), "\n  left: {:?},\n right: {:?},\n{}", $a, $b, format_args!($($t)+));
+            }
+        }
+    };
+}
+
+/// Asserts that two values are not approximately equal, using the provided
+/// `func` for equality checking.
+#[macro_export]
+macro_rules! assert_ne_approx {
+    ($a:expr, $b:expr, $func:expr $(, $($t:tt)*)?) => {
+        #[allow(clippy::redundant_closure_call)]
+        {
+            assert_eq_approx!($a, $b, |a,b| !($func)(a,b) 
