@@ -220,4 +220,13 @@ mod test {
     }
 
     #[test]
-    fn angle_
+    fn angle_equal_approx() {
+        assert_eq_approx!(1.0, 1.000001, is_angle_equal_approx);
+        assert_eq_approx!(0.0, TAU, is_angle_equal_approx);
+        assert_eq_approx!(PI, -PI, is_angle_equal_approx);
+        assert_eq_approx!(4.45783, -(TAU - 4.45783), is_angle_equal_approx);
+        assert_eq_approx!(31.0 * PI, -13.0 * PI, is_angle_equal_approx);
+    }
+
+    #[test]
+    #[should_panic(expected = "I am i
