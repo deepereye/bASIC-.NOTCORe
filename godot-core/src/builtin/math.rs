@@ -239,4 +239,16 @@ mod test {
         assert_eq_approx!(lerp_angle(0.0, PI, 0.5), -FRAC_PI_2, is_angle_equal_approx);
         // As mentioned in the docs for `lerp_angle`, direction can be unpredictable
         // when lerping towards PI radians, this also means it's different for single vs
-        // 
+        // double precision floats.
+
+        // TODO: look into if it's possible to make a more robust impl.
+        #[cfg(not(feature = "double-precision"))]
+        assert_eq_approx!(
+            lerp_angle(0.0, PI + 3.0 * TAU, 0.5),
+            FRAC_PI_2,
+            is_angle_equal_approx
+        );
+        #[cfg(feature = "double-precision")]
+        assert_eq_approx!(
+            lerp_angle(0.0, PI + 3.0 * TAU, 0.5),
+            -FRAC_
