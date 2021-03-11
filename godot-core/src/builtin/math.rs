@@ -251,4 +251,14 @@ mod test {
         #[cfg(feature = "double-precision")]
         assert_eq_approx!(
             lerp_angle(0.0, PI + 3.0 * TAU, 0.5),
-            -FRAC_
+            -FRAC_PI_2,
+            is_angle_equal_approx
+        );
+        let angle = PI * 2.0 / 3.0;
+        assert_eq_approx!(
+            lerp_angle(-5.0 * TAU, angle + 3.0 * TAU, 0.5),
+            (angle / 2.0),
+            is_angle_equal_approx
+        );
+    }
+}
