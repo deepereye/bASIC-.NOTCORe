@@ -37,4 +37,13 @@ impl ClassName {
 }
 
 impl From<ClassName> for StringName {
-    fn from(class_name: ClassNa
+    fn from(class_name: ClassName) -> Self {
+        class_name.backing
+    }
+}
+
+impl Display for ClassName {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        self.backing.fmt(f)
+    }
+}
