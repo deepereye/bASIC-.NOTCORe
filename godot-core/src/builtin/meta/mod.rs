@@ -5,4 +5,19 @@
  */
 
 mod class_name;
-mod sign
+mod signature;
+
+pub use class_name::*;
+pub use signature::*;
+
+use crate::builtin::*;
+use crate::engine::global;
+
+use godot_ffi as sys;
+
+/// Stores meta-information about registered types or properties.
+///
+/// Filling this information properly is important so that Godot can use ptrcalls instead of varcalls
+/// (requires typed GDScript + sufficient information from the extension side)
+pub trait VariantMetadata {
+    fn variant_type() -> 
