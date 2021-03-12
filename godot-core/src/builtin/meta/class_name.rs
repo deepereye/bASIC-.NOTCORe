@@ -18,4 +18,23 @@ pub struct ClassName {
     backing: StringName,
 }
 
-impl C
+impl ClassName {
+    pub fn of<T: GodotClass>() -> Self {
+        Self {
+            backing: StringName::from(T::CLASS_NAME),
+        }
+    }
+
+    pub fn from_static(string: &'static str) -> Self {
+        Self {
+            backing: StringName::from(string),
+        }
+    }
+
+    pub fn string_sys(&self) -> sys::GDExtensionStringNamePtr {
+        self.backing.string_sys()
+    }
+}
+
+impl From<ClassName> for StringName {
+    fn from(class_name: ClassNa
