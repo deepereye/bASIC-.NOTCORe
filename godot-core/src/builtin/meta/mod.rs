@@ -36,4 +36,17 @@ pub trait VariantMetadata {
         )
     }
 
-    fn param_metada
+    fn param_metadata() -> sys::GDExtensionClassMethodArgumentMetadata {
+        sys::GDEXTENSION_METHOD_ARGUMENT_METADATA_NONE
+    }
+}
+
+impl<T: VariantMetadata> VariantMetadata for Option<T> {
+    fn variant_type() -> VariantType {
+        T::variant_type()
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+/// Rusty abstraction of sys::GDExtensionPropertyInfo
