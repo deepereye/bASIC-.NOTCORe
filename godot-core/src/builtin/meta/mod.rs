@@ -20,4 +20,20 @@ use godot_ffi as sys;
 /// Filling this information properly is important so that Godot can use ptrcalls instead of varcalls
 /// (requires typed GDScript + sufficient information from the extension side)
 pub trait VariantMetadata {
-    fn variant_type() -> 
+    fn variant_type() -> VariantType;
+
+    fn class_name() -> ClassName {
+        ClassName::of::<()>() // FIXME Option or so
+    }
+
+    fn property_info(property_name: &str) -> PropertyInfo {
+        PropertyInfo::new(
+            Self::variant_type(),
+            Self::class_name(),
+            StringName::from(property_name),
+            global::PropertyHint::PROPERTY_HINT_NONE,
+            GodotString::new(),
+        )
+    }
+
+    fn param_metada
