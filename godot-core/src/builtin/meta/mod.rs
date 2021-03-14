@@ -50,3 +50,18 @@ impl<T: VariantMetadata> VariantMetadata for Option<T> {
 // ----------------------------------------------------------------------------------------------------------------------------------------------
 
 /// Rusty abstraction of sys::GDExtensionPropertyInfo
+/// Keeps the actual allocated values (the sys equivalent only keeps pointers, which fall out of scope)
+#[derive(Debug)]
+pub struct PropertyInfo {
+    variant_type: VariantType,
+    class_name: ClassName,
+    property_name: StringName,
+    hint: global::PropertyHint,
+    hint_string: GodotString,
+    usage: global::PropertyUsageFlags,
+}
+
+impl PropertyInfo {
+    pub fn new(
+        variant_type: VariantType,
+ 
