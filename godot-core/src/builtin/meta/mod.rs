@@ -64,4 +64,19 @@ pub struct PropertyInfo {
 impl PropertyInfo {
     pub fn new(
         variant_type: VariantType,
- 
+        class_name: ClassName,
+        property_name: StringName,
+        hint: global::PropertyHint,
+        hint_string: GodotString,
+    ) -> Self {
+        Self {
+            variant_type,
+            class_name,
+            property_name,
+            hint,
+            hint_string,
+            usage: global::PropertyUsageFlags::PROPERTY_USAGE_DEFAULT,
+        }
+    }
+
+    /// Converts to the FFI type. Keep this object allocated while u
