@@ -79,4 +79,14 @@ impl PropertyInfo {
         }
     }
 
-    /// Converts to the FFI type. Keep this object allocated while u
+    /// Converts to the FFI type. Keep this object allocated while using that!
+    pub fn property_sys(&self) -> sys::GDExtensionPropertyInfo {
+        use crate::obj::EngineEnum as _;
+
+        sys::GDExtensionPropertyInfo {
+            type_: self.variant_type.sys(),
+            name: self.property_name.string_sys(),
+            class_name: self.class_name.string_sys(),
+            hint: u32::try_from(self.hint.ord()).expect("hint.ord()"),
+            hint_string: self.hint_string.string_sys(),
+            usage: u3
