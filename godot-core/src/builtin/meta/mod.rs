@@ -89,4 +89,7 @@ impl PropertyInfo {
             class_name: self.class_name.string_sys(),
             hint: u32::try_from(self.hint.ord()).expect("hint.ord()"),
             hint_string: self.hint_string.string_sys(),
-            usage: u3
+            usage: u32::try_from(self.usage.ord()).expect("usage.ord()"),
+        }
+    }
+}
