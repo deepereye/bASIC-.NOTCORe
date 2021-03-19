@@ -31,4 +31,19 @@ pub trait SignatureTuple {
     unsafe fn ptrcall<C: GodotClass>(
         instance_ptr: sys::GDExtensionClassInstancePtr,
         args_ptr: *const sys::GDExtensionConstTypePtr,
-        ret: sys::GDE
+        ret: sys::GDExtensionTypePtr,
+        func: fn(&mut C, Self::Params) -> Self::Ret,
+        method_name: &str,
+    );
+}
+
+// impl<P, const N: usize> Sig for [P; N]
+// impl<P, T0> Sig for (T0)
+// where P: VariantMetadata {
+//     fn variant_type(index: usize) -> sys::GDExtensionVariantType {
+//           Self[index]::
+//     }
+//
+//     fn param_metadata(index: usize) -> sys::GDExtensionClassMethodArgumentMetadata {
+//         todo!()
+/
