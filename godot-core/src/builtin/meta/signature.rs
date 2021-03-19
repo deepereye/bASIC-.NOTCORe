@@ -22,4 +22,13 @@ pub trait SignatureTuple {
         args_ptr: *const sys::GDExtensionConstVariantPtr,
         ret: sys::GDExtensionVariantPtr,
         err: *mut sys::GDExtensionCallError,
-        fun
+        func: fn(&mut C, Self::Params) -> Self::Ret,
+        method_name: &str,
+    );
+
+    // Note: this method imposes extra bounds on GodotFfi, which may not be implemented for user types.
+    // We could fall back to varcalls in such cases, and not require GodotFfi categorically.
+    unsafe fn ptrcall<C: GodotClass>(
+        instance_ptr: sys::GDExtensionClassInstancePtr,
+        args_ptr: *const sys::GDExtensionConstTypePtr,
+        ret: sys::GDE
