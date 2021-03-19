@@ -46,4 +46,21 @@ pub trait SignatureTuple {
 //
 //     fn param_metadata(index: usize) -> sys::GDExtensionClassMethodArgumentMetadata {
 //         todo!()
-/
+//     }
+//
+//     fn property_info(index: usize, param_name: &str) -> sys::GDExtensionPropertyInfo {
+//         todo!()
+//     }
+// }
+//
+use crate::builtin::meta::*;
+use crate::builtin::{FromVariant, ToVariant, Variant};
+use crate::obj::GodotClass;
+
+macro_rules! impl_signature_for_tuple {
+    (
+        $R:ident
+        $(, $Pn:ident : $n:literal)*
+    ) => {
+        #[allow(unused_variables)]
+        impl<$R, $($Pn,)*> S
