@@ -63,4 +63,15 @@ macro_rules! impl_signature_for_tuple {
         $(, $Pn:ident : $n:literal)*
     ) => {
         #[allow(unused_variables)]
-        impl<$R, $($Pn,)*> S
+        impl<$R, $($Pn,)*> SignatureTuple for ($R, $($Pn,)*)
+            where $R: VariantMetadata + ToVariant + sys::GodotFuncMarshal + Debug,
+               $( $Pn: VariantMetadata + FromVariant + sys::GodotFuncMarshal + Debug, )*
+        {
+            type Params = ($($Pn,)*);
+            type Ret = $R;
+
+            #[inline]
+            fn variant_type(index: i32) -> sys::VariantType {
+                match index {
+                    -1 => $R::variant_type(),
+      
