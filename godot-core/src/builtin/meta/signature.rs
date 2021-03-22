@@ -74,4 +74,14 @@ macro_rules! impl_signature_for_tuple {
             fn variant_type(index: i32) -> sys::VariantType {
                 match index {
                     -1 => $R::variant_type(),
-      
+                    $(
+                        $n => $Pn::variant_type(),
+                    )*
+                    _ => unreachable!("variant_type: unavailable for index {}", index),
+                    //_ => sys::GDEXTENSION_VARIANT_TYPE_NIL
+                }
+            }
+
+            #[inline]
+            fn param_metadata(index: i32) -> sys::GDExtensionClassMethodArgumentMetadata {
+                match
