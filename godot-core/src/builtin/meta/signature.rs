@@ -84,4 +84,15 @@ macro_rules! impl_signature_for_tuple {
 
             #[inline]
             fn param_metadata(index: i32) -> sys::GDExtensionClassMethodArgumentMetadata {
-                match
+                match index {
+                    -1 => $R::param_metadata(),
+                    $(
+                        $n => $Pn::param_metadata(),
+                    )*
+                    _ => unreachable!("param_metadata: unavailable for index {}", index),
+                }
+            }
+
+            #[inline]
+            fn property_info(index: i32, param_name: &str) -> PropertyInfo {
+          
