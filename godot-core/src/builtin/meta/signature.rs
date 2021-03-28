@@ -107,4 +107,12 @@ macro_rules! impl_signature_for_tuple {
             #[inline]
             unsafe fn varcall<C : GodotClass>(
 				instance_ptr: sys::GDExtensionClassInstancePtr,
- 
+                args_ptr: *const sys::GDExtensionConstVariantPtr,
+                ret: sys::GDExtensionVariantPtr,
+                err: *mut sys::GDExtensionCallError,
+                func: fn(&mut C, Self::Params) -> Self::Ret,
+                method_name: &str,
+            ) {
+    	        $crate::out!("varcall: {}", method_name);
+
+                let storage = unsafe { crate::private::as_storage::<C>(instance_pt
