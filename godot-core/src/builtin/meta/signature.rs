@@ -95,4 +95,16 @@ macro_rules! impl_signature_for_tuple {
 
             #[inline]
             fn property_info(index: i32, param_name: &str) -> PropertyInfo {
-          
+                match index {
+                    -1 => $R::property_info(param_name),
+                    $(
+                        $n => $Pn::property_info(param_name),
+                    )*
+                    _ => unreachable!("property_info: unavailable for index {}", index),
+                }
+            }
+
+            #[inline]
+            unsafe fn varcall<C : GodotClass>(
+				instance_ptr: sys::GDExtensionClassInstancePtr,
+ 
