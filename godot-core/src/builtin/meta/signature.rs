@@ -126,4 +126,16 @@ macro_rules! impl_signature_for_tuple {
 
                         arg
                     },
-      
+                )* );
+
+				let ret_val = func(&mut *instance, args);
+                let ret_variant = <$R as ToVariant>::to_variant(&ret_val); // TODO write_sys
+				unsafe {
+                    *(ret as *mut Variant) = ret_variant;
+                    (*err).error = sys::GDEXTENSION_CALL_OK;
+                }
+            }
+
+            #[inline]
+            unsafe fn ptrcall<C : GodotClass>(
+				instance_ptr: sys::GDExtensionClassInstan
