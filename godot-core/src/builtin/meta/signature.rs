@@ -115,4 +115,15 @@ macro_rules! impl_signature_for_tuple {
             ) {
     	        $crate::out!("varcall: {}", method_name);
 
-                let storage = unsafe { crate::private::as_storage::<C>(instance_pt
+                let storage = unsafe { crate::private::as_storage::<C>(instance_ptr) };
+                let mut instance = storage.get_mut();
+
+                let args = ( $(
+                    {
+                        let variant = unsafe { &*(*args_ptr.offset($n) as *mut Variant) }; // TODO from_var_sys
+                        let arg = <$Pn as FromVariant>::try_from_variant(variant)
+                            .unwrap_or_else(|e| param_error::<$Pn>(method_name, $n, variant));
+
+                        arg
+                    },
+      
