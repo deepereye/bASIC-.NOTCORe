@@ -149,4 +149,14 @@ macro_rules! impl_signature_for_tuple {
                 let storage = unsafe { crate::private::as_storage::<C>(instance_ptr) };
                 let mut instance = storage.get_mut();
 
-			
+				let args = ( $(
+                    unsafe {
+                        <$Pn as sys::GodotFuncMarshal>::try_from_sys(
+                            sys::force_mut_ptr(*args_ptr.offset($n))
+                        )
+                    }
+                        .unwrap_or_else(|e| param_error::<$Pn>(method_name, $n, &e)),
+                )* );
+
+                let ret_val = func(&mut *instance, args);
+				unsafe { <$R as sys
