@@ -138,4 +138,15 @@ macro_rules! impl_signature_for_tuple {
 
             #[inline]
             unsafe fn ptrcall<C : GodotClass>(
-				instance_ptr: sys::GDExtensionClassInstan
+				instance_ptr: sys::GDExtensionClassInstancePtr,
+                args_ptr: *const sys::GDExtensionConstTypePtr,
+                ret: sys::GDExtensionTypePtr,
+                func: fn(&mut C, Self::Params) -> Self::Ret,
+                method_name: &str,
+            ) {
+                $crate::out!("ptrcall: {}", method_name);
+
+                let storage = unsafe { crate::private::as_storage::<C>(instance_ptr) };
+                let mut instance = storage.get_mut();
+
+			
