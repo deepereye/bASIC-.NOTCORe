@@ -159,4 +159,17 @@ macro_rules! impl_signature_for_tuple {
                 )* );
 
                 let ret_val = func(&mut *instance, args);
-				unsafe { <$R as sys
+				unsafe { <$R as sys::GodotFuncMarshal>::try_write_sys(&ret_val, ret) }
+                    .unwrap_or_else(|e| return_error::<$R>(method_name, &e));
+
+                // FIXME is inc_ref needed here?
+				// std::mem::forget(ret_val);
+            }
+        }
+    };
+}
+
+fn param_error<P>(method_name: &str, index: i32, arg: &impl Debug) -> ! {
+    let param_ty = std::any::type_name::<P>();
+    panic!(
+        "{method_name}: parameter [{index}] has type {
