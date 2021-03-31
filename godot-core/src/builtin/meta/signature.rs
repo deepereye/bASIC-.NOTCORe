@@ -172,4 +172,16 @@ macro_rules! impl_signature_for_tuple {
 fn param_error<P>(method_name: &str, index: i32, arg: &impl Debug) -> ! {
     let param_ty = std::any::type_name::<P>();
     panic!(
-        "{method_name}: parameter [{index}] has type {
+        "{method_name}: parameter [{index}] has type {param_ty}, which is unable to store argument {arg:?}",
+    );
+}
+
+fn return_error<R>(method_name: &str, arg: &impl Debug) -> ! {
+    let return_ty = std::any::type_name::<R>();
+    panic!("{method_name}: return type {return_ty} is unable to store value {arg:?}",);
+}
+
+impl_signature_for_tuple!(R);
+impl_signature_for_tuple!(R, P0: 0);
+impl_signature_for_tuple!(R, P0: 0, P1: 1);
+impl_signature_for_tuple!(R, P0: 0, P1
