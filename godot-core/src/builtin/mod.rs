@@ -19,4 +19,11 @@
 //!   duplication, but it would create a strong dependency on a volatile API outside our control.
 //!   The `gdnative` crate started out this way, using types from `euclid`, but [found it
 //!   impractical](https://github.com/godot-rust/gdnative/issues/594#issue-705061720). Moreover,
-//!   the API would not match Godot's own, which would make porting from GDScript 
+//!   the API would not match Godot's own, which would make porting from GDScript (slightly)
+//!   harder.
+//!
+//! - We could opaquely wrap types from an existing vector algebra crate. This protects users of
+//!   `gdextension` from changes in the wrapped crate. However, direct field access using `.x`,
+//!   `.y`, `.z` is no longer possible. Instead of `v.y += a;` you would have to write
+//!   `v.set_y(v.get_y() + a);`. (A `union` could be used to add these fields in the public API,
+//!   but would make every field access unsafe, whi
