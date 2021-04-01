@@ -15,4 +15,8 @@
 //! - We could invoke API methods from the engine. The implementations could be generated, but it
 //!   is slower and prevents inlining.
 //!
-//! - We could re-export type
+//! - We could re-export types from an existing vector algebra crate, like `glam`. This removes the
+//!   duplication, but it would create a strong dependency on a volatile API outside our control.
+//!   The `gdnative` crate started out this way, using types from `euclid`, but [found it
+//!   impractical](https://github.com/godot-rust/gdnative/issues/594#issue-705061720). Moreover,
+//!   the API would not match Godot's own, which would make porting from GDScript 
