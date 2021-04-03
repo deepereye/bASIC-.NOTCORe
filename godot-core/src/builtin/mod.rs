@@ -38,3 +38,23 @@ pub use crate::{array, dict, varray};
 pub use array_inner::{Array, VariantArray};
 pub use basis::*;
 pub use color::*;
+pub use dictionary_inner::Dictionary;
+pub use math::*;
+pub use node_path::*;
+pub use others::*;
+pub use packed_array::*;
+pub use projection::*;
+pub use quaternion::*;
+pub use string::*;
+pub use string_name::*;
+pub use transform2d::*;
+pub use transform3d::*;
+pub use variant::*;
+pub use vector2::*;
+pub use vector2i::*;
+pub use vector3::*;
+pub use vector3i::*;
+pub use vector4::*;
+pub use vector4i::*;
+
+/// Meta-information about variant types, pro
