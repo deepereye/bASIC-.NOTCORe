@@ -26,4 +26,15 @@
 //!   `gdextension` from changes in the wrapped crate. However, direct field access using `.x`,
 //!   `.y`, `.z` is no longer possible. Instead of `v.y += a;` you would have to write
 //!   `v.set_y(v.get_y() + a);`. (A `union` could be used to add these fields in the public API,
-//!   but would make every field access unsafe, whi
+//!   but would make every field access unsafe, which is also not great.)
+//!
+//! - We could re-export types from the [`mint`](https://crates.io/crates/mint) crate, which was
+//!   explicitly designed to solve this problem. However, it falls short because [operator
+//!   overloading would become impossible](https://github.com/kvark/mint/issues/75).
+
+// Re-export macros.
+pub use crate::{array, dict, varray};
+
+pub use array_inner::{Array, VariantArray};
+pub use basis::*;
+pub use color::*;
