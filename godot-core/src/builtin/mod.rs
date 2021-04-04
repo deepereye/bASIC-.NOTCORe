@@ -71,4 +71,26 @@ pub mod dictionary {
 }
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------
-// 
+// Implementation
+
+// Modules exporting declarative macros must appear first.
+mod macros;
+mod vector_macros;
+
+// Rename imports because we re-export a subset of types under same module names.
+#[path = "array.rs"]
+mod array_inner;
+#[path = "dictionary.rs"]
+mod dictionary_inner;
+
+mod basis;
+mod color;
+mod glam_helpers;
+mod math;
+mod node_path;
+mod others;
+mod packed_array;
+mod projection;
+mod quaternion;
+mod string;
+mod str
