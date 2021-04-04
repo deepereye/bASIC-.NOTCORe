@@ -93,4 +93,30 @@ mod packed_array;
 mod projection;
 mod quaternion;
 mod string;
-mod str
+mod string_chars;
+mod string_name;
+mod transform2d;
+mod transform3d;
+mod variant;
+mod vector2;
+mod vector2i;
+mod vector3;
+mod vector3i;
+mod vector4;
+mod vector4i;
+
+#[doc(hidden)]
+pub mod inner {
+    pub use crate::gen::builtin_classes::*;
+}
+
+pub(crate) fn to_i64(i: usize) -> i64 {
+    i.try_into().unwrap()
+}
+
+pub(crate) fn to_usize(i: i64) -> usize {
+    i.try_into().unwrap()
+}
+
+pub(crate) fn to_isize(i: usize) -> isize {
+    
