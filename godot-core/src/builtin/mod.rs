@@ -57,4 +57,18 @@ pub use vector3i::*;
 pub use vector4::*;
 pub use vector4i::*;
 
-/// Meta-information about variant types, pro
+/// Meta-information about variant types, properties and class names.
+pub mod meta;
+
+/// Specialized types related to arrays.
+pub mod array {
+    pub use super::array_inner::Iter;
+}
+
+/// Specialized types related to dictionaries.
+pub mod dictionary {
+    pub use super::dictionary_inner::{Iter, Keys, TypedIter, TypedKeys};
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+// 
