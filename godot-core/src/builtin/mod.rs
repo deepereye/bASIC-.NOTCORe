@@ -119,4 +119,17 @@ pub(crate) fn to_usize(i: i64) -> usize {
 }
 
 pub(crate) fn to_isize(i: usize) -> isize {
-    
+    i.try_into().unwrap()
+}
+
+pub(crate) fn u8_to_bool(u: u8) -> bool {
+    match u {
+        0 => false,
+        1 => true,
+        _ => panic!("Invalid boolean value {u}"),
+    }
+}
+
+/// Clippy often complains if you do `f as f64` when `f` is already an `f64`. This trait exists to make it easy to
+/// convert between the different reals and floats without a lot of allowing clippy lints for your code.
+pub trait RealConv {
