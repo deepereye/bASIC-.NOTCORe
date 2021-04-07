@@ -133,3 +133,12 @@ pub(crate) fn u8_to_bool(u: u8) -> bool {
 /// Clippy often complains if you do `f as f64` when `f` is already an `f64`. This trait exists to make it easy to
 /// convert between the different reals and floats without a lot of allowing clippy lints for your code.
 pub trait RealConv {
+    /// Cast this [`real`] to an [`f32`] using `as`.
+    // Clippy complains that this is an `as_*` function but it takes a `self`
+    // however, since this uses `as` internally it makes much more sense for
+    // it to be named `as_f32` rather than `to_f32`.
+    #[allow(clippy::wrong_self_convention)]
+    fn as_f32(self) -> f32;
+
+    /// Cast this [`real`] to an [`f64`] using `as`.
+    // Clippy complains that this is an `as_*` function but it 
