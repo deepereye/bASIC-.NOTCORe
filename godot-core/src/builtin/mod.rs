@@ -141,4 +141,19 @@ pub trait RealConv {
     fn as_f32(self) -> f32;
 
     /// Cast this [`real`] to an [`f64`] using `as`.
-    // Clippy complains that this is an `as_*` function but it 
+    // Clippy complains that this is an `as_*` function but it takes a `self`
+    // however, since this uses `as` internally it makes much more sense for
+    // it to be named `as_f64` rather than `to_f64`.
+    #[allow(clippy::wrong_self_convention)]
+    fn as_f64(self) -> f64;
+
+    /// Cast an [`f32`] to a [`real`] using `as`.
+    fn from_f32(f: f32) -> Self;
+
+    /// Cast an [`f64`] to a [`real`] using `as`.
+    fn from_f64(f: f64) -> Self;
+}
+
+#[cfg(not(feature = "double-precision"))]
+mod real_mod {
+    //! Defini
