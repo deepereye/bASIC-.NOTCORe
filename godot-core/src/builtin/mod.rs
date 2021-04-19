@@ -156,4 +156,12 @@ pub trait RealConv {
 
 #[cfg(not(feature = "double-precision"))]
 mod real_mod {
-    //! Defini
+    //! Definitions for single-precision `real`.
+
+    /// Floating point type used for many structs and functions in Godot.
+    ///
+    /// This is not the `float` type in GDScript; that type is always 64-bits. Rather, many structs in Godot may use
+    /// either 32-bit or 64-bit floats such as [`Vector2`](super::Vector2). To convert between [`real`] and [`f32`] or
+    /// [`f64`] see [`RealConv`](super::RealConv).
+    ///
+    /// See also the [Godot doc
