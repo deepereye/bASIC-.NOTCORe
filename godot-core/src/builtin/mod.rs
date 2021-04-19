@@ -164,4 +164,19 @@ mod real_mod {
     /// either 32-bit or 64-bit floats such as [`Vector2`](super::Vector2). To convert between [`real`] and [`f32`] or
     /// [`f64`] see [`RealConv`](super::RealConv).
     ///
-    /// See also the [Godot doc
+    /// See also the [Godot docs on float](https://docs.godotengine.org/en/stable/classes/class_float.html).
+    ///
+    /// _Godot equivalent: `real_t`_
+    // As this is a scalar value, we will use a non-standard type name.
+    #[allow(non_camel_case_types)]
+    pub type real = f32;
+
+    impl super::RealConv for real {
+        #[inline]
+        fn as_f32(self) -> f32 {
+            self
+        }
+
+        #[inline]
+        fn as_f64(self) -> f64 {
+            se
