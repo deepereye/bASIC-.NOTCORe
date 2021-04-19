@@ -198,3 +198,11 @@ mod real_mod {
     /// A 2-dimensional vector from [`glam`]. Using a floating-point format compatible with [`real`].
     pub type RVec2 = glam::Vec2;
     /// A 3-dimensional vector from [`glam`]. Using a floating-point format compatible with [`real`].
+    pub type RVec3 = glam::Vec3;
+    /// A 4-dimensional vector from [`glam`]. Using a floating-point format compatible with [`real`].
+    pub type RVec4 = glam::Vec4;
+
+    /// A 2x2 column-major matrix from [`glam`]. Using a floating-point format compatible with [`real`].  
+    pub type RMat2 = glam::Mat2;
+    /// A 3x3 column-major matrix from [`glam`]. Using a floating-point format compatible with [`real`].
+    pub type RMat3 = gl
