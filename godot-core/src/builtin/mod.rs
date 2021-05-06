@@ -213,4 +213,16 @@ mod real_mod {
     /// with [`real`].
     pub type RQuat = glam::Quat;
 
-    /// A 2D affine transform from [`glam`], which can represent translation, rotation
+    /// A 2D affine transform from [`glam`], which can represent translation, rotation, scaling and
+    /// shear. Using a floating-point format compatible with [`real`].
+    pub type RAffine2 = glam::Affine2;
+    /// A 3D affine transform from [`glam`], which can represent translation, rotation, scaling and
+    /// shear. Using a floating-point format compatible with [`real`].
+    pub type RAffine3 = glam::Affine3A;
+}
+
+#[cfg(feature = "double-precision")]
+mod real_mod {
+    //! Definitions for double-precision `real`.
+
+ 
