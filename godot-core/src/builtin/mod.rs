@@ -250,4 +250,19 @@ mod real_mod {
         }
 
         #[inline]
-        fn from_f
+        fn from_f32(f: f32) -> Self {
+            f as f64
+        }
+
+        #[inline]
+        fn from_f64(f: f64) -> Self {
+            f
+        }
+    }
+
+    pub use std::f64::consts;
+
+    /// A 2-dimensional vector from [`glam`]. Using a floating-point format compatible with [`real`].
+    pub type RVec2 = glam::DVec2;
+    /// A 3-dimensional vector from [`glam`]. Using a floating-point format compatible with [`real`].
+    pub typ
