@@ -272,4 +272,13 @@ mod real_mod {
     /// A 2x2 column-major matrix from [`glam`]. Using a floating-point format compatible with [`real`].  
     pub type RMat2 = glam::DMat2;
     /// A 3x3 column-major matrix from [`glam`]. Using a floating-point format compatible with [`real`].
-    pub
+    pub type RMat3 = glam::DMat3;
+    /// A 4x4 column-major matrix from [`glam`]. Using a floating-point format compatible with [`real`].
+    pub type RMat4 = glam::DMat4;
+
+    /// A matrix from [`glam`] quaternion representing an orientation. Using a floating-point format
+    /// compatible with [`real`].
+    pub type RQuat = glam::DQuat;
+
+    /// A 2D affine transform from [`glam`], which can represent translation, rotation, scaling and
+    /// shear. 
