@@ -281,4 +281,15 @@ mod real_mod {
     pub type RQuat = glam::DQuat;
 
     /// A 2D affine transform from [`glam`], which can represent translation, rotation, scaling and
-    /// shear. 
+    /// shear. Using a floating-point format compatible with [`real`].
+    pub type RAffine2 = glam::DAffine2;
+    /// A 3D affine transform from [`glam`], which can represent translation, rotation, scaling and
+    /// shear. Using a floating-point format compatible with [`real`].
+    pub type RAffine3 = glam::DAffine3;
+}
+
+pub use crate::real;
+pub(crate) use real_mod::*;
+pub use real_mod::{consts as real_consts, real};
+
+/// A macro to coerce 
