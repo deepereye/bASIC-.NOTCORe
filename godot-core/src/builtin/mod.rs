@@ -292,4 +292,15 @@ pub use crate::real;
 pub(crate) use real_mod::*;
 pub use real_mod::{consts as real_consts, real};
 
-/// A macro to coerce 
+/// A macro to coerce float-literals into the real type. Mainly used where
+/// you'd normally use a suffix to specity the type, such as `115.0f32`.
+///
+/// ### Examples
+/// Rust will not know how to infer the type of this call to `to_radians`:
+/// ```compile_fail
+/// use godot_core::builtin::real;
+///
+/// let radians: real = 115.0.to_radians();
+/// ```
+/// But we can't add a suffix to the literal, since it may be either `f32` or
+/// `f64` depending on the context. So instead we 
