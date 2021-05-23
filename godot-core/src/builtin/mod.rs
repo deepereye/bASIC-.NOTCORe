@@ -303,4 +303,16 @@ pub use real_mod::{consts as real_consts, real};
 /// let radians: real = 115.0.to_radians();
 /// ```
 /// But we can't add a suffix to the literal, since it may be either `f32` or
-/// `f64` depending on the context. So instead we 
+/// `f64` depending on the context. So instead we use our macro:
+/// ```
+/// use godot_core::builtin::real;
+///
+/// let radians: real = godot_core::real!(115.0).to_radians();
+/// ```
+#[macro_export]
+macro_rules! real {
+    ($f:literal) => {{
+        let f: $crate::builtin::real = $f;
+        f
+    }};
+}
