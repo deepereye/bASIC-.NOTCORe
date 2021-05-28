@@ -32,4 +32,19 @@ impl Rect2 {
         self.inner().size
     }
 
-    fn inner(se
+    fn inner(self) -> InnerRect {
+        unsafe { std::mem::transmute(self) }
+    }
+}
+
+impl Callable {
+    pub fn from_object_method<T, S>(object: Gd<T>, method: S) -> Self
+    where
+        T: GodotClass, // + Inherits<Object>,
+        S: Into<StringName>,
+    {
+        // upcast not needed
+        let method = method.into();
+        unsafe {
+            Self::from_sys_init_default(|self_ptr| {
+                let ctor = sys::builtin_fn!(callab
