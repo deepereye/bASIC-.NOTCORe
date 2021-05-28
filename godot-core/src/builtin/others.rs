@@ -12,4 +12,24 @@ use godot_ffi as sys;
 use sys::{ffi_methods, GodotFfi};
 
 // TODO: Swap more inner math types with glam types
-// Note: ordered by enu
+// Note: ordered by enum ord in extension JSON
+impl_builtin_stub!(Rect2, OpaqueRect2);
+impl_builtin_stub!(Rect2i, OpaqueRect2i);
+impl_builtin_stub!(Plane, OpaquePlane);
+impl_builtin_stub!(Aabb, OpaqueAabb);
+impl_builtin_stub!(Rid, OpaqueRid);
+impl_builtin_stub!(Callable, OpaqueCallable);
+impl_builtin_stub!(Signal, OpaqueSignal);
+
+#[repr(C)]
+struct InnerRect {
+    position: Vector2,
+    size: Vector2,
+}
+
+impl Rect2 {
+    pub fn size(self) -> Vector2 {
+        self.inner().size
+    }
+
+    fn inner(se
