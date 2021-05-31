@@ -47,4 +47,22 @@ impl Callable {
         let method = method.into();
         unsafe {
             Self::from_sys_init_default(|self_ptr| {
-                let ctor = sys::builtin_fn!(callab
+                let ctor = sys::builtin_fn!(callable_from_object_method);
+                let args = [object.sys_const(), method.sys_const()];
+                ctor(self_ptr, args.as_ptr());
+            })
+        }
+    }
+
+    #[doc(hidden)]
+    pub fn as_inner(&self) -> inner::InnerCallable {
+        inner::InnerCallable::from_outer(self)
+    }
+}
+
+impl_builtin_traits! {
+    for Callable {
+        // Default => callable_construct_default;
+        FromVariant => callable_from_variant;
+    }
+}
