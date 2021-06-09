@@ -388,3 +388,175 @@ macro_rules! impl_packed_array {
 
         impl GodotFfi for $PackedArray {
             ffi_methods! { type sys::GDExtensionTypePtr = *mut Opaque; .. }
+
+            unsafe fn from_sys_init_default(init_fn: impl FnOnce(sys::GDExtensionTypePtr)) -> Self {
+                let mut result = Self::default();
+                init_fn(result.sys_mut());
+                result
+            }
+
+        }
+    }
+}
+
+impl_packed_array!(
+    type_name: PackedByteArray,
+    element_type: u8,
+    opaque_type: OpaquePackedByteArray,
+    inner_type: InnerPackedByteArray,
+    argument_type: i64,
+    return_type: u8,
+    from_array: packed_byte_array_from_array,
+    operator_index: packed_byte_array_operator_index,
+    operator_index_const: packed_byte_array_operator_index_const,
+    trait_impls: {
+        Default => packed_byte_array_construct_default;
+        Clone => packed_byte_array_construct_copy;
+        Drop => packed_byte_array_destroy;
+        Eq => packed_byte_array_operator_equal;
+    },
+);
+
+impl_packed_array!(
+    type_name: PackedInt32Array,
+    element_type: i32,
+    opaque_type: OpaquePackedInt32Array,
+    inner_type: InnerPackedInt32Array,
+    argument_type: i64,
+    return_type: i32,
+    from_array: packed_int32_array_from_array,
+    operator_index: packed_int32_array_operator_index,
+    operator_index_const: packed_int32_array_operator_index_const,
+    trait_impls: {
+        Default => packed_int32_array_construct_default;
+        Clone => packed_int32_array_construct_copy;
+        Drop => packed_int32_array_destroy;
+        Eq => packed_int32_array_operator_equal;
+    },
+);
+
+impl_packed_array!(
+    type_name: PackedInt64Array,
+    element_type: i64,
+    opaque_type: OpaquePackedInt64Array,
+    inner_type: InnerPackedInt64Array,
+    argument_type: i64,
+    return_type: i64,
+    from_array: packed_int64_array_from_array,
+    operator_index: packed_int64_array_operator_index,
+    operator_index_const: packed_int64_array_operator_index_const,
+    trait_impls: {
+        Default => packed_int64_array_construct_default;
+        Clone => packed_int64_array_construct_copy;
+        Drop => packed_int64_array_destroy;
+        Eq => packed_int64_array_operator_equal;
+    },
+);
+
+impl_packed_array!(
+    type_name: PackedFloat32Array,
+    element_type: f32,
+    opaque_type: OpaquePackedFloat32Array,
+    inner_type: InnerPackedFloat32Array,
+    argument_type: f64,
+    return_type: f32,
+    from_array: packed_float32_array_from_array,
+    operator_index: packed_float32_array_operator_index,
+    operator_index_const: packed_float32_array_operator_index_const,
+    trait_impls: {
+        Default => packed_float32_array_construct_default;
+        Clone => packed_float32_array_construct_copy;
+        Drop => packed_float32_array_destroy;
+        PartialEq => packed_float32_array_operator_equal;
+    },
+);
+
+impl_packed_array!(
+    type_name: PackedFloat64Array,
+    element_type: f64,
+    opaque_type: OpaquePackedFloat64Array,
+    inner_type: InnerPackedFloat64Array,
+    argument_type: f64,
+    return_type: f64,
+    from_array: packed_float64_array_from_array,
+    operator_index: packed_float64_array_operator_index,
+    operator_index_const: packed_float64_array_operator_index_const,
+    trait_impls: {
+        Default => packed_float64_array_construct_default;
+        Clone => packed_float64_array_construct_copy;
+        Drop => packed_float64_array_destroy;
+        PartialEq => packed_float64_array_operator_equal;
+    },
+);
+
+impl_packed_array!(
+    type_name: PackedStringArray,
+    element_type: GodotString,
+    opaque_type: OpaquePackedStringArray,
+    inner_type: InnerPackedStringArray,
+    argument_type: GodotString,
+    return_type: TagString,
+    from_array: packed_string_array_from_array,
+    operator_index: packed_string_array_operator_index,
+    operator_index_const: packed_string_array_operator_index_const,
+    trait_impls: {
+        Default => packed_string_array_construct_default;
+        Clone => packed_string_array_construct_copy;
+        Drop => packed_string_array_destroy;
+        Eq => packed_string_array_operator_equal;
+    },
+);
+
+impl_packed_array!(
+    type_name: PackedVector2Array,
+    element_type: Vector2,
+    opaque_type: OpaquePackedVector2Array,
+    inner_type: InnerPackedVector2Array,
+    argument_type: Vector2,
+    return_type: TagType,
+    from_array: packed_vector2_array_from_array,
+    operator_index: packed_vector2_array_operator_index,
+    operator_index_const: packed_vector2_array_operator_index_const,
+    trait_impls: {
+        Default => packed_vector2_array_construct_default;
+        Clone => packed_vector2_array_construct_copy;
+        Drop => packed_vector2_array_destroy;
+        PartialEq => packed_vector2_array_operator_equal;
+    },
+);
+
+impl_packed_array!(
+    type_name: PackedVector3Array,
+    element_type: Vector3,
+    opaque_type: OpaquePackedVector3Array,
+    inner_type: InnerPackedVector3Array,
+    argument_type: Vector3,
+    return_type: TagType,
+    from_array: packed_vector3_array_from_array,
+    operator_index: packed_vector3_array_operator_index,
+    operator_index_const: packed_vector3_array_operator_index_const,
+    trait_impls: {
+        Default => packed_vector3_array_construct_default;
+        Clone => packed_vector3_array_construct_copy;
+        Drop => packed_vector3_array_destroy;
+        PartialEq => packed_vector3_array_operator_equal;
+    },
+);
+
+impl_packed_array!(
+    type_name: PackedColorArray,
+    element_type: Color,
+    opaque_type: OpaquePackedColorArray,
+    inner_type: InnerPackedColorArray,
+    argument_type: Color,
+    return_type: TagType,
+    from_array: packed_color_array_from_array,
+    operator_index: packed_color_array_operator_index,
+    operator_index_const: packed_color_array_operator_index_const,
+    trait_impls: {
+        Default => packed_color_array_construct_default;
+        Clone => packed_color_array_construct_copy;
+        Drop => packed_color_array_destroy;
+        PartialEq => packed_color_array_operator_equal;
+    },
+);
