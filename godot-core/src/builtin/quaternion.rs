@@ -245,3 +245,104 @@ impl Mul<Quaternion> for Quaternion {
 
     fn mul(self, other: Quaternion) -> Self {
         // TODO use super::glam?
+
+        let x = self.w * other.x + self.x * other.w + self.y * other.z - self.z * other.y;
+        let y = self.w * other.y + self.y * other.w + self.z * other.x - self.x * other.z;
+        let z = self.w * other.z + self.z * other.w + self.x * other.y - self.y * other.x;
+        let w = self.w * other.w - self.x * other.x - self.y * other.y - self.z * other.z;
+
+        Self::new(x, y, z, w)
+    }
+}
+
+impl GodotFfi for Quaternion {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
+}
+
+impl std::fmt::Display for Quaternion {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.to_glam().fmt(f)
+    }
+}
+
+impl Default for Quaternion {
+    fn default() -> Self {
+        Self::new(0.0, 0.0, 0.0, 1.0)
+    }
+}
+
+impl GlamConv for Quaternion {
+    type Glam = RQuat;
+}
+
+impl GlamType for RQuat {
+    type Mapped = Quaternion;
+
+    fn to_front(&self) -> Self::Mapped {
+        Quaternion::new(self.x, self.y, self.z, self.w)
+    }
+
+    fn from_front(mapped: &Self::Mapped) -> Self {
+        RQuat::from_xyzw(mapped.x, mapped.y, mapped.z, mapped.w)
+    }
+}
+
+impl MulAssign<Quaternion> for Quaternion {
+    fn mul_assign(&mut self, other: Quaternion) {
+        *self = *self * other
+    }
+}
+
+impl Mul<real> for Quaternion {
+    type Output = Self;
+
+    fn mul(self, other: real) -> Self {
+        Quaternion::new(
+            self.x * other,
+            self.y * other,
+            self.z * other,
+            self.w * other,
+        )
+    }
+}
+
+impl Mul<Quaternion> for real {
+    type Output = Quaternion;
+
+    fn mul(self, other: Quaternion) -> Quaternion {
+        other * self
+    }
+}
+
+impl MulAssign<real> for Quaternion {
+    fn mul_assign(&mut self, other: real) {
+        *self = *self * other
+    }
+}
+
+impl Div<real> for Quaternion {
+    type Output = Self;
+
+    fn div(self, other: real) -> Self {
+        Self::new(
+            self.x / other,
+            self.y / other,
+            self.z / other,
+            self.w / other,
+        )
+    }
+}
+
+impl DivAssign<real> for Quaternion {
+    fn div_assign(&mut self, other: real) {
+        *self = *self / other
+    }
+}
+
+impl Neg for Quaternion {
+    type Output = Self;
+
+    fn neg(self) -> Self {
+        Self::new(-self.x, -self.y, -self.z, -self.w)
+    }
+}
