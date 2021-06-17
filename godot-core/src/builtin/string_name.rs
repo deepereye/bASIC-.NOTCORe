@@ -14,3 +14,122 @@ use std::hash::{Hash, Hasher};
 
 #[repr(C)]
 pub struct StringName {
+    opaque: sys::types::OpaqueStringName,
+}
+
+impl StringName {
+    fn from_opaque(opaque: sys::types::OpaqueStringName) -> Self {
+        Self { opaque }
+    }
+
+    ffi_methods! {
+        type sys::GDExtensionStringNamePtr = *mut Opaque;
+
+        // Note: unlike from_sys, from_string_sys does not default-construct instance first. Typical usage in C++ is placement new.
+        fn from_string_sys = from_sys;
+        fn from_string_sys_init = from_sys_init;
+        fn string_sys = sys;
+        fn write_string_sys = write_sys;
+    }
+}
+
+impl GodotFfi for StringName {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Opaque; .. }
+
+    unsafe fn from_sys_init_default(init_fn: impl FnOnce(sys::GDExtensionTypePtr)) -> Self {
+        let mut result = Self::default();
+        init_fn(result.sys_mut());
+        result
+    }
+}
+
+impl_builtin_traits! {
+    for StringName {
+        Clone => string_name_construct_copy;
+        Drop => string_name_destroy;
+        Eq => string_name_operator_equal;
+        Ord => string_name_operator_less;
+    }
+}
+
+impl Default for StringName {
+    fn default() -> Self {
+        // Note: can't use from_sys_init(), as that calls the default constructor
+
+        let mut uninit = std::mem::MaybeUninit::<StringName>::uninit();
+
+        unsafe {
+            let self_ptr = (*uninit.as_mut_ptr()).sys_mut();
+            sys::builtin_call! {
+                string_name_construct_default(self_ptr, std::ptr::null_mut())
+            }
+
+            uninit.assume_init()
+        }
+    }
+}
+
+impl fmt::Display for StringName {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = GodotString::from(self);
+        <GodotString as fmt::Display>::fmt(&s, f)
+    }
+}
+
+/// Uses literal syntax from GDScript: `&"string_name"`
+impl fmt::Debug for StringName {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let string = GodotString::from(self);
+        write!(f, "&\"{string}\"")
+    }
+}
+
+impl Hash for StringName {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        // TODO use Godot hash via codegen
+        // C++: internal::gdn_interface->variant_get_ptr_builtin_method(GDEXTENSION_VARIANT_TYPE_STRING_NAME, "hash", 171192809);
+
+        self.to_string().hash(state)
+    }
+}
+
+impl From<&GodotString> for StringName {
+    fn from(s: &GodotString) -> Self {
+        unsafe {
+            Self::from_sys_init_default(|self_ptr| {
+                let ctor = sys::builtin_fn!(string_name_from_string);
+                let args = [s.sys_const()];
+                ctor(self_ptr, args.as_ptr());
+            })
+        }
+    }
+}
+
+impl<S> From<S> for StringName
+where
+    S: AsRef<str>,
+{
+    fn from(s: S) -> Self {
+        let intermediate = GodotString::from(s.as_ref());
+        Self::from(&intermediate)
+    }
+}
+
+impl From<&StringName> for GodotString {
+    fn from(s: &StringName) -> Self {
+        unsafe {
+            Self::from_sys_init_default(|self_ptr| {
+                let ctor = sys::builtin_fn!(string_from_string_name);
+                let args = [s.sys_const()];
+                ctor(self_ptr, args.as_ptr());
+            })
+        }
+    }
+}
+
+impl From<&StringName> for String {
+    fn from(s: &StringName) -> Self {
+        let intermediate = GodotString::from(s);
+        Self::from(&intermediate)
+    }
+}
