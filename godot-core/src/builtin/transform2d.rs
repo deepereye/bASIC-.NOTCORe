@@ -37,4 +37,18 @@ pub struct Transform2D {
     /// The second basis vector.
     ///
     /// This is equivalent to the `y` field from godot.
+    pub b: Vector2,
+
+    /// The origin of the transform. The coordinate space defined by this transform
+    /// starts at this point.
+    ///
+    /// _Godot equivalent: `Transform2D.origin`_
+    pub origin: Vector2,
+}
+
+impl Transform2D {
+    /// The identity transform, with no translation, rotation or scaling
+    /// applied. When applied to other data structures, `IDENTITY` performs no
+    /// transformation.
+    ///
    
