@@ -21,4 +21,20 @@ use super::{real, RAffine2, RMat2};
 /// Expressed as a 2x3 matrix, this transform consists of a two column vectors
 /// `a` and `b` representing the basis of the transform, as well as the origin:
 /// ```text
-/// [ a.
+/// [ a.x  b.x  origin.x ]
+/// [ a.y  b.y  origin.y ]
+/// ```
+///
+/// For methods that don't take translation into account, see [`Basis2D`].
+#[derive(Default, Copy, Clone, PartialEq, Debug)]
+#[repr(C)]
+pub struct Transform2D {
+    /// The first basis vector.
+    ///
+    /// This is equivalent to the `x` field from godot.
+    pub a: Vector2,
+
+    /// The second basis vector.
+    ///
+    /// This is equivalent to the `y` field from godot.
+   
