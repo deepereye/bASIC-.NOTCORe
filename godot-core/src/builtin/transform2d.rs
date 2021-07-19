@@ -93,4 +93,17 @@ impl Transform2D {
     /// `scale`, skew by `skew` and translate by `origin`.
     ///
     /// _Godot equivalent: `Transform2D(float rotation, Vector2 scale, float skew, Vector2 position)`_
-    pub fn from_angle_scale_skew_o
+    pub fn from_angle_scale_skew_origin(
+        angle: real,
+        scale: Vector2,
+        skew: real,
+        origin: Vector2,
+    ) -> Self {
+        // Translated from Godot's implementation
+
+        Self::from_basis_origin(
+            Basis2D::from_cols(
+                Vector2::new(angle.cos(), angle.sin()),
+                Vector2::new(-(angle + skew).sin(), (angle + skew).cos()),
+            )
+         
