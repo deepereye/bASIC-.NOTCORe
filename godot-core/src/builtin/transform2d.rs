@@ -61,4 +61,15 @@ impl Transform2D {
 
     /// The `Transform2D` that will flip something along its y axis.
     ///
-    /// _Godot equ
+    /// _Godot equivalent: `Transform2D.FLIP_Y`_
+    pub const FLIP_Y: Self = Self::from_basis_origin(Basis2D::FLIP_Y, Vector2::ZERO);
+
+    const fn from_basis_origin(basis: Basis2D, origin: Vector2) -> Self {
+        let [a, b] = basis.cols;
+        Self { a, b, origin }
+    }
+
+    /// Create a new `Transform2D` with the given column vectors.
+    ///
+    /// _Godot equivalent: `Transform2D(Vector2 x_axis, Vector2 y_axis, Vector2 origin)_
+    pu
