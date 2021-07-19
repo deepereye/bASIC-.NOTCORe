@@ -72,4 +72,16 @@ impl Transform2D {
     /// Create a new `Transform2D` with the given column vectors.
     ///
     /// _Godot equivalent: `Transform2D(Vector2 x_axis, Vector2 y_axis, Vector2 origin)_
-    pu
+    pub const fn from_cols(a: Vector2, b: Vector2, origin: Vector2) -> Self {
+        Self { a, b, origin }
+    }
+
+    /// Create a new `Transform2D` which will rotate by the given angle.
+    pub fn from_angle(angle: real) -> Self {
+        Self::from_angle_origin(angle, Vector2::ZERO)
+    }
+
+    /// Create a new `Transform2D` which will rotate by `angle` and translate
+    /// by `origin`.
+    ///
+    /// _Godot equivalent: `Transform2D(float rotation, Vector2 position)`_
