@@ -106,4 +106,15 @@ impl Transform2D {
                 Vector2::new(angle.cos(), angle.sin()),
                 Vector2::new(-(angle + skew).sin(), (angle + skew).cos()),
             )
-         
+            .scaled(scale),
+            origin,
+        )
+    }
+
+    /// Create a reference to the first two columns of the transform
+    /// interpreted as a [`Basis2D`].
+    fn basis<'a>(&'a self) -> &'a Basis2D {
+        // SAFETY: Both `Basis2D` and `Transform2D` are `repr(C)`, and the
+        // layout of `Basis2D` is a prefix of `Transform2D`
+
+        unsafe { std::mem::transmute::<&'a Transform2D, &'a Basis2D>(se
