@@ -117,4 +117,18 @@ impl Transform2D {
         // SAFETY: Both `Basis2D` and `Transform2D` are `repr(C)`, and the
         // layout of `Basis2D` is a prefix of `Transform2D`
 
-        unsafe { std::mem::transmute::<&'a Transform2D, &'a Basis2D>(se
+        unsafe { std::mem::transmute::<&'a Transform2D, &'a Basis2D>(self) }
+    }
+
+    /// Create a [`Basis2D`] from the first two columns of the transform.
+    fn to_basis(self) -> Basis2D {
+        Basis2D::from_cols(self.a, self.b)
+    }
+
+    /// Returns the inverse of the transform, under the assumption that the
+    /// transformation is composed of rotation, scaling and translation.
+    ///
+    /// _Godot equivalent: `Transform2D.affine_inverse()`_
+    #[must_use]
+    pub fn affine_inverse(self) -> Self {
+        self.glam(|aff| aff.i
