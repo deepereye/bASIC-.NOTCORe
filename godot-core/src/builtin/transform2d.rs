@@ -131,4 +131,22 @@ impl Transform2D {
     /// _Godot equivalent: `Transform2D.affine_inverse()`_
     #[must_use]
     pub fn affine_inverse(self) -> Self {
-        self.glam(|aff| aff.i
+        self.glam(|aff| aff.inverse())
+    }
+
+    /// Returns the transform's rotation (in radians).
+    ///
+    /// _Godot equivalent: `Transform2D.get_rotation()`_
+    pub fn rotation(&self) -> real {
+        self.basis().rotation()
+    }
+
+    /// Returns the transform's scale.
+    ///
+    /// _Godot equivalent: `Transform2D.get_scale()`_
+    #[must_use]
+    pub fn scale(&self) -> Vector2 {
+        self.basis().scale()
+    }
+
+    /// Returns the transform's skew 
