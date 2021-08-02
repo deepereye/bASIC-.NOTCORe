@@ -162,4 +162,13 @@ impl Transform2D {
     ///
     /// _Godot equivalent: `Transform2D.interpolate_with()`_
     #[must_use]
-    pub fn inter
+    pub fn interpolate_with(self, other: Self, weight: real) -> Self {
+        Self::from_angle_scale_skew_origin(
+            lerp_angle(self.rotation(), other.rotation(), weight),
+            self.scale().lerp(other.scale(), weight),
+            lerp_angle(self.skew(), other.skew(), weight),
+            self.origin.lerp(other.origin, weight),
+        )
+    }
+
+    /// Returns `true` if this transform and transform are approximately
