@@ -149,4 +149,17 @@ impl Transform2D {
         self.basis().scale()
     }
 
-    /// Returns the transform's skew 
+    /// Returns the transform's skew (in radians).
+    ///
+    /// _Godot equivalent: `Transform2D.get_skew()`_
+    #[must_use]
+    pub fn skew(&self) -> real {
+        self.basis().skew()
+    }
+
+    /// Returns a transform interpolated between this transform and another by
+    /// a given `weight` (on the range of 0.0 to 1.0).
+    ///
+    /// _Godot equivalent: `Transform2D.interpolate_with()`_
+    #[must_use]
+    pub fn inter
