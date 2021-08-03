@@ -182,4 +182,16 @@ impl Transform2D {
     }
 
     /// Returns `true` if this transform is finite, by calling
-    /// [`Vector2::is_f
+    /// [`Vector2::is_finite()`] on each component.
+    ///
+    /// _Godot equivalent: `Transform2D.is_finite()`_
+    pub fn is_finite(&self) -> bool {
+        self.a.is_finite() && self.b.is_finite() && self.origin.is_finite()
+    }
+
+    /// Returns the transform with the basis orthogonal (90 degrees), and
+    /// normalized axis vectors (scale of 1 or -1).
+    ///
+    /// _Godot equivalent: `Transform2D.orthonormalized()`_
+    #[must_use]
+    pub fn orthonormaliz
