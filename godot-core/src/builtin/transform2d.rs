@@ -201,4 +201,15 @@ impl Transform2D {
     /// Returns a copy of the transform rotated by the given `angle` (in radians).
     /// This method is an optimized version of multiplying the given transform `X`
     /// with a corresponding rotation transform `R` from the left, i.e., `R * X`.
-    /// This can be seen as transforming with respect to the global/parent
+    /// This can be seen as transforming with respect to the global/parent frame.
+    ///
+    /// _Godot equivalent: `Transform2D.rotated()`_
+    #[must_use]
+    pub fn rotated(self, angle: real) -> Self {
+        Self::from_angle(angle) * self
+    }
+
+    /// Returns a copy of the transform rotated by the given `angle` (in radians).
+    /// This method is an optimized version of multiplying the given transform `X`
+    /// with a corresponding rotation transform `R` from the right, i.e., `X * R`.
+    /// This can be seen as
