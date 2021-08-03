@@ -171,4 +171,15 @@ impl Transform2D {
         )
     }
 
-    /// Returns `true` if this transform and transform are approximately
+    /// Returns `true` if this transform and transform are approximately equal,
+    /// by calling `is_equal_approx` on each component.
+    ///
+    /// _Godot equivalent: `Transform2D.is_equal_approx()`_
+    pub fn is_equal_approx(&self, other: &Self) -> bool {
+        self.a.is_equal_approx(other.a)
+            && self.b.is_equal_approx(other.b)
+            && self.origin.is_equal_approx(other.origin)
+    }
+
+    /// Returns `true` if this transform is finite, by calling
+    /// [`Vector2::is_f
