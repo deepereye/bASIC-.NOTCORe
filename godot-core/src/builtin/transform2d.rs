@@ -222,4 +222,13 @@ impl Transform2D {
 
     /// Returns a copy of the transform scaled by the given scale factor.
     /// This method is an optimized version of multiplying the given transform `X`
-    /// with a corresponding scali
+    /// with a corresponding scaling transform `S` from the left, i.e., `S * X`.
+    /// This can be seen as transforming with respect to the global/parent frame.
+    ///
+    /// _Godot equivalent: `Transform2D.scaled()`_
+    #[must_use]
+    pub fn scaled(self, scale: Vector2) -> Self {
+        let mut basis = self.to_basis();
+        basis.set_row_a(basis.row_a() * scale.x);
+        basis.set_row_b(basis.row_b() * scale.y);
+        Self::from_basis_origin(basis
