@@ -231,4 +231,14 @@ impl Transform2D {
         let mut basis = self.to_basis();
         basis.set_row_a(basis.row_a() * scale.x);
         basis.set_row_b(basis.row_b() * scale.y);
-        Self::from_basis_origin(basis
+        Self::from_basis_origin(basis, self.origin * scale)
+    }
+
+    /// Returns a copy of the transform scaled by the given scale factor.
+    /// This method is an optimized version of multiplying the given transform `X`
+    /// with a corresponding scaling transform `S` from the right, i.e., `X * S`.
+    /// This can be seen as transforming with respect to the local frame.
+    ///
+    /// _Godot equivalent: `Transform2D.scaled_local()`_
+    #[must_use]
+    pub fn scaled_local(s
