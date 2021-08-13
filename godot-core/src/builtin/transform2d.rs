@@ -258,4 +258,13 @@ impl Transform2D {
 
     /// Returns a copy of the transform translated by the given offset.
     /// This method is an optimized version of multiplying the given transform `X`
-    /// wi
+    /// with a corresponding translation transform `T` from the right, i.e., `X * T`.
+    /// This can be seen as transforming with respect to the local frame.
+    ///
+    /// _Godot equivalent: `Transform2D.translated()`_
+    #[must_use]
+    pub fn translated_local(self, offset: Vector2) -> Self {
+        Self::from_cols(self.a, self.b, self.origin + (self.to_basis() * offset))
+    }
+
+    /// Returns a vector transformed (multiplied) by the basis matr
