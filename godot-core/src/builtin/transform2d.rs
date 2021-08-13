@@ -241,4 +241,11 @@ impl Transform2D {
     ///
     /// _Godot equivalent: `Transform2D.scaled_local()`_
     #[must_use]
-    pub fn scaled_local(s
+    pub fn scaled_local(self, scale: Vector2) -> Self {
+        Self::from_basis_origin(self.basis().scaled(scale), self.origin)
+    }
+
+    /// Returns a copy of the transform translated by the given offset.
+    /// This method is an optimized version of multiplying the given transform `X`
+    /// with a corresponding translation transform `T` from the left, i.e., `T * X`.
+    /// This can be seen as transforming with respect
