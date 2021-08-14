@@ -267,4 +267,15 @@ impl Transform2D {
         Self::from_cols(self.a, self.b, self.origin + (self.to_basis() * offset))
     }
 
-    /// Returns a vector transformed (multiplied) by the basis matr
+    /// Returns a vector transformed (multiplied) by the basis matrix.
+    /// This method does not account for translation (the origin vector).
+    ///
+    /// _Godot equivalent: `Transform2D.basis_xform()`_
+    pub fn basis_xform(&self, v: Vector2) -> Vector2 {
+        self.to_basis() * v
+    }
+
+    /// Returns a vector transformed (multiplied) by the inverse basis matrix.
+    /// This method does not account for translation (the origin vector).
+    ///
+    /// _Godot equivalent: `Transfo
