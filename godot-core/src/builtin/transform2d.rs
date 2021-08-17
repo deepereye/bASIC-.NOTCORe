@@ -296,4 +296,23 @@ impl Display for Transform2D {
     }
 }
 
-impl 
+impl Mul for Transform2D {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        self.glam2(&rhs, |a, b| a * b)
+    }
+}
+
+impl Mul<Vector2> for Transform2D {
+    type Output = Vector2;
+
+    fn mul(self, rhs: Vector2) -> Self::Output {
+        self.glam2(&rhs, |t, v| t.transform_point2(v))
+    }
+}
+
+impl Mul<real> for Transform2D {
+    type Output = Self;
+
+    
