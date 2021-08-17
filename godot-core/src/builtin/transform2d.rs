@@ -278,4 +278,22 @@ impl Transform2D {
     /// Returns a vector transformed (multiplied) by the inverse basis matrix.
     /// This method does not account for translation (the origin vector).
     ///
-    /// _Godot equivalent: `Transfo
+    /// _Godot equivalent: `Transform2D.basis_xform_inv()`_
+    pub fn basis_xform_inv(&self, v: Vector2) -> Vector2 {
+        self.basis().inverse() * v
+    }
+}
+
+impl Display for Transform2D {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // Godot output:
+        // [X: (1, 2), Y: (3, 4), O: (5, 6)]
+        // Where X,Y,O are the columns
+
+        let Transform2D { a, b, origin } = self;
+
+        write!(f, "[a: {a}, b: {b}, o: {origin}]")
+    }
+}
+
+impl 
