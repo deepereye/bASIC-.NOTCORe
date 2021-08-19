@@ -315,4 +315,19 @@ impl Mul<Vector2> for Transform2D {
 impl Mul<real> for Transform2D {
     type Output = Self;
 
-    
+    fn mul(self, rhs: real) -> Self::Output {
+        Self::from_cols(self.a * rhs, self.b * rhs, self.origin * rhs)
+    }
+}
+
+impl GlamType for RAffine2 {
+    type Mapped = Transform2D;
+
+    fn to_front(&self) -> Self::Mapped {
+        Transform2D::from_basis_origin(self.matrix2.to_front(), self.translation.to_front())
+    }
+
+    fn from_front(mapped: &Self::Mapped) -> Self {
+        Self {
+            matrix2: mapped.basis().to_glam(),
+       
