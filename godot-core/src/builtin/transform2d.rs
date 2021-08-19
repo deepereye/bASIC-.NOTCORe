@@ -330,4 +330,22 @@ impl GlamType for RAffine2 {
     fn from_front(mapped: &Self::Mapped) -> Self {
         Self {
             matrix2: mapped.basis().to_glam(),
-       
+            translation: mapped.origin.to_glam(),
+        }
+    }
+}
+
+impl GlamConv for Transform2D {
+    type Glam = RAffine2;
+}
+
+impl GodotFfi for Transform2D {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
+}
+
+/// A 2x2 matrix, typically used as an orthogonal basis for [`Transform2D`].
+///
+/// Indexing into a `Basis2D` is done in a column-major order, meaning that
+/// `basis[0]` is the first basis-vector.
+///
+/// This has no direct equivalent in Godot, but
