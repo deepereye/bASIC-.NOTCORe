@@ -348,4 +348,18 @@ impl GodotFfi for Transform2D {
 /// Indexing into a `Basis2D` is done in a column-major order, meaning that
 /// `basis[0]` is the first basis-vector.
 ///
-/// This has no direct equivalent in Godot, but
+/// This has no direct equivalent in Godot, but is the same as the `x` and `y`
+/// vectors from a `Transform2D`.
+#[derive(Copy, Clone, PartialEq, Debug)]
+#[repr(C)]
+pub(crate) struct Basis2D {
+    /// The columns of the matrix.
+    cols: [Vector2; 2],
+}
+
+impl Basis2D {
+    /// The identity basis, with no rotation or scaling applied.
+    pub(crate) const IDENTITY: Self = Self::from_diagonal(1.0, 1.0);
+
+    /// The basis that will flip something along the X axis when used in a
+    /// transformatio
