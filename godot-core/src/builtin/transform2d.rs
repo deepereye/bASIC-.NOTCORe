@@ -362,4 +362,15 @@ impl Basis2D {
     pub(crate) const IDENTITY: Self = Self::from_diagonal(1.0, 1.0);
 
     /// The basis that will flip something along the X axis when used in a
-    /// transformatio
+    /// transformation.
+    pub(crate) const FLIP_X: Self = Self::from_diagonal(-1.0, 1.0);
+
+    /// The basis that will flip something along the X axis when used in a
+    /// transformation.
+    pub(crate) const FLIP_Y: Self = Self::from_diagonal(1.0, -1.0);
+
+    /// Create a diagonal matrix from the given values.
+    pub(crate) const fn from_diagonal(x: real, y: real) -> Self {
+        Self::from_cols(Vector2::new(x, 0.0), Vector2::new(0.0, y))
+    }
+
