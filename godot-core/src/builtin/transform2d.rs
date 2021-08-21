@@ -374,3 +374,17 @@ impl Basis2D {
         Self::from_cols(Vector2::new(x, 0.0), Vector2::new(0.0, y))
     }
 
+    /// Create a new basis from 2 basis vectors.
+    pub(crate) const fn from_cols(x: Vector2, y: Vector2) -> Self {
+        Self { cols: [x, y] }
+    }
+
+    /// Create a `Basis2D` from an angle.
+    pub(crate) fn from_angle(angle: real) -> Self {
+        RMat2::from_angle(angle).to_front()
+    }
+
+    /// Returns the scale of the matrix.
+    #[must_use]
+    pub(crate) fn scale(&self) -> Vector2 {
+        let det_sign = self.
