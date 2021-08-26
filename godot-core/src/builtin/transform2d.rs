@@ -387,4 +387,18 @@ impl Basis2D {
     /// Returns the scale of the matrix.
     #[must_use]
     pub(crate) fn scale(&self) -> Vector2 {
-        let det_sign = self.
+        let det_sign = self.determinant().signum();
+        Vector2::new(self.cols[0].length(), det_sign * self.cols[1].length())
+    }
+
+    /// Introduces an additional scaling.
+    #[must_use]
+    pub(crate) fn scaled(self, scale: Vector2) -> Self {
+        Self {
+            cols: [self.cols[0] * scale.x, self.cols[1] * scale.y],
+        }
+    }
+
+    /// Returns the determinant of the matrix.
+    pub(crate) fn determinant(&self) -> real {
+        self.glam(|mat| mat.dete
