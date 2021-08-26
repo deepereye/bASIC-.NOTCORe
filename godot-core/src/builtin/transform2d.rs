@@ -437,4 +437,20 @@ impl Basis2D {
 
     /// Returns the skew of the matrix
     #[must_use]
-    pub(crate) fn skew(&self) ->
+    pub(crate) fn skew(&self) -> real {
+        // Translated from Godot
+        let det_sign = self.determinant().signum();
+        self.cols[0]
+            .normalized()
+            .dot(det_sign * self.cols[1].normalized())
+            .acos()
+            - PI * 0.5
+    }
+
+    pub(crate) fn set_row_a(&mut self, v: Vector2) {
+        self.cols[0].x = v.x;
+        self.cols[1].x = v.y;
+    }
+
+    pub(crate) fn row_a(&self) -> Vector2 {
+        Vector2::new(self.cols[0].x, self.c
