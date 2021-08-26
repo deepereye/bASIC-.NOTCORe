@@ -401,4 +401,22 @@ impl Basis2D {
 
     /// Returns the determinant of the matrix.
     pub(crate) fn determinant(&self) -> real {
-        self.glam(|mat| mat.dete
+        self.glam(|mat| mat.determinant())
+    }
+
+    /// Returns the inverse of the matrix.
+    #[must_use]
+    pub fn inverse(self) -> Self {
+        self.glam(|mat| mat.inverse())
+    }
+
+    /// Returns the orthonormalized version of the basis.
+    #[must_use]
+    pub(crate) fn orthonormalized(self) -> Self {
+        assert!(
+            !is_equal_approx(self.determinant(), 0.0),
+            "Determinant should not be zero."
+        );
+
+        // Gram-Schmidt Process
+        let m
