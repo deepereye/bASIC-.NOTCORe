@@ -419,4 +419,22 @@ impl Basis2D {
         );
 
         // Gram-Schmidt Process
-        let m
+        let mut x = self.cols[0];
+        let mut y = self.cols[1];
+
+        x = x.normalized();
+        y = y - x * (x.dot(y));
+        y = y.normalized();
+
+        Self::from_cols(x, y)
+    }
+
+    /// Returns the rotation of the matrix
+    pub(crate) fn rotation(&self) -> real {
+        // Translated from Godot
+        real::atan2(self.cols[0].y, self.cols[0].x)
+    }
+
+    /// Returns the skew of the matrix
+    #[must_use]
+    pub(crate) fn skew(&self) ->
