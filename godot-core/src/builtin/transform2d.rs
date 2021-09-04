@@ -453,4 +453,24 @@ impl Basis2D {
     }
 
     pub(crate) fn row_a(&self) -> Vector2 {
-        Vector2::new(self.cols[0].x, self.c
+        Vector2::new(self.cols[0].x, self.cols[1].x)
+    }
+
+    pub(crate) fn set_row_b(&mut self, v: Vector2) {
+        self.cols[0].y = v.x;
+        self.cols[1].y = v.y;
+    }
+
+    pub(crate) fn row_b(&self) -> Vector2 {
+        Vector2::new(self.cols[0].y, self.cols[1].y)
+    }
+}
+
+impl Default for Basis2D {
+    fn default() -> Self {
+        Self::IDENTITY
+    }
+}
+
+impl Display for Basis2D {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> s
