@@ -473,4 +473,28 @@ impl Default for Basis2D {
 }
 
 impl Display for Basis2D {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> s
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let [a, b] = self.cols;
+
+        write!(f, "[a: {a}, b: {b})]")
+    }
+}
+
+impl Mul for Basis2D {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        self.glam2(&rhs, |a, b| a * b)
+    }
+}
+
+impl Mul<real> for Basis2D {
+    type Output = Self;
+
+    fn mul(self, rhs: real) -> Self::Output {
+        (self.to_glam() * rhs).to_front()
+    }
+}
+
+impl MulAssign<real> for Basis2D {
+    fn mul_
