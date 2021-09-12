@@ -497,4 +497,23 @@ impl Mul<real> for Basis2D {
 }
 
 impl MulAssign<real> for Basis2D {
-    fn mul_
+    fn mul_assign(&mut self, rhs: real) {
+        self.cols[0] *= rhs;
+        self.cols[1] *= rhs;
+    }
+}
+
+impl Mul<Vector2> for Basis2D {
+    type Output = Vector2;
+
+    fn mul(self, rhs: Vector2) -> Self::Output {
+        self.glam2(&rhs, |a, b| a * b)
+    }
+}
+
+impl GlamType for RMat2 {
+    type Mapped = Basis2D;
+
+    fn to_front(&self) -> Self::Mapped {
+        Basis2D {
+            cols: [self.col(0).to_front(), self.col(1).to_front()]
