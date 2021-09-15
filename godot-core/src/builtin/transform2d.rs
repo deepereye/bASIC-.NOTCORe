@@ -516,4 +516,26 @@ impl GlamType for RMat2 {
 
     fn to_front(&self) -> Self::Mapped {
         Basis2D {
-            cols: [self.col(0).to_front(), self.col(1).to_front()]
+            cols: [self.col(0).to_front(), self.col(1).to_front()],
+        }
+    }
+
+    fn from_front(mapped: &Self::Mapped) -> Self {
+        Self::from_cols(mapped.cols[0].to_glam(), mapped.cols[1].to_glam())
+    }
+}
+
+impl GlamConv for Basis2D {
+    type Glam = RMat2;
+}
+
+#[cfg(test)]
+mod test {
+    use crate::assert_eq_approx;
+
+    use super::*;
+
+    #[test]
+    fn transform2d_constructors_correct() {
+        let trans = Transform2D::from_angle(real!(115.0).to_radians());
+        assert_eq_approx!(tra
