@@ -560,4 +560,20 @@ mod test {
             trans.scale(),
             Vector2::new(3.6, 8.0),
             Vector2::is_equal_approx
-    
+        );
+        assert_eq_approx!(trans.skew(), real!(20.0).to_radians(), is_equal_approx);
+        assert_eq_approx!(
+            trans.origin,
+            Vector2::new(2.4, 6.8),
+            Vector2::is_equal_approx
+        );
+    }
+
+    // Tests translated from Godot.
+
+    const DUMMY_TRANSFORM: Transform2D = Transform2D::from_basis_origin(
+        Basis2D::from_cols(Vector2::new(1.0, 2.0), Vector2::new(3.0, 4.0)),
+        Vector2::new(5.0, 6.0),
+    );
+
+ 
