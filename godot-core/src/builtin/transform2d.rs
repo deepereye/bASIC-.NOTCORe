@@ -538,4 +538,15 @@ mod test {
     #[test]
     fn transform2d_constructors_correct() {
         let trans = Transform2D::from_angle(real!(115.0).to_radians());
-        assert_eq_approx!(tra
+        assert_eq_approx!(trans.rotation(), real!(115.0).to_radians(), is_equal_approx);
+
+        let trans =
+            Transform2D::from_angle_origin(real!(-80.0).to_radians(), Vector2::new(1.4, 9.8));
+        assert_eq_approx!(trans.rotation(), real!(-80.0).to_radians(), is_equal_approx);
+        assert_eq_approx!(
+            trans.origin,
+            Vector2::new(1.4, 9.8),
+            Vector2::is_equal_approx
+        );
+
+        let trans = 
