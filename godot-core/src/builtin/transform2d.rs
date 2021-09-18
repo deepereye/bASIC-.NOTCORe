@@ -588,4 +588,18 @@ mod test {
 
         // Check both versions against left and right multiplications.
         let t = Transform2D::IDENTITY.translated(offset);
-    
+        assert_eq!(DUMMY_TRANSFORM.translated(offset), t * DUMMY_TRANSFORM);
+        assert_eq!(
+            DUMMY_TRANSFORM.translated_local(offset),
+            DUMMY_TRANSFORM * t
+        );
+    }
+
+    #[test]
+    fn scaling() {
+        let scaling = Vector2::new(1.0, 2.0);
+
+        // Both versions should give the same result applied to identity.
+        assert_eq!(
+            Transform2D::IDENTITY.scaled(scaling),
+            Transform
