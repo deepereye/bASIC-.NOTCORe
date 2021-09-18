@@ -576,4 +576,16 @@ mod test {
         Vector2::new(5.0, 6.0),
     );
 
- 
+    #[test]
+    fn translation() {
+        let offset = Vector2::new(1.0, 2.0);
+
+        // Both versions should give the same result applied to identity.
+        assert_eq!(
+            Transform2D::IDENTITY.translated(offset),
+            Transform2D::IDENTITY.translated_local(offset)
+        );
+
+        // Check both versions against left and right multiplications.
+        let t = Transform2D::IDENTITY.translated(offset);
+    
