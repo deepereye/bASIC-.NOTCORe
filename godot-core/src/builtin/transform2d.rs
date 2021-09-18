@@ -549,4 +549,15 @@ mod test {
             Vector2::is_equal_approx
         );
 
-        let trans = 
+        let trans = Transform2D::from_angle_scale_skew_origin(
+            real!(170.0).to_radians(),
+            Vector2::new(3.6, 8.0),
+            real!(20.0).to_radians(),
+            Vector2::new(2.4, 6.8),
+        );
+        assert_eq_approx!(trans.rotation(), real!(170.0).to_radians(), is_equal_approx);
+        assert_eq_approx!(
+            trans.scale(),
+            Vector2::new(3.6, 8.0),
+            Vector2::is_equal_approx
+    
