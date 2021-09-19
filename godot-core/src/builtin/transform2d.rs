@@ -602,4 +602,17 @@ mod test {
         // Both versions should give the same result applied to identity.
         assert_eq!(
             Transform2D::IDENTITY.scaled(scaling),
-            Transform
+            Transform2D::IDENTITY.scaled_local(scaling)
+        );
+
+        // Check both versions against left and right multiplications.
+        let s: Transform2D = Transform2D::IDENTITY.scaled(scaling);
+        assert_eq!(DUMMY_TRANSFORM.scaled(scaling), s * DUMMY_TRANSFORM);
+        assert_eq!(DUMMY_TRANSFORM.scaled_local(scaling), DUMMY_TRANSFORM * s);
+    }
+
+    #[test]
+    fn rotation() {
+        let phi = 1.0;
+
+        // Both versions should give the same result applied to identity
