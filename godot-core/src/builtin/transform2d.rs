@@ -615,4 +615,16 @@ mod test {
     fn rotation() {
         let phi = 1.0;
 
-        // Both versions should give the same result applied to identity
+        // Both versions should give the same result applied to identity.
+        assert_eq!(
+            Transform2D::IDENTITY.rotated(phi),
+            Transform2D::IDENTITY.rotated_local(phi)
+        );
+
+        // Check both versions against left and right multiplications.
+        let r: Transform2D = Transform2D::IDENTITY.rotated(phi);
+        assert_eq!(DUMMY_TRANSFORM.rotated(phi), r * DUMMY_TRANSFORM);
+        assert_eq!(DUMMY_TRANSFORM.rotated_local(phi), DUMMY_TRANSFORM * r);
+    }
+
+    #[t
