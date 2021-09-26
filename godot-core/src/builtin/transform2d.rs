@@ -627,4 +627,15 @@ mod test {
         assert_eq!(DUMMY_TRANSFORM.rotated_local(phi), DUMMY_TRANSFORM * r);
     }
 
-    #[t
+    #[test]
+    fn interpolation() {
+        let rotate_scale_skew_pos: Transform2D = Transform2D::from_angle_scale_skew_origin(
+            real!(170.0).to_radians(),
+            Vector2::new(3.6, 8.0),
+            real!(20.0).to_radians(),
+            Vector2::new(2.4, 6.8),
+        );
+
+        let rotate_scale_skew_pos_halfway: Transform2D = Transform2D::from_angle_scale_skew_origin(
+            real!(85.0).to_radians(),
+            Vector2::new(2.3
