@@ -638,4 +638,17 @@ mod test {
 
         let rotate_scale_skew_pos_halfway: Transform2D = Transform2D::from_angle_scale_skew_origin(
             real!(85.0).to_radians(),
-            Vector2::new(2.3
+            Vector2::new(2.3, 4.5),
+            real!(10.0).to_radians(),
+            Vector2::new(1.2, 3.4),
+        );
+        let interpolated: Transform2D =
+            Transform2D::IDENTITY.interpolate_with(rotate_scale_skew_pos, 0.5);
+        assert_eq_approx!(
+            interpolated.origin,
+            rotate_scale_skew_pos_halfway.origin,
+            Vector2::is_equal_approx
+        );
+        assert_eq_approx!(
+            interpolated.rotation(),
+            rotate_scale_skew_pos_halfway.ro
