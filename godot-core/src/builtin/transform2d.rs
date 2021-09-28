@@ -651,4 +651,19 @@ mod test {
         );
         assert_eq_approx!(
             interpolated.rotation(),
-            rotate_scale_skew_pos_halfway.ro
+            rotate_scale_skew_pos_halfway.rotation(),
+            is_equal_approx
+        );
+        assert_eq_approx!(
+            interpolated.scale(),
+            rotate_scale_skew_pos_halfway.scale(),
+            Vector2::is_equal_approx
+        );
+        assert_eq_approx!(
+            interpolated.skew(),
+            rotate_scale_skew_pos_halfway.skew(),
+            is_equal_approx
+        );
+        assert_eq_approx!(
+            &interpolated,
+            &rotate_s
