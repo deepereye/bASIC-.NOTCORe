@@ -666,4 +666,18 @@ mod test {
         );
         assert_eq_approx!(
             &interpolated,
-            &rotate_s
+            &rotate_scale_skew_pos_halfway,
+            Transform2D::is_equal_approx
+        );
+        let interpolated = rotate_scale_skew_pos.interpolate_with(Transform2D::IDENTITY, 0.5);
+        assert_eq_approx!(
+            &interpolated,
+            &rotate_scale_skew_pos_halfway,
+            Transform2D::is_equal_approx
+        );
+    }
+
+    #[test]
+    fn finite_number_checks() {
+        let x: Vector2 = Vector2::new(0.0, 1.0);
+        let infinite: V
