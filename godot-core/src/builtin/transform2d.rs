@@ -680,4 +680,15 @@ mod test {
     #[test]
     fn finite_number_checks() {
         let x: Vector2 = Vector2::new(0.0, 1.0);
-        let infinite: V
+        let infinite: Vector2 = Vector2::new(real::NAN, real::NAN);
+
+        assert!(
+            Transform2D::from_basis_origin(Basis2D::from_cols(x, x), x).is_finite(),
+            "let with: Transform2D all components finite should be finite",
+        );
+
+        assert!(
+            !Transform2D::from_basis_origin(Basis2D::from_cols(infinite, x), x).is_finite(),
+            "let with: Transform2D one component infinite should not be finite.",
+        );
+  
