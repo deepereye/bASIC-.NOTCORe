@@ -710,4 +710,13 @@ mod test {
         );
         assert!(
             !Transform2D::from_basis_origin(Basis2D::from_cols(x, infinite), infinite).is_finite(),
-            "let wi
+            "let with: Transform2D two components infinite should not be finite.",
+        );
+
+        assert!(
+            !Transform2D::from_basis_origin(Basis2D::from_cols(infinite, infinite), infinite)
+                .is_finite(),
+            "let with: Transform2D three components infinite should not be finite.",
+        );
+    }
+}
