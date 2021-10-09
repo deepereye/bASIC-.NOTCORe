@@ -16,4 +16,15 @@ use super::{Basis, Projection, Vector3};
 ///
 /// Used for 3D linear transformations. Uses a basis + origin representation.
 ///
-/// Ex
+/// Expressed as a 3x4 matrix, this transform consists of 3 basis (column)
+/// vectors `a`, `b`, `c` as well as an origin `o`:
+/// ```text
+/// [ a.x  b.x  c.x  o.x ]
+/// [ a.y  b.y  c.y  o.y ]
+/// [ a.z  b.z  c.z  o.z ]
+/// ```
+#[derive(Default, Copy, Clone, PartialEq, Debug)]
+#[repr(C)]
+pub struct Transform3D {
+    /// The basis is a matrix containing 3 vectors as its columns. They can be
+    /// interpreted as the basis vectors of the transf
