@@ -40,4 +40,16 @@ impl Transform3D {
     /// transformation.
     ///
     /// _Godot equivalent: `Transform3D.IDENTITY`_
-    pub const IDENTITY: Self = Self::new(Basis
+    pub const IDENTITY: Self = Self::new(Basis::IDENTITY, Vector3::ZERO);
+
+    /// `Transform3D` with mirroring applied perpendicular to the YZ plane.
+    ///
+    /// _Godot equivalent: `Transform3D.FLIP_X`_
+    pub const FLIP_X: Self = Self::new(Basis::FLIP_X, Vector3::ZERO);
+
+    /// `Transform3D` with mirroring applied perpendicular to the XZ plane.
+    ///
+    /// _Godot equivalent: `Transform3D.FLIP_Y`_
+    pub const FLIP_Y: Self = Self::new(Basis::FLIP_Y, Vector3::ZERO);
+
+    /// `Transform3D` with mirroring applied perpendi
