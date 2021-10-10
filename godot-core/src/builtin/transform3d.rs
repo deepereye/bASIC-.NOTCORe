@@ -27,4 +27,17 @@ use super::{Basis, Projection, Vector3};
 #[repr(C)]
 pub struct Transform3D {
     /// The basis is a matrix containing 3 vectors as its columns. They can be
-    /// interpreted as the basis vectors of the transf
+    /// interpreted as the basis vectors of the transformed coordinate system.
+    pub basis: Basis,
+
+    /// The new origin of the transformed coordinate system.
+    pub origin: Vector3,
+}
+
+impl Transform3D {
+    /// The identity transform, with no translation, rotation or scaling
+    /// applied. When applied to other data structures, `IDENTITY` performs no
+    /// transformation.
+    ///
+    /// _Godot equivalent: `Transform3D.IDENTITY`_
+    pub const IDENTITY: Self = Self::new(Basis
