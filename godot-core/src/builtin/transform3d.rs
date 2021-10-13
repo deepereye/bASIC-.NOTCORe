@@ -52,4 +52,18 @@ impl Transform3D {
     /// _Godot equivalent: `Transform3D.FLIP_Y`_
     pub const FLIP_Y: Self = Self::new(Basis::FLIP_Y, Vector3::ZERO);
 
-    /// `Transform3D` with mirroring applied perpendi
+    /// `Transform3D` with mirroring applied perpendicular to the XY plane.
+    ///
+    /// _Godot equivalent: `Transform3D.FLIP_Z`_
+    pub const FLIP_Z: Self = Self::new(Basis::FLIP_Z, Vector3::ZERO);
+
+    /// Create a new transform from a [`Basis`] and a [`Vector3`].
+    ///
+    /// _Godot equivalent: Transform3D(Basis basis, Vector3 origin)_
+    pub const fn new(basis: Basis, origin: Vector3) -> Self {
+        Self { basis, origin }
+    }
+
+    /// Create a new transform from 4 matrix-columns.
+    ///
+    /// _Godot equivalent: Transform3D(Vecto
