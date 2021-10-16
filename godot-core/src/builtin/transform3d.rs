@@ -66,4 +66,15 @@ impl Transform3D {
 
     /// Create a new transform from 4 matrix-columns.
     ///
-    /// _Godot equivalent: Transform3D(Vecto
+    /// _Godot equivalent: Transform3D(Vector3 x_axis, Vector3 y_axis, Vector3 z_axis, Vector3 origin)_
+    pub const fn from_cols(a: Vector3, b: Vector3, c: Vector3, origin: Vector3) -> Self {
+        Self {
+            basis: Basis::from_cols(a, b, c),
+            origin,
+        }
+    }
+
+    /// Constructs a Transform3d from a Projection by trimming the last row of
+    /// the projection matrix.
+    ///
+    /// _Godot equivalent: Transform3D(Projection from)_
