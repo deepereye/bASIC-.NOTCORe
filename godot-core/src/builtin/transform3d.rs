@@ -85,4 +85,18 @@ impl Transform3D {
         let o = Vector3::new(proj.cols[3].x, proj.cols[3].y, proj.cols[3].z);
 
         Self {
-            basis: Basis::fro
+            basis: Basis::from_cols(a, b, c),
+            origin: o,
+        }
+    }
+
+    /// Returns the inverse of the transform, under the assumption that the
+    /// transformation is composed of rotation, scaling and translation.
+    ///
+    /// _Godot equivalent: Transform3D.affine_inverse()_
+    #[must_use]
+    pub fn affine_inverse(self) -> Self {
+        self.glam(|aff| aff.inverse())
+    }
+
+    /// Returns a transform interpolated between this tr
