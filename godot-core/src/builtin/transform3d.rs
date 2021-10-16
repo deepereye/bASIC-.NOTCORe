@@ -78,3 +78,11 @@ impl Transform3D {
     /// the projection matrix.
     ///
     /// _Godot equivalent: Transform3D(Projection from)_
+    pub fn from_projection(proj: Projection) -> Self {
+        let a = Vector3::new(proj.cols[0].x, proj.cols[0].y, proj.cols[0].z);
+        let b = Vector3::new(proj.cols[1].x, proj.cols[1].y, proj.cols[1].z);
+        let c = Vector3::new(proj.cols[2].x, proj.cols[2].y, proj.cols[2].z);
+        let o = Vector3::new(proj.cols[3].x, proj.cols[3].y, proj.cols[3].z);
+
+        Self {
+            basis: Basis::fro
