@@ -110,4 +110,17 @@ impl Transform3D {
         let src_loc = self.origin;
 
         let dst_scale = other.basis.scale();
-        let dst_rot = oth
+        let dst_rot = other.basis.to_quat().normalized();
+        let dst_loc = other.origin;
+
+        let mut basis = Basis::from_scale(src_scale.lerp(dst_scale, weight));
+        basis = Basis::from_quat(src_rot.slerp(dst_rot, weight)) * basis;
+
+        Self {
+            basis,
+            origin: src_loc.lerp(dst_loc, weight),
+        }
+    }
+
+    /// Returns `true if this transform and transform are approximately equal, by
+    /// calling is_equal_ap
