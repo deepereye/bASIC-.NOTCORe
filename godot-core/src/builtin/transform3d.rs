@@ -99,4 +99,15 @@ impl Transform3D {
         self.glam(|aff| aff.inverse())
     }
 
-    /// Returns a transform interpolated between this tr
+    /// Returns a transform interpolated between this transform and another by
+    /// a given weight (on the range of 0.0 to 1.0).
+    ///
+    /// _Godot equivalent: Transform3D.interpolate_with()_
+    #[must_use]
+    pub fn interpolate_with(self, other: Self, weight: real) -> Self {
+        let src_scale = self.basis.scale();
+        let src_rot = self.basis.to_quat().normalized();
+        let src_loc = self.origin;
+
+        let dst_scale = other.basis.scale();
+        let dst_rot = oth
