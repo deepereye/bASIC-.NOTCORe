@@ -133,4 +133,16 @@ impl Transform3D {
     /// Returns `true if this transform is finite by calling `is_finite` on the
     /// basis and origin.
     ///
-    /// _Godot equivalent: Transform3D.is_
+    /// _Godot equivalent: Transform3D.is_finite()_
+    pub fn is_finite(&self) -> bool {
+        self.basis.is_finite() && self.origin.is_finite()
+    }
+
+    /// Returns a copy of the transform rotated such that the forward axis (-Z)
+    /// points towards the `target` position.
+    ///
+    /// See [`Basis::new_looking_at()`] for more information.
+    ///
+    /// _Godot equivalent: Transform3D.looking_at()_
+    #[must_use]
+    pub fn looking_at(self, target: Vect
