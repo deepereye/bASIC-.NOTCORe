@@ -123,4 +123,14 @@ impl Transform3D {
     }
 
     /// Returns `true if this transform and transform are approximately equal, by
-    /// calling is_equal_ap
+    /// calling is_equal_approx each basis and origin.
+    ///
+    /// _Godot equivalent: Transform3D.is_equal_approx()_
+    pub fn is_equal_approx(&self, other: &Self) -> bool {
+        self.basis.is_equal_approx(&other.basis) && self.origin.is_equal_approx(other.origin)
+    }
+
+    /// Returns `true if this transform is finite by calling `is_finite` on the
+    /// basis and origin.
+    ///
+    /// _Godot equivalent: Transform3D.is_
