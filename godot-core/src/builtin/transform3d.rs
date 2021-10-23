@@ -145,4 +145,18 @@ impl Transform3D {
     ///
     /// _Godot equivalent: Transform3D.looking_at()_
     #[must_use]
-    pub fn looking_at(self, target: Vect
+    pub fn looking_at(self, target: Vector3, up: Vector3) -> Self {
+        Self {
+            basis: Basis::new_looking_at(target - self.origin, up),
+            origin: self.origin,
+        }
+    }
+
+    /// Returns the transform with the basis orthogonal (90 degrees), and
+    /// normalized axis vectors (scale of 1 or -1).
+    ///
+    /// _Godot equivalent: Transform3D.orthonormalized()_
+    #[must_use]
+    pub fn orthonormalized(self) -> Self {
+        Self {
+            basis: self.basis.orthonormal
