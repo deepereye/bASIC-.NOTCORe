@@ -159,4 +159,14 @@ impl Transform3D {
     #[must_use]
     pub fn orthonormalized(self) -> Self {
         Self {
-            basis: self.basis.orthonormal
+            basis: self.basis.orthonormalized(),
+            origin: self.origin,
+        }
+    }
+
+    /// Returns a copy of the transform rotated by the given `angle` (in radians).
+    /// This method is an optimized version of multiplying the given transform `X`
+    /// with a corresponding rotation transform `R` from the left, i.e., `R * X`.
+    /// This can be seen as transforming with respect to the global/parent frame.
+    ///
+    //
