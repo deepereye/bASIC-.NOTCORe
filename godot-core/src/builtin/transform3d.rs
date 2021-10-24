@@ -169,4 +169,14 @@ impl Transform3D {
     /// with a corresponding rotation transform `R` from the left, i.e., `R * X`.
     /// This can be seen as transforming with respect to the global/parent frame.
     ///
-    //
+    /// _Godot equivalent: `Transform2D.rotated()`_
+    #[must_use]
+    pub fn rotated(self, axis: Vector3, angle: real) -> Self {
+        let rotation = Basis::from_axis_angle(axis, angle);
+        Self {
+            basis: rotation * self.basis,
+            origin: rotation * self.origin,
+        }
+    }
+    /// Returns a copy of the transform rotated by the given `angle` (in radians).
+    /// This method is an optimized version of m
