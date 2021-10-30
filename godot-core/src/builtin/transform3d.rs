@@ -179,4 +179,13 @@ impl Transform3D {
         }
     }
     /// Returns a copy of the transform rotated by the given `angle` (in radians).
-    /// This method is an optimized version of m
+    /// This method is an optimized version of multiplying the given transform `X`
+    /// with a corresponding rotation transform `R` from the right, i.e., `X * R`.
+    /// This can be seen as transforming with respect to the local frame.
+    ///
+    /// _Godot equivalent: `Transform2D.rotated_local()`_
+    #[must_use]
+    pub fn rotated_local(self, axis: Vector3, angle: real) -> Self {
+        Self {
+            basis: self.basis * Basis::from_axis_angle(axis, angle),
+        
