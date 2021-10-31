@@ -199,4 +199,15 @@ impl Transform3D {
     ///
     /// _Godot equivalent: `Transform2D.scaled()`_
     #[must_use]
-    pub fn scaled(self, scale:
+    pub fn scaled(self, scale: Vector3) -> Self {
+        Self {
+            basis: Basis::from_scale(scale) * self.basis,
+            origin: self.origin * scale,
+        }
+    }
+
+    /// Returns a copy of the transform scaled by the given scale factor.
+    /// This method is an optimized version of multiplying the given transform `X`
+    /// with a corresponding scaling transform `S` from the right, i.e., `X * S`.
+    /// This can be seen as transforming with respect to the local frame.
+ 
