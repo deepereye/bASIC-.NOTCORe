@@ -188,4 +188,15 @@ impl Transform3D {
     pub fn rotated_local(self, axis: Vector3, angle: real) -> Self {
         Self {
             basis: self.basis * Basis::from_axis_angle(axis, angle),
-        
+            origin: self.origin,
+        }
+    }
+
+    /// Returns a copy of the transform scaled by the given scale factor.
+    /// This method is an optimized version of multiplying the given transform `X`
+    /// with a corresponding scaling transform `S` from the left, i.e., `S * X`.
+    /// This can be seen as transforming with respect to the global/parent frame.
+    ///
+    /// _Godot equivalent: `Transform2D.scaled()`_
+    #[must_use]
+    pub fn scaled(self, scale:
