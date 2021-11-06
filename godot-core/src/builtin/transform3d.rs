@@ -221,4 +221,17 @@ impl Transform3D {
     }
 
     /// Returns a copy of the transform translated by the given offset.
-    /// This method is an optimized version of multiplying the give
+    /// This method is an optimized version of multiplying the given transform `X`
+    /// with a corresponding translation transform `T` from the left, i.e., `T * X`.
+    /// This can be seen as transforming with respect to the global/parent frame.
+    ///
+    /// _Godot equivalent: `Transform2D.translated()`_
+    #[must_use]
+    pub fn translated(self, offset: Vector3) -> Self {
+        Self {
+            basis: self.basis,
+            origin: self.origin + offset,
+        }
+    }
+
+    /// Returns a copy of the transform tr
