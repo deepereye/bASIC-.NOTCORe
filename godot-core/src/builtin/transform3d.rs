@@ -242,4 +242,17 @@ impl Transform3D {
     /// _Godot equivalent: `Transform2D.translated()`_
     #[must_use]
     pub fn translated_local(self, offset: Vector3) -> Self {
-   
+        Self {
+            basis: self.basis,
+            origin: self.origin + (self.basis * offset),
+        }
+    }
+}
+
+impl Display for Transform3D {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // Godot output:
+        // [X: (1, 2, 3), Y: (4, 5, 6), Z: (7, 8, 9), O: (10, 11, 12)]
+        // Where X,Y,O are the columns
+        let [a, b, c] = self.basis.to_cols();
+        let o = s
