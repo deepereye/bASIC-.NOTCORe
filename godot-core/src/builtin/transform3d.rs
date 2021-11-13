@@ -276,4 +276,26 @@ impl Mul for Transform3D {
     }
 }
 
-impl Mul<
+impl Mul<Vector3> for Transform3D {
+    type Output = Vector3;
+
+    fn mul(self, rhs: Vector3) -> Self::Output {
+        self.glam2(&rhs, |t, v| t.transform_point3(v))
+    }
+}
+
+impl Mul<real> for Transform3D {
+    type Output = Self;
+
+    fn mul(self, rhs: real) -> Self::Output {
+        Self {
+            basis: self.basis * rhs,
+            origin: self.origin * rhs,
+        }
+    }
+}
+
+impl GlamType for RAffine3 {
+    type Mapped = Transform3D;
+
+    
