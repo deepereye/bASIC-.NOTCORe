@@ -255,4 +255,25 @@ impl Display for Transform3D {
         // [X: (1, 2, 3), Y: (4, 5, 6), Z: (7, 8, 9), O: (10, 11, 12)]
         // Where X,Y,O are the columns
         let [a, b, c] = self.basis.to_cols();
-        let o = s
+        let o = self.origin;
+
+        write!(f, "[a: {a}, b: {b}, c: {c}, o: {o}]")
+    }
+}
+
+impl From<Basis> for Transform3D {
+    /// Create a new transform with origin `(0,0,0)` from this basis.
+    fn from(basis: Basis) -> Self {
+        Self::new(basis, Vector3::ZERO)
+    }
+}
+
+impl Mul for Transform3D {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        self.glam2(&rhs, |a, b| a * b)
+    }
+}
+
+impl Mul<
