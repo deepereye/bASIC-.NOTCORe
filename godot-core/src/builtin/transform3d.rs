@@ -298,4 +298,14 @@ impl Mul<real> for Transform3D {
 impl GlamType for RAffine3 {
     type Mapped = Transform3D;
 
-    
+    fn to_front(&self) -> Self::Mapped {
+        Transform3D::new(self.matrix3.to_front(), self.translation.to_front())
+    }
+
+    // When `double-precision` is enabled this will complain. But it is
+    // needed for when it is not enabled.
+    #[allow(clippy::useless_conversion)]
+    fn from_front(mapped: &Self::Mapped) -> Self {
+        Self {
+            matrix3: mapped.basis.to_glam().into(),
+            translati
