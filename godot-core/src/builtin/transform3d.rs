@@ -308,4 +308,26 @@ impl GlamType for RAffine3 {
     fn from_front(mapped: &Self::Mapped) -> Self {
         Self {
             matrix3: mapped.basis.to_glam().into(),
-            translati
+            translation: mapped.origin.to_glam().into(),
+        }
+    }
+}
+
+impl GlamConv for Transform3D {
+    type Glam = RAffine3;
+}
+
+impl GodotFfi for Transform3D {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    // Tests translated from Godot.
+
+    const DUMMY_TRANSFORM: Transform3D = Transform3D::new(
+        Basis::from_cols(
+            Vector3::new(1.0, 2.0, 3.0),
+            Vector3::ne
