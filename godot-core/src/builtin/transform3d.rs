@@ -330,4 +330,20 @@ mod test {
     const DUMMY_TRANSFORM: Transform3D = Transform3D::new(
         Basis::from_cols(
             Vector3::new(1.0, 2.0, 3.0),
-            Vector3::ne
+            Vector3::new(4.0, 5.0, 6.0),
+            Vector3::new(7.0, 8.0, 9.0),
+        ),
+        Vector3::new(10.0, 11.0, 12.0),
+    );
+
+    #[test]
+    fn translation() {
+        let offset = Vector3::new(1.0, 2.0, 3.0);
+
+        // Both versions should give the same result applied to identity.
+        assert_eq!(
+            Transform3D::IDENTITY.translated(offset),
+            Transform3D::IDENTITY.translated_local(offset)
+        );
+
+        // Check both versio
