@@ -346,4 +346,17 @@ mod test {
             Transform3D::IDENTITY.translated_local(offset)
         );
 
-        // Check both versio
+        // Check both versions against left and right multiplications.
+        let t = Transform3D::IDENTITY.translated(offset);
+        assert_eq!(DUMMY_TRANSFORM.translated(offset), t * DUMMY_TRANSFORM);
+        assert_eq!(
+            DUMMY_TRANSFORM.translated_local(offset),
+            DUMMY_TRANSFORM * t
+        );
+    }
+
+    #[test]
+    fn scaling() {
+        let scaling = Vector3::new(1.0, 2.0, 3.0);
+
+        // Both versions should 
