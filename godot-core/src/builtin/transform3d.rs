@@ -368,4 +368,18 @@ mod test {
         // Check both versions against left and right multiplications.
         let s = Transform3D::IDENTITY.scaled(scaling);
         assert_eq!(DUMMY_TRANSFORM.scaled(scaling), s * DUMMY_TRANSFORM);
-        assert_eq!(DUMMY_TRANSFORM.scaled_loca
+        assert_eq!(DUMMY_TRANSFORM.scaled_local(scaling), DUMMY_TRANSFORM * s);
+    }
+
+    #[test]
+    fn rotation() {
+        let axis = Vector3::new(1.0, 2.0, 3.0).normalized();
+        let phi: real = 1.0;
+
+        // Both versions should give the same result applied to identity.
+        assert_eq!(
+            Transform3D::IDENTITY.rotated(axis, phi),
+            Transform3D::IDENTITY.rotated_local(axis, phi)
+        );
+
+        // Check both versions against left and right multi
