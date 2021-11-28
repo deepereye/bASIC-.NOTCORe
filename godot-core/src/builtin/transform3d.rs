@@ -359,4 +359,13 @@ mod test {
     fn scaling() {
         let scaling = Vector3::new(1.0, 2.0, 3.0);
 
-        // Both versions should 
+        // Both versions should give the same result applied to identity.
+        assert_eq!(
+            Transform3D::IDENTITY.scaled(scaling),
+            Transform3D::IDENTITY.scaled_local(scaling)
+        );
+
+        // Check both versions against left and right multiplications.
+        let s = Transform3D::IDENTITY.scaled(scaling);
+        assert_eq!(DUMMY_TRANSFORM.scaled(scaling), s * DUMMY_TRANSFORM);
+        assert_eq!(DUMMY_TRANSFORM.scaled_loca
