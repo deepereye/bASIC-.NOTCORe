@@ -395,4 +395,16 @@ mod test {
     fn finite_number_checks() {
         let y = Vector3::new(0.0, 1.0, 2.0);
         let infinite_vec = Vector3::new(real::NAN, real::NAN, real::NAN);
-        
+        let x = Basis::from_rows(y, y, y);
+        let infinite_basis = Basis::from_rows(infinite_vec, infinite_vec, infinite_vec);
+
+        assert!(
+            Transform3D::new(x, y).is_finite(),
+            "Transform3D with all components finite should be finite",
+        );
+
+        assert!(
+            !Transform3D::new(x, infinite_vec).is_finite(),
+            "Transform3D with one component infinite should not be finite.",
+        );
+  
