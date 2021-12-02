@@ -382,4 +382,17 @@ mod test {
             Transform3D::IDENTITY.rotated_local(axis, phi)
         );
 
-        // Check both versions against left and right multi
+        // Check both versions against left and right multiplications.
+        let r = Transform3D::IDENTITY.rotated(axis, phi);
+        assert_eq!(DUMMY_TRANSFORM.rotated(axis, phi), r * DUMMY_TRANSFORM);
+        assert_eq!(
+            DUMMY_TRANSFORM.rotated_local(axis, phi),
+            DUMMY_TRANSFORM * r
+        );
+    }
+
+    #[test]
+    fn finite_number_checks() {
+        let y = Vector3::new(0.0, 1.0, 2.0);
+        let infinite_vec = Vector3::new(real::NAN, real::NAN, real::NAN);
+        
