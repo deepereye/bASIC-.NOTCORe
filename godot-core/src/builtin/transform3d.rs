@@ -407,4 +407,14 @@ mod test {
             !Transform3D::new(x, infinite_vec).is_finite(),
             "Transform3D with one component infinite should not be finite.",
         );
-  
+        assert!(
+            !Transform3D::new(infinite_basis, y).is_finite(),
+            "Transform3D with one component infinite should not be finite.",
+        );
+
+        assert!(
+            !Transform3D::new(infinite_basis, infinite_vec).is_finite(),
+            "Transform3D with two components infinite should not be finite.",
+        );
+    }
+}
