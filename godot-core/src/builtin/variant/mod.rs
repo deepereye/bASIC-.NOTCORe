@@ -46,4 +46,15 @@ impl Variant {
         T::from_variant(self)
     }
 
-    /// Convert to type `T`, returning `Err` o
+    /// Convert to type `T`, returning `Err` on failure.
+    ///
+    /// Equivalent to `T::try_from_variant(&self)`.
+    pub fn try_to<T: FromVariant>(&self) -> Result<T, VariantConversionError> {
+        T::try_from_variant(self)
+    }
+
+    /// Checks whether the variant is empty (`null` value in GDScript).
+    ///
+    /// See also [`Self::get_type`].
+    pub fn is_nil(&self) -> bool {
+        // Use get_type() rather than sys_type(), to also cover nullptr OBJECT as NIL
