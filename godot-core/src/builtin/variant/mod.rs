@@ -31,4 +31,19 @@ impl Variant {
 
     /// Create a variant holding a non-nil value.
     ///
-    /
+    /// Equivalent to `value.to_variant()`.
+    pub fn from<T: ToVariant>(value: T) -> Self {
+        value.to_variant()
+    }
+
+    /// ⚠️ Convert to type `T`, panicking on failure.
+    ///
+    /// Equivalent to `T::from_variant(&self)`.
+    ///
+    /// # Panics
+    /// When this variant holds a different type.
+    pub fn to<T: FromVariant>(&self) -> T {
+        T::from_variant(self)
+    }
+
+    /// Convert to type `T`, returning `Err` o
