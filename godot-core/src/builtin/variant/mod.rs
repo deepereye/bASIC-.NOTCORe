@@ -58,3 +58,11 @@ impl Variant {
     /// See also [`Self::get_type`].
     pub fn is_nil(&self) -> bool {
         // Use get_type() rather than sys_type(), to also cover nullptr OBJECT as NIL
+        self.get_type() == VariantType::Nil
+    }
+
+    /// Returns the type that is currently held by this variant.
+    ///
+    /// If this variant holds a type `Object` but no instance (represented as a null object pointer), then `Nil` will be returned for
+    /// consistency. This may deviate from Godot behavior -- for example, calling `Node::get_node_or_null()` with an invalid
+    /// path returns a variant tha
