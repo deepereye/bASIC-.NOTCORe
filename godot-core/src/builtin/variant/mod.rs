@@ -72,4 +72,19 @@ impl Variant {
         // There is a special case when the Variant has type OBJECT, but the Object* is null.
         let is_null_object = if sys_type == sys::GDEXTENSION_VARIANT_TYPE_OBJECT {
             // SAFETY: we checked that the raw type is OBJECT, so we can interpret the type-ptr as address of an object-ptr.
-            let o
+            let object_ptr = unsafe {
+                crate::obj::raw_object_init(|type_ptr| {
+                    let converter = sys::builtin_fn!(object_from_variant);
+                    converter(type_ptr, self.var_sys());
+                })
+            };
+
+            object_ptr.is_null()
+        } else {
+            false
+        };
+
+        if is_null_object {
+            VariantType::Nil
+        } else {
+            VariantType::
