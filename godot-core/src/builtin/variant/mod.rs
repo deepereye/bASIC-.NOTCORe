@@ -65,4 +65,11 @@ impl Variant {
     ///
     /// If this variant holds a type `Object` but no instance (represented as a null object pointer), then `Nil` will be returned for
     /// consistency. This may deviate from Godot behavior -- for example, calling `Node::get_node_or_null()` with an invalid
-    /// path returns a variant tha
+    /// path returns a variant that has type `Object` but acts like `Nil` for all practical purposes.
+    pub fn get_type(&self) -> VariantType {
+        let sys_type = self.sys_type();
+
+        // There is a special case when the Variant has type OBJECT, but the Object* is null.
+        let is_null_object = if sys_type == sys::GDEXTENSION_VARIANT_TYPE_OBJECT {
+            // SAFETY: we checked that the raw type is OBJECT, so we can interpret the type-ptr as address of an object-ptr.
+            let o
