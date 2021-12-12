@@ -87,4 +87,15 @@ impl Variant {
         if is_null_object {
             VariantType::Nil
         } else {
-            VariantType::
+            VariantType::from_sys(sys_type)
+        }
+    }
+
+    /// ⚠️ Calls the specified `method` with the given `args`.
+    ///
+    /// Supports `Object` as well as built-ins with methods (e.g. `Array`, `Vector3`, `GodotString`, etc).
+    ///
+    /// # Panics
+    /// * If `self` is not a variant type which supports method calls.
+    /// * If the method does not exist or the signature is not compatible with the passed arguments.
+    /// * If the call
