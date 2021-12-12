@@ -98,4 +98,15 @@ impl Variant {
     /// # Panics
     /// * If `self` is not a variant type which supports method calls.
     /// * If the method does not exist or the signature is not compatible with the passed arguments.
-    /// * If the call
+    /// * If the call causes an error.
+    #[inline]
+    pub fn call(&self, method: impl Into<StringName>, args: &[Variant]) -> Variant {
+        self.call_inner(method.into(), args)
+    }
+
+    fn call_inner(&self, method: StringName, args: &[Variant]) -> Variant {
+        let args_sys: Vec<_> = args.iter().map(|v| v.var_sys_const()).collect();
+        let mut error = sys::default_call_error();
+
+        #[allow(unused_mut)]
+        let mut
