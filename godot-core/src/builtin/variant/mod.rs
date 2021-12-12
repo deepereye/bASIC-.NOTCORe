@@ -109,4 +109,18 @@ impl Variant {
         let mut error = sys::default_call_error();
 
         #[allow(unused_mut)]
-        let mut
+        let mut result = Variant::nil();
+
+        unsafe {
+            interface_fn!(variant_call)(
+                self.var_sys(),
+                method.string_sys(),
+                args_sys.as_ptr(),
+                args_sys.len() as i64,
+                result.var_sys(),
+                ptr::addr_of_mut!(error),
+            )
+        };
+
+        if error.error != sys::GDEXTENSION_CALL_OK {
+            let arg_types: Vec<_> = args.iter().map(Variant::get_ty
