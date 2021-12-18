@@ -123,4 +123,18 @@ impl Variant {
         };
 
         if error.error != sys::GDEXTENSION_CALL_OK {
-            let arg_types: Vec<_> = args.iter().map(Variant::get_ty
+            let arg_types: Vec<_> = args.iter().map(Variant::get_type).collect();
+            sys::panic_call_error(&error, "call", &arg_types);
+        }
+        result
+    }
+
+    pub fn evaluate(&self, rhs: &Variant, op: VariantOperator) -> Option<Variant> {
+        let op_sys = op.sys();
+        let mut is_valid = false as u8;
+
+        #[allow(unused_mut)]
+        let mut result = Variant::nil();
+        unsafe {
+            interface_fn!(variant_evaluate)(
+     
