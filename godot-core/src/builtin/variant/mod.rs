@@ -137,4 +137,21 @@ impl Variant {
         let mut result = Variant::nil();
         unsafe {
             interface_fn!(variant_evaluate)(
-     
+                op_sys,
+                self.var_sys(),
+                rhs.var_sys(),
+                result.var_sys(),
+                ptr::addr_of_mut!(is_valid),
+            )
+        };
+
+        if is_valid == 1 {
+            Some(result)
+        } else {
+            None
+        }
+    }
+
+    pub(crate) fn sys_type(&self) -> sys::GDExtensionVariantType {
+        unsafe {
+            let ty: sys::GDExtensionVariantType = 
