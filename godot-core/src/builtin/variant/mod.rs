@@ -154,4 +154,20 @@ impl Variant {
 
     pub(crate) fn sys_type(&self) -> sys::GDExtensionVariantType {
         unsafe {
-            let ty: sys::GDExtensionVariantType = 
+            let ty: sys::GDExtensionVariantType = interface_fn!(variant_get_type)(self.var_sys());
+            ty
+        }
+    }
+
+    /// return a `GodotString` representing the variant
+    #[allow(unused_mut)]
+    pub fn stringify(&self) -> GodotString {
+        let mut result = GodotString::new();
+        unsafe {
+            interface_fn!(variant_stringify)(self.var_sys(), result.string_sys());
+        }
+        result
+    }
+
+    /// return the hash value of the variant.
+   
