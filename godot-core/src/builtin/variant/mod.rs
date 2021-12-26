@@ -183,4 +183,19 @@ impl Variant {
     }
 
     fn from_opaque(opaque: OpaqueVariant) -> Self {
-       
+        Self { opaque }
+    }
+
+    // Conversions from/to Godot C++ `Variant*` pointers
+    ffi_methods! {
+        type sys::GDExtensionVariantPtr = *mut Opaque;
+
+        fn from_var_sys = from_sys;
+        fn from_var_sys_init = from_sys_init;
+        fn var_sys = sys;
+        fn write_var_sys = write_sys;
+    }
+
+    #[doc(hidden)]
+    pub fn var_sys_const(&self) -> sys::GDExtensionConstVariantPtr {
+        sys::to_const_ptr(
