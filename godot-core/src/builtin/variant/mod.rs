@@ -198,4 +198,15 @@ impl Variant {
 
     #[doc(hidden)]
     pub fn var_sys_const(&self) -> sys::GDExtensionConstVariantPtr {
-        sys::to_const_ptr(
+        sys::to_const_ptr(self.var_sys())
+    }
+
+    pub(crate) fn ptr_from_sys(variant_ptr: sys::GDExtensionVariantPtr) -> *const Variant {
+        assert!(!variant_ptr.is_null(), "ptr_from_sys: null variant pointer");
+        variant_ptr as *const Variant
+    }
+
+    pub(crate) fn ptr_from_sys_mut(variant_ptr: sys::GDExtensionVariantPtr) -> *mut Variant {
+        assert!(
+            !variant_ptr.is_null(),
+            "ptr_from_sys_mut: null vari
