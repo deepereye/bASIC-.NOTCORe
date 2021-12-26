@@ -209,4 +209,23 @@ impl Variant {
     pub(crate) fn ptr_from_sys_mut(variant_ptr: sys::GDExtensionVariantPtr) -> *mut Variant {
         assert!(
             !variant_ptr.is_null(),
-            "ptr_from_sys_mut: null vari
+            "ptr_from_sys_mut: null variant pointer"
+        );
+        variant_ptr as *mut Variant
+    }
+}
+
+impl GodotFfi for Variant {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Opaque; .. }
+
+    unsafe fn from_sys_init_default(init_fn: impl FnOnce(sys::GDExtensionTypePtr)) -> Self {
+        let mut result = Self::default();
+        init_fn(result.sys_mut());
+        result
+    }
+}
+
+impl Clone for Variant {
+    fn clone(&self) -> Self {
+        unsafe {
+            Self::from_var_sys_init
