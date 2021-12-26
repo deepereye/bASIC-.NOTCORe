@@ -228,4 +228,23 @@ impl GodotFfi for Variant {
 impl Clone for Variant {
     fn clone(&self) -> Self {
         unsafe {
-            Self::from_var_sys_init
+            Self::from_var_sys_init(|variant_ptr| {
+                interface_fn!(variant_new_copy)(variant_ptr, self.var_sys());
+            })
+        }
+    }
+}
+
+impl Drop for Variant {
+    fn drop(&mut self) {
+        unsafe {
+            interface_fn!(variant_destroy)(self.var_sys());
+        }
+    }
+}
+
+impl Default for Variant {
+    fn default() -> Self {
+        unsafe {
+            Self::from_var_sys_init(|variant_ptr| {
+                interface_
