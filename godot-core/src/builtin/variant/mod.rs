@@ -170,4 +170,17 @@ impl Variant {
     }
 
     /// return the hash value of the variant.
-   
+    ///
+    /// _Godot equivalent : `@GlobalScope.hash()`_
+    pub fn hash(&self) -> i64 {
+        unsafe { interface_fn!(variant_hash)(self.var_sys()) }
+    }
+
+    /// return a false only if the variant is `Variant::NIL`
+    /// or an empty `TypedArray` or `Dictionary`.
+    pub fn booleanize(&self) -> bool {
+        unsafe { interface_fn!(variant_booleanize)(self.var_sys()) != 0 }
+    }
+
+    fn from_opaque(opaque: OpaqueVariant) -> Self {
+       
