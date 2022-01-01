@@ -247,4 +247,19 @@ impl Default for Variant {
     fn default() -> Self {
         unsafe {
             Self::from_var_sys_init(|variant_ptr| {
-                interface_
+                interface_fn!(variant_new_nil)(variant_ptr);
+            })
+        }
+    }
+}
+
+impl PartialEq for Variant {
+    fn eq(&self, other: &Self) -> bool {
+        Self::evaluate(self, other, VariantOperator::Equal)
+            .map(|v| v.to::<bool>())
+            .unwrap_or(false) // if there is no defined conversion, then they are non-equal
+    }
+}
+
+// impl Eq for Variant {}
+// impl PartialEq for Variant 
