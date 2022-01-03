@@ -262,4 +262,20 @@ impl PartialEq for Variant {
 }
 
 // impl Eq for Variant {}
-// impl PartialEq for Variant 
+// impl PartialEq for Variant {
+//     fn eq(&self, other: &Self) -> bool {
+//         unsafe { builtin_fn!(ope) }
+//     }
+// }
+
+impl fmt::Display for Variant {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = self.stringify();
+        write!(f, "{s}")
+    }
+}
+
+impl fmt::Debug for Variant {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // TODO include variant type name
+        let s = self.stri
