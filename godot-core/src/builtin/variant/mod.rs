@@ -278,4 +278,7 @@ impl fmt::Display for Variant {
 impl fmt::Debug for Variant {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         // TODO include variant type name
-        let s = self.stri
+        let s = self.stringify();
+        write!(f, "Variant({s})")
+    }
+}
