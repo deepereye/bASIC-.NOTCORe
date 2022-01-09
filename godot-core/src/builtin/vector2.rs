@@ -290,3 +290,57 @@ impl Vector2 {
 
     /// Returns the result of rotating this vector by `angle` (in radians).
     pub fn rotated(self, angle: real) -> Self {
+        Self::from_glam(RAffine2::from_angle(angle).transform_vector2(self.to_glam()))
+    }
+
+    #[doc(hidden)]
+    pub fn as_inner(&self) -> inner::InnerVector2 {
+        inner::InnerVector2::from_outer(self)
+    }
+}
+
+/// Formats the vector like Godot: `(x, y)`.
+impl fmt::Display for Vector2 {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+
+impl_common_vector_fns!(Vector2, real);
+impl_float_vector_fns!(Vector2, real);
+impl_vector_operators!(Vector2, real, (x, y));
+impl_vector_index!(Vector2, real, (x, y), Vector2Axis, (X, Y));
+
+impl GodotFfi for Vector2 {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
+}
+
+/// Enumerates the axes in a [`Vector2`].
+#[derive(Copy, Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+#[repr(i32)]
+pub enum Vector2Axis {
+    /// The X axis.
+    X,
+    /// The Y axis.
+    Y,
+}
+
+impl GodotFfi for Vector2Axis {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
+}
+
+impl GlamType for RVec2 {
+    type Mapped = Vector2;
+
+    fn to_front(&self) -> Self::Mapped {
+        Vector2::new(self.x, self.y)
+    }
+
+    fn from_front(mapped: &Self::Mapped) -> Self {
+        RVec2::new(mapped.x, mapped.y)
+    }
+}
+
+impl GlamConv for Vector2 {
+    type Glam = RVec2;
+}
