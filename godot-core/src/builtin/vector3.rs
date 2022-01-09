@@ -260,3 +260,113 @@ impl Vector3 {
             fposmod(self.z, pmod),
         )
     }
+
+    pub fn posmodv(self, modv: Self) -> Self {
+        Self::new(
+            fposmod(self.x, modv.x),
+            fposmod(self.y, modv.y),
+            fposmod(self.z, modv.z),
+        )
+    }
+
+    pub fn project(self, b: Self) -> Self {
+        Self::from_glam(self.to_glam().project_onto(b.to_glam()))
+    }
+
+    pub fn reflect(self, normal: Self) -> Self {
+        Self::from_glam(self.to_glam().reject_from(normal.to_glam()))
+    }
+
+    pub fn round(self) -> Self {
+        Self::from_glam(self.to_glam().round())
+    }
+
+    pub fn sign(self) -> Self {
+        Self::new(sign(self.x), sign(self.y), sign(self.z))
+    }
+
+    pub fn signed_angle_to(self, to: Self, axis: Self) -> real {
+        let cross_to = self.cross(to);
+        let unsigned_angle = self.dot(to).atan2(cross_to.length());
+        let sign = cross_to.dot(axis);
+        if sign < 0.0 {
+            -unsigned_angle
+        } else {
+            unsigned_angle
+        }
+    }
+
+    pub fn slide(self, normal: Self) -> Self {
+        self - normal * self.dot(normal)
+    }
+
+    pub fn snapped(self, step: Self) -> Self {
+        Self::new(
+            snapped(self.x, step.x),
+            snapped(self.y, step.y),
+            snapped(self.z, step.z),
+        )
+    }
+}
+
+/// Formats the vector like Godot: `(x, y, z)`.
+impl fmt::Display for Vector3 {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "({}, {}, {})", self.x, self.y, self.z)
+    }
+}
+
+impl_common_vector_fns!(Vector3, real);
+impl_float_vector_fns!(Vector3, real);
+impl_vector_operators!(Vector3, real, (x, y, z));
+impl_vector_index!(Vector3, real, (x, y, z), Vector3Axis, (X, Y, Z));
+
+impl GodotFfi for Vector3 {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
+}
+
+/// Enumerates the axes in a [`Vector3`].
+// TODO auto-generate this, alongside all the other builtin type's enums
+#[derive(Copy, Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+#[repr(i32)]
+pub enum Vector3Axis {
+    /// The X axis.
+    X,
+    /// The Y axis.
+    Y,
+    /// The Z axis.
+    Z,
+}
+
+impl GodotFfi for Vector3Axis {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
+}
+
+impl GlamType for RVec3 {
+    type Mapped = Vector3;
+
+    fn to_front(&self) -> Self::Mapped {
+        Vector3::new(self.x, self.y, self.z)
+    }
+
+    fn from_front(mapped: &Self::Mapped) -> Self {
+        RVec3::new(mapped.x, mapped.y, mapped.z)
+    }
+}
+
+#[cfg(not(feature = "double-precision"))]
+impl GlamType for glam::Vec3A {
+    type Mapped = Vector3;
+
+    fn to_front(&self) -> Self::Mapped {
+        Vector3::new(self.x, self.y, self.z)
+    }
+
+    fn from_front(mapped: &Self::Mapped) -> Self {
+        glam::Vec3A::new(mapped.x, mapped.y, mapped.z)
+    }
+}
+
+impl GlamConv for Vector3 {
+    type Glam = RVec3;
+}
