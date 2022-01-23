@@ -56,3 +56,17 @@ impl Vector4i {
             z: v.z as i32,
             w: v.w as i32,
         }
+    }
+
+    /// Zero vector, a vector with all components set to `0`.
+    pub const ZERO: Self = Self::splat(0);
+
+    /// One vector, a vector with all components set to `1`.
+    pub const ONE: Self = Self::splat(1);
+
+    /// Converts the corresponding `glam` type to `Self`.
+    fn from_glam(v: glam::IVec4) -> Self {
+        Self::new(v.x, v.y, v.z, v.w)
+    }
+
+    /// Converts `self` to the corresponding `glam` 
