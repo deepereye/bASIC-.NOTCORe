@@ -39,4 +39,20 @@ impl_common_vector_fns!(Vector4i, i32);
 impl Vector4i {
     /// Returns a `Vector4i` with the given components.
     pub const fn new(x: i32, y: i32, z: i32, w: i32) -> Self {
-        Self { x, y,
+        Self { x, y, z, w }
+    }
+
+    /// Constructs a new `Vector4i` with all components set to `v`.
+    pub const fn splat(v: i32) -> Self {
+        Self::new(v, v, v, v)
+    }
+
+    /// Constructs a new `Vector4i` from a [`Vector4`]. The floating point coordinates will be
+    /// truncated.
+    pub const fn from_vector3(v: Vector4) -> Self {
+        Self {
+            x: v.x as i32,
+            y: v.y as i32,
+            z: v.z as i32,
+            w: v.w as i32,
+        }
