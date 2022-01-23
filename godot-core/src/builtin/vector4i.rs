@@ -26,4 +26,17 @@ pub struct Vector4i {
     pub x: i32,
     /// The vector's Y component.
     pub y: i32,
-    /// The vec
+    /// The vector's Z component.
+    pub z: i32,
+    /// The vector's W component.
+    pub w: i32,
+}
+
+impl_vector_operators!(Vector4i, i32, (x, y, z, w));
+impl_vector_index!(Vector4i, i32, (x, y, z, w), Vector4iAxis, (X, Y, Z, W));
+impl_common_vector_fns!(Vector4i, i32);
+
+impl Vector4i {
+    /// Returns a `Vector4i` with the given components.
+    pub const fn new(x: i32, y: i32, z: i32, w: i32) -> Self {
+        Self { x, y,
