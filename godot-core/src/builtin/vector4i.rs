@@ -69,4 +69,18 @@ impl Vector4i {
         Self::new(v.x, v.y, v.z, v.w)
     }
 
-    /// Converts `self` to the corresponding `glam` 
+    /// Converts `self` to the corresponding `glam` type.
+    fn to_glam(self) -> glam::IVec4 {
+        glam::IVec4::new(self.x, self.y, self.z, self.w)
+    }
+}
+
+/// Formats the vector like Godot: `(x, y, z, w)`.
+impl fmt::Display for Vector4i {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "({}, {}, {}, {})", self.x, self.y, self.z, self.w)
+    }
+}
+
+impl GodotFfi for Vector4i {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut 
