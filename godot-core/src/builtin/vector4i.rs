@@ -83,4 +83,23 @@ impl fmt::Display for Vector4i {
 }
 
 impl GodotFfi for Vector4i {
-    ffi_methods! { type sys::GDExtensionTypePtr = *mut 
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
+}
+
+/// Enumerates the axes in a [`Vector4i`].
+#[derive(Copy, Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
+#[repr(i32)]
+pub enum Vector4iAxis {
+    /// The X axis.
+    X,
+    /// The Y axis.
+    Y,
+    /// The Z axis.
+    Z,
+    /// The W axis.
+    W,
+}
+
+impl GodotFfi for Vector4iAxis {
+    ffi_methods! { type sys::GDExtensionTypePtr = *mut Self; .. }
+}
