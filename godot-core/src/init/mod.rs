@@ -22,4 +22,17 @@ pub unsafe fn __gdext_load_library<E: ExtensionLibrary>(
         let success = E::load_library(&mut handle);
         // No early exit, unclear if Godot still requires output parameters to be set
 
-        let godot_init_params 
+        let godot_init_params = sys::GDExtensionInitialization {
+            minimum_initialization_level: handle.lowest_init_level().to_sys(),
+            userdata: std::ptr::null_mut(),
+            initialize: Some(ffi_initialize_layer),
+            deinitialize: Some(ffi_deinitialize_layer),
+        };
+
+        *init = godot_init_params;
+        INIT_HANDLE = Some(handle);
+
+        success as u8
+    };
+
+    let ctx = || 
