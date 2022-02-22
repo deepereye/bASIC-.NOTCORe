@@ -35,4 +35,17 @@ pub unsafe fn __gdext_load_library<E: ExtensionLibrary>(
         success as u8
     };
 
-    let ctx = || 
+    let ctx = || "error when loading GDExtension library";
+    let is_success = crate::private::handle_panic(ctx, init_code);
+
+    is_success.unwrap_or(0)
+}
+
+#[doc(hidden)]
+pub fn __gdext_default_init(handle: &mut InitHandle) {
+    handle.register_layer(InitLevel::Scene, DefaultLayer);
+}
+
+unsafe extern "C" fn ffi_initialize_layer(
+    _userdata: *mut std::ffi::c_void,
+    init_level: sys::GDExtensionInitializationLevel,
