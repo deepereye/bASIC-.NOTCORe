@@ -49,3 +49,20 @@ pub fn __gdext_default_init(handle: &mut InitHandle) {
 unsafe extern "C" fn ffi_initialize_layer(
     _userdata: *mut std::ffi::c_void,
     init_level: sys::GDExtensionInitializationLevel,
+) {
+    let ctx = || {
+        format!(
+            "failed to initialize GDExtension layer `{:?}`",
+            InitLevel::from_sys(init_level)
+        )
+    };
+
+    crate::private::handle_panic(ctx, || {
+        let handle = INIT_HANDLE.as_mut().unwrap();
+        handle.run_init_function(InitLevel::from_sys(init_level));
+    });
+}
+
+unsafe extern "C" fn ffi_deinitialize_layer(
+    _userdata: *mut std::ffi::c_void,
+    init_level: 
