@@ -65,4 +65,19 @@ unsafe extern "C" fn ffi_initialize_layer(
 
 unsafe extern "C" fn ffi_deinitialize_layer(
     _userdata: *mut std::ffi::c_void,
-    init_level: 
+    init_level: sys::GDExtensionInitializationLevel,
+) {
+    let ctx = || {
+        format!(
+            "failed to deinitialize GDExtension layer `{:?}`",
+            InitLevel::from_sys(init_level)
+        )
+    };
+
+    crate::private::handle_panic(ctx, || {
+        let handle = INIT_HANDLE.as_mut().unwrap();
+        handle.run_deinit_function(InitLevel::from_sys(init_level));
+    });
+}
+
+// --
