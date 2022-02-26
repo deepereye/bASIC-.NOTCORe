@@ -80,4 +80,13 @@ unsafe extern "C" fn ffi_deinitialize_layer(
     });
 }
 
-// --
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+// FIXME make safe
+#[doc(hidden)]
+pub static mut INIT_HANDLE: Option<InitHandle> = None;
+
+/// Defines the entry point for a GDExtension Rust library.
+///
+/// Every library should have exactly one implementation of this trait. It is always used in combination with the
+/// [`#[gdextension]`][gde
