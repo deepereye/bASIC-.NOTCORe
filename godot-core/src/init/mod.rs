@@ -89,4 +89,16 @@ pub static mut INIT_HANDLE: Option<InitHandle> = None;
 /// Defines the entry point for a GDExtension Rust library.
 ///
 /// Every library should have exactly one implementation of this trait. It is always used in combination with the
-/// [`#[gdextension]`][gde
+/// [`#[gdextension]`][gdextension] proc-macro attribute.
+///
+/// The simplest usage is as follows. This will automatically perform the necessary init and cleanup routines, and register
+/// all classes marked with `#[derive(GodotClass)]`, without needing to mention them in a central list. The order in which
+/// classes are registered is not specified.
+///
+/// ```
+/// # use godot::init::*;
+///
+/// // This is just a type tag without any functionality
+/// struct MyExtension;
+///
+//
