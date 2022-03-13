@@ -101,4 +101,13 @@ pub static mut INIT_HANDLE: Option<InitHandle> = None;
 /// // This is just a type tag without any functionality
 /// struct MyExtension;
 ///
-//
+/// #[gdextension]
+/// unsafe impl ExtensionLibrary for MyExtension {}
+/// ```
+///
+/// # Safety
+/// By using godot-rust, you accept the safety considerations [as outlined in the book][safety].
+/// Please make sure you fully understand the implications.
+///
+/// The library cannot enforce any safety guarantees outside Rust code, which means that **you as a user** are
+/// responsible to uphold them: namely in GDScript code or 
