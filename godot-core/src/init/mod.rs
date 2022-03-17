@@ -110,4 +110,14 @@ pub static mut INIT_HANDLE: Option<InitHandle> = None;
 /// Please make sure you fully understand the implications.
 ///
 /// The library cannot enforce any safety guarantees outside Rust code, which means that **you as a user** are
-/// responsible to uphold them: namely in GDScript code or 
+/// responsible to uphold them: namely in GDScript code or other GDExtension bindings loaded by the engine.
+/// Violating this may cause undefined behavior, even when invoking _safe_ functions.
+///
+/// [gdextension]: crate::init::gdextension
+/// [safety]: https://godot-rust.github.io/book/gdextension/safety.html
+// FIXME intra-doc link
+pub unsafe trait ExtensionLibrary {
+    fn load_library(handle: &mut InitHandle) -> bool {
+        handle.register_layer(InitLevel::Scene, DefaultLayer);
+        true
+  
