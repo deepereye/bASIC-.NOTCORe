@@ -137,4 +137,14 @@ impl ExtensionLayer for DefaultLayer {
         crate::auto_register_classes();
     }
 
-    fn deinitialize(
+    fn deinitialize(&mut self) {
+        // Nothing -- note that any cleanup task should be performed outside of this method,
+        // as the user is free to use a different impl, so cleanup code may not be run.
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+pub struct InitHandle {
+    layers: BTreeMap<InitLevel, Box<dyn ExtensionLayer>>,
+    //
