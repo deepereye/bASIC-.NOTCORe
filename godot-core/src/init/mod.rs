@@ -120,4 +120,21 @@ pub unsafe trait ExtensionLibrary {
     fn load_library(handle: &mut InitHandle) -> bool {
         handle.register_layer(InitLevel::Scene, DefaultLayer);
         true
-  
+    }
+}
+
+pub trait ExtensionLayer: 'static {
+    fn initialize(&mut self);
+    fn deinitialize(&mut self);
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+struct DefaultLayer;
+
+impl ExtensionLayer for DefaultLayer {
+    fn initialize(&mut self) {
+        crate::auto_register_classes();
+    }
+
+    fn deinitialize(
