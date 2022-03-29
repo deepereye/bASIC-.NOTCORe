@@ -197,4 +197,18 @@ impl Default for InitHandle {
 }
 // ----------------------------------------------------------------------------------------------------------------------------------------------
 
-#[derive(Copy, Clone, Eq, Partia
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
+pub enum InitLevel {
+    Core,
+    Servers,
+    Scene,
+    Editor,
+}
+
+impl InitLevel {
+    #[doc(hidden)]
+    pub fn from_sys(level: godot_ffi::GDExtensionInitializationLevel) -> Self {
+        match level {
+            sys::GDEXTENSION_INITIALIZATION_CORE => Self::Core,
+            sys::GDEXTENSION_INITIALIZATION_SERVERS => Self::Servers,
+            sys::GDEXTENSION_INITIALIZATION_SCENE => Sel
