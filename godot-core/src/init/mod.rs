@@ -183,4 +183,18 @@ impl InitHandle {
         }
     }
 
-    pub fn run_deinit_function(
+    pub fn run_deinit_function(&mut self, level: InitLevel) {
+        if let Some(layer) = self.layers.get_mut(&level) {
+            layer.deinitialize()
+        }
+    }
+}
+
+impl Default for InitHandle {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+#[derive(Copy, Clone, Eq, Partia
