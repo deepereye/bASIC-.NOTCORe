@@ -147,4 +147,25 @@ impl ExtensionLayer for DefaultLayer {
 
 pub struct InitHandle {
     layers: BTreeMap<InitLevel, Box<dyn ExtensionLayer>>,
-    //
+    // success: bool,
+}
+
+impl InitHandle {
+    pub fn new() -> Self {
+        Self {
+            layers: BTreeMap::new(),
+            // success: true,
+        }
+    }
+
+    pub fn register_layer(&mut self, level: InitLevel, layer: impl ExtensionLayer) {
+        self.layers.insert(level, Box::new(layer));
+    }
+
+    // pub fn mark_failed(&mut self) {
+    //     self.success = false;
+    // }
+
+    pub fn lowest_init_level(&self) -> InitLevel {
+        self.layers
+  
