@@ -168,4 +168,19 @@ impl InitHandle {
 
     pub fn lowest_init_level(&self) -> InitLevel {
         self.layers
-  
+            .iter()
+            .next()
+            .map(|(k, _v)| *k)
+            .unwrap_or(InitLevel::Scene)
+    }
+
+    pub fn run_init_function(&mut self, level: InitLevel) {
+        // if let Some(f) = self.init_levels.remove(&level) {
+        //     f();
+        // }
+        if let Some(layer) = self.layers.get_mut(&level) {
+            layer.initialize()
+        }
+    }
+
+    pub fn run_deinit_function(
