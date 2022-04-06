@@ -13,4 +13,18 @@ macro_rules! godot_warn {
             $crate::sys::interface_fn!(print_warning)(
                 msg.as_bytes().as_ptr() as *const _,
                 "<function unset>\0".as_bytes().as_ptr() as *const _,
-                concat!(file!(), "\0").a
+                concat!(file!(), "\0").as_ptr() as *const _,
+                line!() as _,
+                false as $crate::sys::GDExtensionBool, // whether to create a toast notification in editor
+            );
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! godot_error {
+    // FIXME expr needs to be parenthesised, see usages
+    ($fmt:literal $(, $args:expr)* $(,)?) => {
+    //($($args:tt),* $(,)?) => {
+        unsafe {
+            let msg = format!("{}\0", format_args!($fmt $(, $args)*));
