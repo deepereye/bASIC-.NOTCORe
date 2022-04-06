@@ -223,4 +223,9 @@ impl InitLevel {
     pub fn to_sys(self) -> godot_ffi::GDExtensionInitializationLevel {
         match self {
             Self::Core => sys::GDEXTENSION_INITIALIZATION_CORE,
-            S
+            Self::Servers => sys::GDEXTENSION_INITIALIZATION_SERVERS,
+            Self::Scene => sys::GDEXTENSION_INITIALIZATION_SCENE,
+            Self::Editor => sys::GDEXTENSION_INITIALIZATION_EDITOR,
+        }
+    }
+}
