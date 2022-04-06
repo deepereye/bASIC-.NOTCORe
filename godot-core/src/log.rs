@@ -1,4 +1,16 @@
 /*
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, 
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
+
+#[macro_export]
+macro_rules! godot_warn {
+    ($fmt:literal $(, $args:expr)* $(,)?) => {
+        unsafe {
+            let msg = format!("{}\0", format_args!($fmt $(, $args)*));
+
+            $crate::sys::interface_fn!(print_warning)(
+                msg.as_bytes().as_ptr() as *const _,
+                "<function unset>\0".as_bytes().as_ptr() as *const _,
+                concat!(file!(), "\0").a
