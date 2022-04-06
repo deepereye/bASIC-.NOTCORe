@@ -211,4 +211,16 @@ impl InitLevel {
         match level {
             sys::GDEXTENSION_INITIALIZATION_CORE => Self::Core,
             sys::GDEXTENSION_INITIALIZATION_SERVERS => Self::Servers,
-            sys::GDEXTENSION_INITIALIZATION_SCENE => Sel
+            sys::GDEXTENSION_INITIALIZATION_SCENE => Self::Scene,
+            sys::GDEXTENSION_INITIALIZATION_EDITOR => Self::Editor,
+            _ => {
+                eprintln!("WARNING: unknown initialization level {level}");
+                Self::Scene
+            }
+        }
+    }
+    #[doc(hidden)]
+    pub fn to_sys(self) -> godot_ffi::GDExtensionInitializationLevel {
+        match self {
+            Self::Core => sys::GDEXTENSION_INITIALIZATION_CORE,
+            S
