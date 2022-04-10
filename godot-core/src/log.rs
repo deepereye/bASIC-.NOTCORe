@@ -40,4 +40,13 @@ macro_rules! godot_error {
     };
 }
 
-#[macr
+#[macro_export]
+macro_rules! godot_script_error {
+    ($fmt:literal $(, $args:expr)* $(,)?) => {
+        unsafe {
+            let msg = format!("{}\0", format_args!($fmt $(, $args)*));
+
+            $crate::sys::interface_fn!(print_script_error)(
+                msg.as_bytes().as_ptr() as *const _,
+                "<function unset>\0".as_bytes().as_ptr() as *const _,
+                concat!(
