@@ -63,4 +63,21 @@ macro_rules! godot_print {
         $crate::log::print(&[
             $crate::builtin::Variant::from(
                 $crate::builtin::GodotString::from(
-                    forma
+                    format!($fmt $(, $args)*)
+                )
+            )
+        ])
+    };
+}
+
+pub use crate::{godot_error, godot_print, godot_script_error, godot_warn};
+
+use crate::builtin::{StringName, Variant};
+use crate::sys::{self, GodotFfi};
+
+pub fn print(varargs: &[Variant]) {
+    unsafe {
+        let method_name = StringName::from("print");
+        let call_fn = sys::interface_fn!(variant_get_ptr_utility_function)(
+            method_name.string_sys(),
+     
