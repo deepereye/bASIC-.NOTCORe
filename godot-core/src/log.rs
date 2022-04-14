@@ -49,4 +49,18 @@ macro_rules! godot_script_error {
             $crate::sys::interface_fn!(print_script_error)(
                 msg.as_bytes().as_ptr() as *const _,
                 "<function unset>\0".as_bytes().as_ptr() as *const _,
-                concat!(
+                concat!(file!(), "\0").as_ptr() as *const _,
+                line!() as _,
+                false as $crate::sys::GDExtensionBool, // whether to create a toast notification in editor
+            );
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! godot_print {
+    ($fmt:literal $(, $args:expr)* $(,)?) => {
+        $crate::log::print(&[
+            $crate::builtin::Variant::from(
+                $crate::builtin::GodotString::from(
+                    forma
