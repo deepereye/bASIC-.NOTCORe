@@ -94,4 +94,5 @@ pub fn print(varargs: &[Variant]) {
     }
 
     // TODO use generated method, but figure out how print() with zero args can be called
-    // crate::engi
+    // crate::engine::utilities::print(head, rest);
+}
