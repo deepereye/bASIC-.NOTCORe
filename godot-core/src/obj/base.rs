@@ -16,4 +16,13 @@ use std::ops::{Deref, DerefMut};
 /// Behaves similarly to [`Gd`][crate::obj::Gd], but is more constrained. Cannot be constructed by the user.
 pub struct Base<T: GodotClass> {
     // Internal smart pointer is never dropped. It thus acts like a weak pointer and is needed to break reference cycles between Gd<T>
-    // and the user instance owned by Instance
+    // and the user instance owned by InstanceStorage.
+    //
+    // There is no data apart from the opaque bytes, so no memory or resources to deallocate.
+    // When triggered by Godot/GDScript, the destruction order is as follows:
+    // 1.    Most-derived Godot class (C++)
+    //      ...
+    // 2.  RefCounted (C++)
+    // 3. Object (C++) -- this triggers InstanceStorage destruction
+    // 4.   Base<T>
+    // 5.  User struct (GodotClass implementa
