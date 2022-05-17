@@ -58,4 +58,24 @@ impl<T: GodotClass> Base<T> {
 }
 
 impl<T: GodotClass> Debug for Base<T> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> FmtRe
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        engine::debug_string(&self.obj, f, "Base")
+    }
+}
+
+impl<T: GodotClass> Display for Base<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        engine::display_string(&self.obj, f)
+    }
+}
+
+impl<T: GodotClass> Deref for Base<T> {
+    type Target = Gd<T>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.obj
+    }
+}
+
+// Note: having DerefMut is almost equivalent to directly storing Gd<T>
+// Main difference is
