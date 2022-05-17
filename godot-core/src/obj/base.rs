@@ -45,4 +45,17 @@ impl<T: GodotClass> Base<T> {
         // This obj does not contribute to the strong count, otherwise we create a reference cycle:
         // 1. RefCounted (dropped in GDScript)
         // 2. holds user T (via extension instance and storage)
-        // 3. holds #[base] RefCounted (last ref, dropped in T destructor, but T is
+        // 3. holds #[base] RefCounted (last ref, dropped in T destructor, but T is never destroyed because this ref keeps storage alive)
+        // Note that if late-init never happened on self, we have the same behavior (still a raw pointer instead of weak Gd)
+        Base::from_obj(obj)
+    }
+
+    fn from_obj(obj: Gd<T>) -> Self {
+        Self {
+            obj: ManuallyDrop::new(obj),
+        }
+    }
+}
+
+impl<T: GodotClass> Debug for Base<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtRe
