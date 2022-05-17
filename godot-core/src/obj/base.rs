@@ -78,4 +78,9 @@ impl<T: GodotClass> Deref for Base<T> {
 }
 
 // Note: having DerefMut is almost equivalent to directly storing Gd<T>
-// Main difference is
+// Main difference is that an existing Gd<T> cannot be used as the base, and mem::take/replace() don't work as easily
+impl<T: GodotClass> DerefMut for Base<T> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.obj
+    }
+}
