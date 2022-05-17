@@ -25,4 +25,16 @@ pub struct Base<T: GodotClass> {
     // 2.  RefCounted (C++)
     // 3. Object (C++) -- this triggers InstanceStorage destruction
     // 4.   Base<T>
-    // 5.  User struct (GodotClass implementa
+    // 5.  User struct (GodotClass implementation)
+    // 6. InstanceStorage
+    //
+    // When triggered by Rust (Gd::drop on last strong ref), it's as follows:
+    // 1.   Gd<T>  -- triggers InstanceStorage destruction
+    // 2.
+    obj: ManuallyDrop<Gd<T>>,
+}
+
+impl<T: GodotClass> Base<T> {
+    // Note: not &mut self, to only borrow one field and not the entire struct
+    pub(crate) unsafe fn from_sys(base_ptr: sys::GDExtensionObjectPtr) -> Self {
+        assert!(!base_ptr.is_null(), "instance 
