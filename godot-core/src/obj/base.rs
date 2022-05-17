@@ -37,4 +37,12 @@ pub struct Base<T: GodotClass> {
 impl<T: GodotClass> Base<T> {
     // Note: not &mut self, to only borrow one field and not the entire struct
     pub(crate) unsafe fn from_sys(base_ptr: sys::GDExtensionObjectPtr) -> Self {
-        assert!(!base_ptr.is_null(), "instance 
+        assert!(!base_ptr.is_null(), "instance base is null pointer");
+
+        // Initialize only as weak pointer (don't increment reference count)
+        let obj = Gd::from_obj_sys_weak(base_ptr);
+
+        // This obj does not contribute to the strong count, otherwise we create a reference cycle:
+        // 1. RefCounted (dropped in GDScript)
+        // 2. holds user T (via extension instance and storage)
+        // 3. holds #[base] RefCounted (last ref, dropped in T destructor, but T is
