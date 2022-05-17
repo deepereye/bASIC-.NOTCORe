@@ -617,3 +617,63 @@ impl<T: GodotClass> ToVariant for Gd<T> {
         unsafe {
             Variant::from_var_sys_init(|variant_ptr| {
                 let converter = sys::builtin_fn!(object_to_variant);
+
+                // Note: this is a special case because of an inconsistency in Godot, where sometimes the equivalency is
+                // GDExtensionTypePtr == Object** and sometimes GDExtensionTypePtr == Object*. Here, it is the former, thus extra pointer.
+                // Reported at https://github.com/godotengine/godot/issues/61967
+                let type_ptr = self.sys();
+                converter(
+                    variant_ptr,
+                    ptr::addr_of!(type_ptr) as sys::GDExtensionTypePtr,
+                );
+            })
+        }
+    }
+}
+
+impl<T: GodotClass> PartialEq for Gd<T> {
+    /// ⚠️ Returns whether two `Gd` pointers point to the same object.
+    ///
+    /// # Panics
+    /// When `self` or `other` is dead.
+    fn eq(&self, other: &Self) -> bool {
+        // Panics when one is dead
+        self.instance_id() == other.instance_id()
+    }
+}
+
+impl<T: GodotClass> Eq for Gd<T> {}
+
+impl<T> Display for Gd<T>
+where
+    T: GodotClass<Declarer = dom::EngineDomain>,
+{
+    // TODO support for user objects? should it return the engine repr, or a custom <T as Display>::fmt()?
+    // If the latter, we would need to do something like impl<T> Display for Gd<T> where T: Display,
+    // and thus implement it for each class separately (or blanket GodotClass/EngineClass/...).
+
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        engine::display_string(self, f)
+    }
+}
+
+impl<T: GodotClass> Debug for Gd<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        engine::debug_string(self, f, "Gd")
+    }
+}
+
+impl<T: GodotClass> VariantMetadata for Gd<T> {
+    fn variant_type() -> VariantType {
+        VariantType::Object
+    }
+
+    fn class_name() -> ClassName {
+        ClassName::of::<T>()
+    }
+}
+
+// Gd unwinding across panics does not invalidate any invariants;
+// its mutability is anyway present, in the Godot engine.
+impl<T: GodotClass> std::panic::UnwindSafe for Gd<T> {}
+impl<T: GodotClass> std::panic::RefUnwindSafe for Gd<T> {}
