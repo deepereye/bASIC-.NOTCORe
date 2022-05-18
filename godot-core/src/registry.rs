@@ -34,4 +34,19 @@ pub struct ClassPlugin {
 pub struct ErasedRegisterFn {
     // Wrapper needed because Debug can't be derived on function pointers with reference parameters, so this won't work:
     // pub type ErasedRegisterFn = fn(&mut dyn std::any::Any);
-    // (se
+    // (see https://stackoverflow.com/q/53380040)
+    pub raw: fn(&mut dyn Any),
+}
+
+impl Debug for ErasedRegisterFn {
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        write!(f, "0x{:0>16x}", self.raw as usize)
+    }
+}
+
+/// Represents the data part of a [`ClassPlugin`] instance.
+#[derive(Debug, Clone)]
+pub enum PluginComponent {
+    /// Class definition itself, must always be available
+    ClassDef {
+  
