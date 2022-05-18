@@ -49,4 +49,15 @@ impl Debug for ErasedRegisterFn {
 pub enum PluginComponent {
     /// Class definition itself, must always be available
     ClassDef {
-  
+        base_class_name: &'static str,
+
+        /// Godot low-level`create` function, wired up to library-generated `init`
+        generated_create_fn: Option<
+            unsafe extern "C" fn(
+                _class_userdata: *mut std::ffi::c_void, //
+            ) -> sys::GDExtensionObjectPtr,
+        >,
+
+        free_fn: unsafe extern "C" fn(
+            _class_user_data: *mut std::ffi::c_void,
+            instance: sys::GDExtensionClassInst
