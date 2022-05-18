@@ -101,4 +101,15 @@ pub enum PluginComponent {
     },
 }
 
-// 
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+#[derive(Debug)]
+struct ClassRegistrationInfo {
+    class_name: ClassName,
+    parent_class_name: Option<ClassName>,
+    generated_register_fn: Option<ErasedRegisterFn>,
+    user_register_fn: Option<ErasedRegisterFn>,
+    godot_params: sys::GDExtensionClassCreationInfo,
+}
+
+/// Registers a class
