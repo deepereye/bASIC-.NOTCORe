@@ -87,4 +87,18 @@ pub enum PluginComponent {
         /// User-defined `to_string` function
         user_to_string_fn: Option<
             unsafe extern "C" fn(
-        
+                p_instance: sys::GDExtensionClassInstancePtr,
+                r_is_valid: *mut sys::GDExtensionBool,
+                p_out: sys::GDExtensionStringPtr,
+            ),
+        >,
+
+        /// Callback for other virtuals
+        get_virtual_fn: unsafe extern "C" fn(
+            p_userdata: *mut std::os::raw::c_void,
+            p_name: sys::GDExtensionConstStringNamePtr,
+        ) -> sys::GDExtensionClassCallVirtual,
+    },
+}
+
+// 
