@@ -7,4 +7,20 @@
 #![allow(dead_code)] // FIXME
 
 use crate::obj::*;
-use crate::private::as_stora
+use crate::private::as_storage;
+use crate::storage::InstanceStorage;
+use godot_ffi as sys;
+
+use sys::interface_fn;
+
+use crate::bind::GodotExt;
+use crate::builtin::meta::ClassName;
+use crate::builtin::StringName;
+use crate::out;
+use std::any::Any;
+use std::collections::HashMap;
+use std::fmt::{Debug, Formatter, Result as FmtResult};
+use std::ptr;
+
+/// Piece of information that is gathered by the self-registration ("plugin") system.
+#[deri
