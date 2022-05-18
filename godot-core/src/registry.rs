@@ -60,4 +60,18 @@ pub enum PluginComponent {
 
         free_fn: unsafe extern "C" fn(
             _class_user_data: *mut std::ffi::c_void,
-            instance: sys::GDExtensionClassInst
+            instance: sys::GDExtensionClassInstancePtr,
+        ),
+    },
+
+    /// Collected from `#[godot_api] impl MyClass`
+    UserMethodBinds {
+        /// Callback to library-generated function which registers functions in the `impl`
+        ///
+        /// Always present since that's the entire point of this `impl` block.
+        generated_register_fn: ErasedRegisterFn,
+    },
+
+    /// Collected from `#[godot_api] impl GodotExt for MyClass`
+    UserVirtuals {
+        /// Callbac
