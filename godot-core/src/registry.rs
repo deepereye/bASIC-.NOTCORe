@@ -74,4 +74,17 @@ pub enum PluginComponent {
 
     /// Collected from `#[godot_api] impl GodotExt for MyClass`
     UserVirtuals {
-        /// Callbac
+        /// Callback to user-defined `register_class` function
+        user_register_fn: Option<ErasedRegisterFn>,
+
+        /// Godot low-level`create` function, wired up to the user's `init`
+        user_create_fn: Option<
+            unsafe extern "C" fn(
+                _class_userdata: *mut std::ffi::c_void, //
+            ) -> sys::GDExtensionObjectPtr,
+        >,
+
+        /// User-defined `to_string` function
+        user_to_string_fn: Option<
+            unsafe extern "C" fn(
+        
