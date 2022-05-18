@@ -23,4 +23,15 @@ use std::fmt::{Debug, Formatter, Result as FmtResult};
 use std::ptr;
 
 /// Piece of information that is gathered by the self-registration ("plugin") system.
-#[deri
+#[derive(Debug)]
+pub struct ClassPlugin {
+    pub class_name: &'static str,
+    pub component: PluginComponent,
+}
+
+/// Type-erased function object, holding a `register_class` function.
+#[derive(Copy, Clone)]
+pub struct ErasedRegisterFn {
+    // Wrapper needed because Debug can't be derived on function pointers with reference parameters, so this won't work:
+    // pub type ErasedRegisterFn = fn(&mut dyn std::any::Any);
+    // (se
