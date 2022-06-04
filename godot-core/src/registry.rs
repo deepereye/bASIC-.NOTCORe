@@ -112,4 +112,13 @@ struct ClassRegistrationInfo {
     godot_params: sys::GDExtensionClassCreationInfo,
 }
 
-/// Registers a class
+/// Registers a class with static type information.
+pub fn register_class<T: GodotExt + cap::GodotInit + cap::ImplementsGodotExt>() {
+    // TODO: provide overloads with only some trait impls
+
+    out!("Manually register class {}", std::any::type_name::<T>());
+    let class_name = ClassName::of::<T>();
+
+    let godot_params = sys::GDExtensionClassCreationInfo {
+        to_string_func: Some(callbacks::to_string::<T>),
+        reference_func: Som
