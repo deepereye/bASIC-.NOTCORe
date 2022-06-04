@@ -131,4 +131,16 @@ pub fn register_class<T: GodotExt + cap::GodotInit + cap::ImplementsGodotExt>() 
         ..default_creation_info()
     };
 
-    regist
+    register_class_raw(ClassRegistrationInfo {
+        class_name,
+        parent_class_name: Some(ClassName::of::<T::Base>()),
+        generated_register_fn: None,
+        user_register_fn: Some(ErasedRegisterFn {
+            raw: callbacks::register_class_by_builder::<T>,
+        }),
+        godot_params,
+    });
+}
+
+/// Lets Godot know about all classes that have self-registered through the plugin system.
+pub fn auto_register_
