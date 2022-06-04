@@ -121,4 +121,14 @@ pub fn register_class<T: GodotExt + cap::GodotInit + cap::ImplementsGodotExt>() 
 
     let godot_params = sys::GDExtensionClassCreationInfo {
         to_string_func: Some(callbacks::to_string::<T>),
-        reference_func: Som
+        reference_func: Some(callbacks::reference::<T>),
+        unreference_func: Some(callbacks::unreference::<T>),
+        create_instance_func: Some(callbacks::create::<T>),
+        free_instance_func: Some(callbacks::free::<T>),
+        get_virtual_func: Some(callbacks::get_virtual::<T>),
+        get_rid_func: None,
+        class_userdata: ptr::null_mut(), // will be passed to create fn, but global per class
+        ..default_creation_info()
+    };
+
+    regist
