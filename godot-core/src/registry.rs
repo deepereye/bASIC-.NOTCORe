@@ -143,4 +143,17 @@ pub fn register_class<T: GodotExt + cap::GodotInit + cap::ImplementsGodotExt>() 
 }
 
 /// Lets Godot know about all classes that have self-registered through the plugin system.
-pub fn auto_register_
+pub fn auto_register_classes() {
+    out!("Auto-register classes...");
+
+    // Note: many errors are already caught by the compiler, before this runtime validation even takes place:
+    // * missing #[derive(GodotClass)] or impl GodotClass for T
+    // * duplicate impl GodotInit for T
+    //
+
+    let mut map = HashMap::<ClassName, ClassRegistrationInfo>::new();
+
+    crate::private::iterate_plugins(|elem: &ClassPlugin| {
+        //out!("* Plugin: {elem:#?}");
+
+        let name
