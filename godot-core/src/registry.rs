@@ -156,4 +156,19 @@ pub fn auto_register_classes() {
     crate::private::iterate_plugins(|elem: &ClassPlugin| {
         //out!("* Plugin: {elem:#?}");
 
-        let name
+        let name = ClassName::from_static(elem.class_name);
+        let class_info = map
+            .entry(name.clone())
+            .or_insert_with(|| default_registration_info(name));
+
+        fill_class_info(elem.component.clone(), class_info);
+    });
+
+    //out!("Class-map: {map:#?}");
+
+    for info in map.into_values() {
+        out!("Register class:   {}", info.class_name);
+        register_class_raw(info);
+    }
+
+    out!("All classes auto-registered.")
