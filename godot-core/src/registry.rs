@@ -171,4 +171,17 @@ pub fn auto_register_classes() {
         register_class_raw(info);
     }
 
-    out!("All classes auto-registered.")
+    out!("All classes auto-registered.");
+}
+
+/// Populate `c` with all the relevant data from `component` (depending on component type).
+fn fill_class_info(component: PluginComponent, c: &mut ClassRegistrationInfo) {
+    // out!("|   reg (before):    {c:?}");
+    // out!("|   comp:            {component:?}");
+    match component {
+        PluginComponent::ClassDef {
+            base_class_name,
+            generated_create_fn,
+            free_fn,
+        } => {
+            c.par
