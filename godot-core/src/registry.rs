@@ -184,4 +184,16 @@ fn fill_class_info(component: PluginComponent, c: &mut ClassRegistrationInfo) {
             generated_create_fn,
             free_fn,
         } => {
-            c.par
+            c.parent_class_name = Some(ClassName::from_static(base_class_name));
+            fill_into(
+                &mut c.godot_params.create_instance_func,
+                generated_create_fn,
+            );
+            c.godot_params.free_instance_func = Some(free_fn);
+        }
+
+        PluginComponent::UserMethodBinds {
+            generated_register_fn,
+        } => {
+            c.generated_register_fn = Some(generated_register_fn);
+    
