@@ -223,4 +223,16 @@ fn fill_into<T>(dst: &mut Option<T>, src: Option<T>) {
     }
 }
 
-/// Registers a cl
+/// Registers a class with given the dynamic type information `info`.
+fn register_class_raw(info: ClassRegistrationInfo) {
+    // First register class...
+
+    let class_name = info.class_name;
+    let parent_class_name = info
+        .parent_class_name
+        .expect("class defined (parent_class_name)");
+
+    unsafe {
+        // Try to register class...
+        #[allow(clippy::let_unit_value)] // notifies us if Godot API ever adds a return type.
+ 
