@@ -196,4 +196,18 @@ fn fill_class_info(component: PluginComponent, c: &mut ClassRegistrationInfo) {
             generated_register_fn,
         } => {
             c.generated_register_fn = Some(generated_register_fn);
-    
+        }
+
+        PluginComponent::UserVirtuals {
+            user_register_fn,
+            user_create_fn,
+            user_to_string_fn,
+            get_virtual_fn,
+        } => {
+            c.user_register_fn = user_register_fn;
+            fill_into(&mut c.godot_params.create_instance_func, user_create_fn);
+            c.godot_params.to_string_func = user_to_string_fn;
+            c.godot_params.get_virtual_func = Some(get_virtual_fn);
+        }
+    }
+    // out!("|   reg
