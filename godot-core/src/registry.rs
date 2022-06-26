@@ -210,4 +210,17 @@ fn fill_class_info(component: PluginComponent, c: &mut ClassRegistrationInfo) {
             c.godot_params.get_virtual_func = Some(get_virtual_fn);
         }
     }
-    // out!("|   reg
+    // out!("|   reg (after):     {c:?}");
+    // out!();
+}
+
+/// If `src` is occupied, it moves the value into `dst`, while ensuring that no previous value is present in `dst`.
+fn fill_into<T>(dst: &mut Option<T>, src: Option<T>) {
+    match (dst, src) {
+        (dst @ None, src) => *dst = src,
+        (Some(_), Some(_)) => panic!("option already filled"),
+        (Some(_), None) => { /* do nothing */ }
+    }
+}
+
+/// Registers a cl
