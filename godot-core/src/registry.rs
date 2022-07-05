@@ -235,4 +235,13 @@ fn register_class_raw(info: ClassRegistrationInfo) {
     unsafe {
         // Try to register class...
         #[allow(clippy::let_unit_value)] // notifies us if Godot API ever adds a return type.
- 
+        let _: () = interface_fn!(classdb_register_extension_class)(
+            sys::get_library(),
+            class_name.string_sys(),
+            parent_class_name.string_sys(),
+            ptr::addr_of!(info.godot_params),
+        );
+
+        // ...then see if it worked.
+        // This is necessary because the above registration does not report errors (apart from console output).
+        let tag = interface_fn!(classdb_get_clas
