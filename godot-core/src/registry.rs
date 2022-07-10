@@ -257,4 +257,16 @@ fn register_class_raw(info: ClassRegistrationInfo) {
     let mut class_builder = 0; // TODO dummy argument; see callbacks
 
     // First call generated (proc-macro) registration function, then user-defined one.
-  
+    // This mimics the intuition that proc-macros are running "before" normal runtime code.
+    if let Some(register_fn) = info.generated_register_fn {
+        (register_fn.raw)(&mut class_builder);
+    }
+    if let Some(register_fn) = info.user_register_fn {
+        (register_fn.raw)(&mut class_builder);
+    }
+}
+
+/// Callbacks that are passed as function pointers to Godot upon class registration.
+///
+/// Re-exported to `crate::private`
+#[allow
