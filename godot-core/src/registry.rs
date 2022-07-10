@@ -244,4 +244,17 @@ fn register_class_raw(info: ClassRegistrationInfo) {
 
         // ...then see if it worked.
         // This is necessary because the above registration does not report errors (apart from console output).
-        let tag = interface_fn!(classdb_get_clas
+        let tag = interface_fn!(classdb_get_class_tag)(class_name.string_sys());
+        assert!(
+            !tag.is_null(),
+            "failed to register class `{class_name}`; check preceding Godot stderr messages",
+        );
+    }
+
+    // ...then custom symbols
+
+    //let mut class_builder = crate::builder::ClassBuilder::<?>::new();
+    let mut class_builder = 0; // TODO dummy argument; see callbacks
+
+    // First call generated (proc-macro) registration function, then user-defined one.
+  
