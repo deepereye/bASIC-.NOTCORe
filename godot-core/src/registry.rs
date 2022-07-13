@@ -297,4 +297,12 @@ pub mod callbacks {
         let base = unsafe { Base::from_sys(base_ptr) };
 
         let user_instance = make_user_instance(base);
-   
+        let instance = InstanceStorage::<T>::construct(user_instance);
+        let instance_ptr = instance.into_raw();
+        let instance_ptr = instance_ptr as *mut std::ffi::c_void; // TODO GDExtensionClassInstancePtr
+
+        let binding_data_callbacks = crate::storage::nop_instance_callbacks();
+        unsafe {
+            interface_fn!(object_set_instance)(base_ptr, class_name.string_sys(), instance_ptr);
+            interface_fn!(object_set_instance_binding)(
+          
