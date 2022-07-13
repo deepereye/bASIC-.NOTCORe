@@ -269,4 +269,19 @@ fn register_class_raw(info: ClassRegistrationInfo) {
 /// Callbacks that are passed as function pointers to Godot upon class registration.
 ///
 /// Re-exported to `crate::private`
-#[allow
+#[allow(clippy::missing_safety_doc)]
+pub mod callbacks {
+    use super::*;
+    use crate::bind::GodotExt;
+    use crate::builder::ClassBuilder;
+    use crate::obj::Base;
+
+    pub unsafe extern "C" fn create<T: cap::GodotInit>(
+        _class_userdata: *mut std::ffi::c_void,
+    ) -> sys::GDExtensionObjectPtr {
+        create_custom(T::__godot_init)
+    }
+
+    pub(crate) fn create_custom<T, F>(make_user_instance: F) -> sys::GDExtensionObjectPtr
+    where
+     
