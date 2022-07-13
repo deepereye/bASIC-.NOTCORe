@@ -284,4 +284,17 @@ pub mod callbacks {
 
     pub(crate) fn create_custom<T, F>(make_user_instance: F) -> sys::GDExtensionObjectPtr
     where
-     
+        T: GodotClass,
+        F: FnOnce(Base<T::Base>) -> T,
+    {
+        let class_name = ClassName::of::<T>();
+        let base_class_name = ClassName::of::<T::Base>();
+
+        //out!("create callback: {}", class_name.backing);
+
+        let base_ptr =
+            unsafe { interface_fn!(classdb_construct_object)(base_class_name.string_sys()) };
+        let base = unsafe { Base::from_sys(base_ptr) };
+
+        let user_instance = make_user_instance(base);
+   
