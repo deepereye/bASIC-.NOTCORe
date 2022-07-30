@@ -305,4 +305,19 @@ pub mod callbacks {
         unsafe {
             interface_fn!(object_set_instance)(base_ptr, class_name.string_sys(), instance_ptr);
             interface_fn!(object_set_instance_binding)(
-          
+                base_ptr,
+                sys::get_library(),
+                instance_ptr,
+                &binding_data_callbacks,
+            );
+        }
+
+        // std::mem::forget(class_name);
+        // std::mem::forget(base_class_name);
+        base_ptr
+    }
+
+    pub unsafe extern "C" fn free<T: GodotClass>(
+        _class_user_data: *mut std::ffi::c_void,
+        instance: sys::GDExtensionClassInstancePtr,
+  
