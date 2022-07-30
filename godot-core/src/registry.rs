@@ -320,4 +320,14 @@ pub mod callbacks {
     pub unsafe extern "C" fn free<T: GodotClass>(
         _class_user_data: *mut std::ffi::c_void,
         instance: sys::GDExtensionClassInstancePtr,
-  
+    ) {
+        let storage = as_storage::<T>(instance);
+        storage.mark_destroyed_by_godot();
+        let _drop = Box::from_raw(storage as *mut InstanceStorage<_>);
+    }
+
+    pub unsafe extern "C" fn get_virtual<T: cap::ImplementsGodotExt>(
+        _class_user_data: *mut std::ffi::c_void,
+        name: sys::GDExtensionConstStringNamePtr,
+    ) -> sys::GDExtensionClassCallVirtual {
+        // This string 
