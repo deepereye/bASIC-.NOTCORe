@@ -330,4 +330,15 @@ pub mod callbacks {
         _class_user_data: *mut std::ffi::c_void,
         name: sys::GDExtensionConstStringNamePtr,
     ) -> sys::GDExtensionClassCallVirtual {
-        // This string 
+        // This string is not ours, so we cannot call the destructor on it.
+        let borrowed_string = StringName::from_string_sys(sys::force_mut_ptr(name));
+        let method_name = borrowed_string.to_string();
+        std::mem::forget(borrowed_string);
+
+        T::__virtual_call(method_name.as_str())
+    }
+
+    pub unsafe extern "C" fn to_string<T: GodotExt>(
+        instance: sys::GDExtensionClassInstancePtr,
+        _is_valid: *mut sys::GDExtensionBool,
+        out_string: sys::GDExte
