@@ -341,4 +341,13 @@ pub mod callbacks {
     pub unsafe extern "C" fn to_string<T: GodotExt>(
         instance: sys::GDExtensionClassInstancePtr,
         _is_valid: *mut sys::GDExtensionBool,
-        out_string: sys::GDExte
+        out_string: sys::GDExtensionStringPtr,
+    ) {
+        // Note: to_string currently always succeeds, as it is only provided for classes that have a working implementation.
+        // is_valid output parameter thus not needed.
+
+        let storage = as_storage::<T>(instance);
+        let instance = storage.get();
+        let string = <T as GodotExt>::to_string(&*instance);
+
+        // Transfer ownership to Godot, disable destru
