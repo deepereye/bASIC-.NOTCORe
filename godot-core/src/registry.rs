@@ -350,4 +350,18 @@ pub mod callbacks {
         let instance = storage.get();
         let string = <T as GodotExt>::to_string(&*instance);
 
-        // Transfer ownership to Godot, disable destru
+        // Transfer ownership to Godot, disable destructor
+        string.write_string_sys(out_string);
+        std::mem::forget(string);
+    }
+
+    pub unsafe extern "C" fn reference<T: GodotClass>(instance: sys::GDExtensionClassInstancePtr) {
+        let storage = as_storage::<T>(instance);
+        storage.on_inc_ref();
+    }
+
+    pub unsafe extern "C" fn unreference<T: GodotClass>(
+        instance: sys::GDExtensionClassInstancePtr,
+    ) {
+        let storage = as_storage::<T>(instance);
+        
