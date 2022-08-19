@@ -364,4 +364,16 @@ pub mod callbacks {
         instance: sys::GDExtensionClassInstancePtr,
     ) {
         let storage = as_storage::<T>(instance);
+        storage.on_dec_ref();
+    }
+
+    // Safe, higher-level methods
+
+    /// Abstracts the `GodotInit` away, for contexts where this trait bound is not statically available
+    pub fn erased_init<T: cap::GodotInit>(base: Box<dyn Any>) -> Box<dyn Any> {
+        let concrete = base
+            .downcast::<Base<<T as GodotClass>::Base>>()
+            .expect("erased_init: bad type erasure");
+        let extracted: Base<_> = sys::unbox(concrete);
+
         
