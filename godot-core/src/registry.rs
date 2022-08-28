@@ -376,4 +376,15 @@ pub mod callbacks {
             .expect("erased_init: bad type erasure");
         let extracted: Base<_> = sys::unbox(concrete);
 
-        
+        let instance = T::__godot_init(extracted);
+        Box::new(instance)
+    }
+
+    pub fn register_class_by_builder<T: GodotExt>(_class_builder: &mut dyn Any) {
+        // TODO use actual argument, once class builder carries state
+        // let class_builder = class_builder
+        //     .downcast_mut::<ClassBuilder<T>>()
+        //     .expect("bad type erasure");
+
+        let mut class_builder = ClassBuilder::new();
+        T::regis
