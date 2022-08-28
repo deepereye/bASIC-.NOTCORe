@@ -387,4 +387,20 @@ pub mod callbacks {
         //     .expect("bad type erasure");
 
         let mut class_builder = ClassBuilder::new();
-        T::regis
+        T::register_class(&mut class_builder);
+    }
+
+    pub fn register_user_binds<T: cap::ImplementsGodotApi + cap::ImplementsGodotExports>(
+        _class_builder: &mut dyn Any,
+    ) {
+        // let class_builder = class_builder
+        //     .downcast_mut::<ClassBuilder<T>>()
+        //     .expect("bad type erasure");
+
+        //T::register_methods(class_builder);
+        T::__register_methods();
+        T::__register_exports();
+    }
+}
+
+// Sub
