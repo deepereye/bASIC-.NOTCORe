@@ -412,4 +412,18 @@ fn default_registration_info(class_name: ClassName) -> ClassRegistrationInfo {
         parent_class_name: None,
         generated_register_fn: None,
         user_register_fn: None,
-     
+        godot_params: default_creation_info(),
+    }
+}
+
+fn default_creation_info() -> sys::GDExtensionClassCreationInfo {
+    sys::GDExtensionClassCreationInfo {
+        is_abstract: false as u8,
+        is_virtual: false as u8,
+        set_func: None,
+        get_func: None,
+        get_property_list_func: None,
+        free_property_list_func: None,
+        property_can_revert_func: None,
+        property_get_revert_func: None,
+        notification_func
