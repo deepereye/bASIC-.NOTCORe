@@ -403,4 +403,13 @@ pub mod callbacks {
     }
 }
 
-// Sub
+// Substitute for Default impl
+// Yes, bindgen can implement Default, but only for _all_ types (with single exceptions).
+// For FFI types, it's better to have explicit initialization in the general case though.
+fn default_registration_info(class_name: ClassName) -> ClassRegistrationInfo {
+    ClassRegistrationInfo {
+        class_name,
+        parent_class_name: None,
+        generated_register_fn: None,
+        user_register_fn: None,
+     
