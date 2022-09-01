@@ -426,4 +426,14 @@ fn default_creation_info() -> sys::GDExtensionClassCreationInfo {
         free_property_list_func: None,
         property_can_revert_func: None,
         property_get_revert_func: None,
-        notification_func
+        notification_func: None,
+        to_string_func: None,
+        reference_func: None,
+        unreference_func: None,
+        create_instance_func: None,
+        free_instance_func: None,
+        get_virtual_func: None,
+        get_rid_func: None,
+        class_userdata: ptr::null_mut(),
+    }
+}
