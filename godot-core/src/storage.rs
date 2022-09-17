@@ -33,4 +33,21 @@ impl<T: GodotClass> InstanceStorage<T> {
         out!("    Storage::construct             <{}>", type_name::<T>());
 
         Self {
-            user_inst
+            user_instance: cell::RefCell::new(user_instance),
+            lifecycle: Lifecycle::Alive,
+            godot_ref_count: 1,
+        }
+    }
+
+    pub(crate) fn on_inc_ref(&mut self) {
+        self.godot_ref_count += 1;
+        out!(
+            "    Storage::on_inc_ref (rc={})     <{}>", // -- {:?}",
+            self.godot_ref_count,
+            type_name::<T>(),
+            //self.user_instance
+        );
+    }
+
+    pub(crate) fn on_dec_ref(&mut self) {
+        self
