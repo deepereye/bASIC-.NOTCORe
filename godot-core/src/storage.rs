@@ -17,4 +17,20 @@ pub struct InstanceStorage<T: GodotClass> {
 
     // Declared after `user_instance`, is dropped last
     pub lifecycle: Lifecycle,
-    godot_
+    godot_ref_count: i32,
+}
+
+#[derive(Copy, Clone, Debug)]
+pub enum Lifecycle {
+    Alive,
+    Destroying,
+    Dead, // reading this would typically already be too late, only best-effort in case of UB
+}
+
+/// For all Godot extension classes
+impl<T: GodotClass> InstanceStorage<T> {
+    pub fn construct(user_instance: T) -> Self {
+        out!("    Storage::construct             <{}>", type_name::<T>());
+
+        Self {
+            user_inst
