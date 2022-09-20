@@ -50,4 +50,19 @@ impl<T: GodotClass> InstanceStorage<T> {
     }
 
     pub(crate) fn on_dec_ref(&mut self) {
-        self
+        self.godot_ref_count -= 1;
+        out!(
+            "  | Storage::on_dec_ref (rc={})     <{}>", // -- {:?}",
+            self.godot_ref_count,
+            type_name::<T>(),
+            //self.user_instance
+        );
+    }
+
+    /* pub fn destroy(&mut self) {
+        assert!(
+            self.user_instance.is_some(),
+            "Cannot destroy user instance which is not yet initialized"
+        );
+        assert!(
+            !self.de
