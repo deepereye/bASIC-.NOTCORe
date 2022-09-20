@@ -65,4 +65,19 @@ impl<T: GodotClass> InstanceStorage<T> {
             "Cannot destroy user instance which is not yet initialized"
         );
         assert!(
-            !self.de
+            !self.destroyed,
+            "Cannot destroy user instance multiple times"
+        );
+        self.user_instance = None; // drops T
+                                   // TODO drop entire Storage
+    }*/
+
+    #[must_use]
+    pub fn into_raw(self) -> *mut Self {
+        Box::into_raw(Box::new(self))
+    }
+
+    pub fn get(&self) -> cell::Ref<T> {
+        self.user_instance.try_borrow().unwrap_or_else(|_e| {
+            panic!(
+                "Gd<
