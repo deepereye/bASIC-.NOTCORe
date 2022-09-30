@@ -91,4 +91,14 @@ impl<T: GodotClass> InstanceStorage<T> {
     pub fn get_mut(&mut self) -> cell::RefMut<T> {
         self.user_instance.try_borrow_mut().unwrap_or_else(|_e| {
             panic!(
-                "Gd<T>::b
+                "Gd<T>::bind_mut() failed, already bound; T = {}.\n  \
+                 Make sure there is no &T or &mut T live at the time.\n  \
+                 This often occurs when calling a GDScript function/signal from Rust, which then calls again Rust code.",
+                type_name::<T>()
+            )
+        })
+    }
+
+    pub fn mark_destroyed_by_godot(&mut self) {
+        out!(
+            "    Storage::mark_destroyed_by_godot", // -- {:?}",
