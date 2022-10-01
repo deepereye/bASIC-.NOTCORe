@@ -102,3 +102,19 @@ impl<T: GodotClass> InstanceStorage<T> {
     pub fn mark_destroyed_by_godot(&mut self) {
         out!(
             "    Storage::mark_destroyed_by_godot", // -- {:?}",
+                                                    //self.user_instance
+        );
+        self.lifecycle = Lifecycle::Destroying;
+        out!(
+            "    mark;  self={:?}, val={:?}",
+            self as *mut _,
+            self.lifecycle
+        );
+    }
+
+    #[inline(always)]
+    pub fn destroyed_by_godot(&self) -> bool {
+        out!(
+            "    is_d;  self={:?}, val={:?}",
+            self as *const _,
+            self.lifecycl
