@@ -145,4 +145,13 @@ impl<T: GodotClass> Drop for InstanceStorage<T> {
 /// Note: returns reference with unbounded lifetime; intended for local usage
 ///
 /// # Safety
-/// `instance_ptr` is assumed to point to a valid i
+/// `instance_ptr` is assumed to point to a valid instance.
+// FIXME unbounded ref AND &mut out of thin air is a huge hazard -- consider using with_storage(ptr, closure) and drop_storage(ptr)
+pub unsafe fn as_storage<'u, T: GodotClass>(
+    instance_ptr: sys::GDExtensionClassInstancePtr,
+) -> &'u mut InstanceStorage<T> {
+    &mut *(instance_ptr as *mut InstanceStorage<T>)
+}
+
+pub fn nop_instance_callbacks() -> sys::GDExtensionInstanceBindingCallbacks {
+    // These could also be null pointers, if they are definitely 
