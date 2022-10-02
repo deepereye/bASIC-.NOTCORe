@@ -117,4 +117,18 @@ impl<T: GodotClass> InstanceStorage<T> {
         out!(
             "    is_d;  self={:?}, val={:?}",
             self as *const _,
-            self.lifecycl
+            self.lifecycle
+        );
+        matches!(self.lifecycle, Lifecycle::Destroying | Lifecycle::Dead)
+    }
+}
+
+impl<T: GodotClass> Drop for InstanceStorage<T> {
+    fn drop(&mut self) {
+        out!(
+            "    Storage::drop (rc={})           <{}>", // -- {:?}",
+            self.godot_ref_count,
+            type_name::<T>(),
+            //self.user_instance
+        );
+        //let _ = mem::take(&mut self
