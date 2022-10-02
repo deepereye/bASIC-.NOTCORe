@@ -131,4 +131,18 @@ impl<T: GodotClass> Drop for InstanceStorage<T> {
             type_name::<T>(),
             //self.user_instance
         );
-        //let _ = mem::take(&mut self
+        //let _ = mem::take(&mut self.user_instance);
+        out!(
+            "    Storage::drop end              <{}>", //  -- {:?}",
+            type_name::<T>(),
+            //self.user_instance
+        );
+    }
+}
+
+/// Interprets the opaque pointer as pointing to `InstanceStorage<T>`.
+///
+/// Note: returns reference with unbounded lifetime; intended for local usage
+///
+/// # Safety
+/// `instance_ptr` is assumed to point to a valid i
