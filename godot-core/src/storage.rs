@@ -165,4 +165,18 @@ pub fn nop_instance_callbacks() -> sys::GDExtensionInstanceBindingCallbacks {
 
 extern "C" fn create_callback(
     _p_token: *mut std::os::raw::c_void,
-  
+    _p_instance: *mut std::os::raw::c_void,
+) -> *mut std::os::raw::c_void {
+    // There is no "instance binding" for Godot types like Node3D -- this would be the user-defined Rust class
+    std::ptr::null_mut()
+}
+
+extern "C" fn free_callback(
+    _p_token: *mut std::os::raw::c_void,
+    _p_instance: *mut std::os::raw::c_void,
+    _p_binding: *mut std::os::raw::c_void,
+) {
+}
+
+extern "C" fn reference_callback(
+    _p_token: *mut s
