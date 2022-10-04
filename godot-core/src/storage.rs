@@ -179,4 +179,9 @@ extern "C" fn free_callback(
 }
 
 extern "C" fn reference_callback(
-    _p_token: *mut s
+    _p_token: *mut std::os::raw::c_void,
+    _p_binding: *mut std::os::raw::c_void,
+    _p_reference: sys::GDExtensionBool,
+) -> sys::GDExtensionBool {
+    true as u8
+}
