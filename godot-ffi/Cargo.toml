@@ -7,4 +7,15 @@ license = "MPL-2.0"
 keywords = ["gamedev", "godot", "engine", "ffi"]
 categories = ["game-engines", "graphics"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/ref
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+codegen-fmt = ["godot-codegen/codegen-fmt"]
+#codegen-full = ["godot-codegen/codegen-full"]
+
+[dependencies]
+paste = "1"
+
+[build-dependencies]
+bindgen = { version = "0.63.0", default-features = false, features = ["runtime"] }
+godot-codegen = { path = "../godot-codegen" }
