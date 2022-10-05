@@ -125,3 +125,126 @@ macro_rules! builtin_fn {
 }
 
 #[macro_export]
+#[doc(hidden)]
+macro_rules! builtin_call {
+        ($name:ident ( $($args:expr),* $(,)? )) => {
+            ($crate::method_table().$name)( $($args),* )
+        };
+    }
+
+#[macro_export]
+#[doc(hidden)]
+macro_rules! interface_fn {
+    ($name:ident) => {{
+        unsafe { $crate::get_interface().$name.unwrap_unchecked() }
+    }};
+}
+
+/// Verifies a condition at compile time.
+// https://blog.rust-lang.org/2021/12/02/Rust-1.57.0.html#panic-in-const-contexts
+#[macro_export]
+macro_rules! static_assert {
+    ($cond:expr) => {
+        const _: () = assert!($cond);
+    };
+    ($cond:expr, $msg:literal) => {
+        const _: () = assert!($cond, $msg);
+    };
+}
+
+/// Verifies at compile time that two types `T` and `U` have the same size.
+#[macro_export]
+macro_rules! static_assert_eq_size {
+    ($T:ty, $U:ty) => {
+        godot_ffi::static_assert!(std::mem::size_of::<$T>() == std::mem::size_of::<$U>());
+    };
+    ($T:ty, $U:ty, $msg:literal) => {
+        godot_ffi::static_assert!(std::mem::size_of::<$T>() == std::mem::size_of::<$U>(), $msg);
+    };
+}
+
+/// Extract value from box before `into_inner()` is stable
+#[allow(clippy::boxed_local)] // false positive
+pub fn unbox<T>(value: Box<T>) -> T {
+    // Deref-move is a Box magic feature; see https://stackoverflow.com/a/42264074
+    *value
+}
+
+/// Explicitly cast away `const` from a pointer, similar to C++ `const_cast`.
+///
+/// The `as` conversion simultaneously doing 10 other things, potentially causing unintended transmutations.
+pub fn force_mut_ptr<T>(ptr: *const T) -> *mut T {
+    ptr as *mut T
+}
+
+/// Add `const` to a mut ptr.
+pub fn to_const_ptr<T>(ptr: *mut T) -> *const T {
+    ptr as *const T
+}
+
+/// If `ptr` is not null, returns `Some(mapper(ptr))`; otherwise `None`.
+pub fn ptr_then<T, R, F>(ptr: *mut T, mapper: F) -> Option<R>
+where
+    F: FnOnce(*mut T) -> R,
+{
+    // Could also use NonNull in signature, but for this project we always deal with FFI raw pointers
+    if ptr.is_null() {
+        None
+    } else {
+        Some(mapper(ptr))
+    }
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+#[doc(hidden)]
+#[inline]
+pub fn default_call_error() -> GDExtensionCallError {
+    GDExtensionCallError {
+        error: GDEXTENSION_CALL_OK,
+        argument: -1,
+        expected: -1,
+    }
+}
+
+#[doc(hidden)]
+#[inline]
+#[track_caller] // panic message points to call site
+pub fn panic_call_error(
+    err: &GDExtensionCallError,
+    function_name: &str,
+    arg_types: &[VariantType],
+) -> ! {
+    debug_assert_ne!(err.error, GDEXTENSION_CALL_OK); // already checked outside
+
+    let GDExtensionCallError {
+        error,
+        argument,
+        expected,
+    } = *err;
+
+    let argc = arg_types.len();
+    let reason = match error {
+        GDEXTENSION_CALL_ERROR_INVALID_METHOD => "method not found".to_string(),
+        GDEXTENSION_CALL_ERROR_INVALID_ARGUMENT => {
+            let from = arg_types[argument as usize];
+            let to = VariantType::from_sys(expected as GDExtensionVariantType);
+            let i = argument + 1;
+
+            format!("cannot convert argument #{i} from {from:?} to {to:?}")
+        }
+        GDEXTENSION_CALL_ERROR_TOO_MANY_ARGUMENTS => {
+            format!("too many arguments; expected {argument}, but called with {argc}")
+        }
+        GDEXTENSION_CALL_ERROR_TOO_FEW_ARGUMENTS => {
+            format!("too few arguments; expected {argument}, but called with {argc}")
+        }
+        GDEXTENSION_CALL_ERROR_INSTANCE_IS_NULL => "instance is null".to_string(),
+        GDEXTENSION_CALL_ERROR_METHOD_NOT_CONST => "method is not const".to_string(), // not handled in Godot
+        _ => format!("unknown reason (error code {error})"),
+    };
+
+    // Note: Godot also outputs thread ID
+    // In Godot source: variant.cpp:3043 or core_bind.cpp:2742
+    panic!("Function call failed:  {function_name} -- {reason}.");
+}
