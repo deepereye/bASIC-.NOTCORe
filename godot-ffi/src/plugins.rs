@@ -8,4 +8,15 @@
 
 // Note: code in this file is safe, however it seems that some annotations fall into the "unsafe" category.
 // For example, adding #![forbid(unsafe_code)] causes this error:
-//   note: the progra
+//   note: the program's behavior with overridden link sections on items is unpredictable
+//   and Rust cannot provide guarantees when you manually override them
+
+/// Declare a global registry for plugins with a given name
+#[doc(hidden)]
+#[macro_export]
+macro_rules! plugin_registry {
+    ($vis:vis $registry:ident: $Type:ty) => {
+        $crate::paste::paste! {
+            #[used]
+            #[allow(non_upper_case_globals)]
+ 
