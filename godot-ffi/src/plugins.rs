@@ -41,4 +41,10 @@ macro_rules! plugin_add_inner {
             #[cfg_attr(target_os = "windows", link_section = ".CRT$XCU")]
             // MacOS + iOS:
             #[cfg_attr(target_os = "ios", link_section = "__DATA,__mod_init_func")]
-            #[cfg_attr(target_os = "macos", link_section =
+            #[cfg_attr(target_os = "macos", link_section = "__DATA,__mod_init_func")]
+            // Linux, Android, BSD:
+            #[cfg_attr(target_os = "android", link_section = ".init_array")]
+            #[cfg_attr(target_os = "dragonfly", link_section = ".init_array")]
+            #[cfg_attr(target_os = "freebsd", link_section = ".init_array")]
+            #[cfg_attr(target_os = "linux", link_section = ".init_array")]
+            #[cfg_attr(target_os = "netbsd", link_sect
