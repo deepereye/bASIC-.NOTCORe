@@ -31,4 +31,14 @@ macro_rules! plugin_registry {
 #[allow(clippy::deprecated_cfg_attr)]
 #[cfg_attr(rustfmt, rustfmt::skip)]
 // ^ skip: paste's [< >] syntax chokes fmt
-//   cfg_attr: workaround for https://github.com/rust-lang/rust/pull/52234#issuecomm
+//   cfg_attr: workaround for https://github.com/rust-lang/rust/pull/52234#issuecomment-976702997
+macro_rules! plugin_add_inner {
+    ($registry:ident; $plugin:expr; $( $path_tt:tt )* ) => {
+        const _: () = {
+            #[allow(non_upper_case_globals)]
+            #[used]
+            // Windows:
+            #[cfg_attr(target_os = "windows", link_section = ".CRT$XCU")]
+            // MacOS + iOS:
+            #[cfg_attr(target_os = "ios", link_section = "__DATA,__mod_init_func")]
+            #[cfg_attr(target_os = "macos", link_section =
