@@ -19,4 +19,16 @@ macro_rules! plugin_registry {
         $crate::paste::paste! {
             #[used]
             #[allow(non_upper_case_globals)]
- 
+            #[doc(hidden)]
+            $vis static [< __godot_rust_plugin_ $registry >]:
+                std::sync::Mutex<Vec<$Type>> = std::sync::Mutex::new(Vec::new());
+        }
+    };
+}
+
+#[doc(hidden)]
+#[macro_export]
+#[allow(clippy::deprecated_cfg_attr)]
+#[cfg_attr(rustfmt, rustfmt::skip)]
+// ^ skip: paste's [< >] syntax chokes fmt
+//   cfg_attr: workaround for https://github.com/rust-lang/rust/pull/52234#issuecomm
