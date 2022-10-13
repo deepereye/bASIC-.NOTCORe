@@ -53,4 +53,20 @@ macro_rules! plugin_add_inner {
                 #[cfg_attr(target_os = "android", link_section = ".text.startup")]
                 #[cfg_attr(target_os = "linux", link_section = ".text.startup")]
                 extern "C" fn __inner_init() {
-                	let mut guard = $crate::paste::paste!( $( $path_tt )* 
+                	let mut guard = $crate::paste::paste!( $( $path_tt )* [< __godot_rust_plugin_ $registry >] )
+                        .lock()
+                        .unwrap();
+                    guard.push($plugin);
+                }
+                __inner_init
+            };
+        };
+    };
+}
+
+/// Register a plugin to a registry
+#[doc(hidden)]
+#[macro_export]
+macro_rules! plugin_add {
+    ( $registry:ident; $plugin:expr ) => {
+		$crate::plugin_add_inner!($registry; $plugin;
