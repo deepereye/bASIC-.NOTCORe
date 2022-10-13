@@ -47,4 +47,10 @@ macro_rules! plugin_add_inner {
             #[cfg_attr(target_os = "dragonfly", link_section = ".init_array")]
             #[cfg_attr(target_os = "freebsd", link_section = ".init_array")]
             #[cfg_attr(target_os = "linux", link_section = ".init_array")]
-            #[cfg_attr(target_os = "netbsd", link_sect
+            #[cfg_attr(target_os = "netbsd", link_section = ".init_array")]
+            #[cfg_attr(target_os = "openbsd", link_section = ".init_array")]
+            static __init: extern "C" fn() = {
+                #[cfg_attr(target_os = "android", link_section = ".text.startup")]
+                #[cfg_attr(target_os = "linux", link_section = ".text.startup")]
+                extern "C" fn __inner_init() {
+                	let mut guard = $crate::paste::paste!( $( $path_tt )* 
