@@ -69,4 +69,19 @@ macro_rules! plugin_add_inner {
 #[macro_export]
 macro_rules! plugin_add {
     ( $registry:ident; $plugin:expr ) => {
-		$crate::plugin_add_inner!($registry; $plugin;
+		$crate::plugin_add_inner!($registry; $plugin; );
+	};
+
+    ( $registry:ident in $path:path; $plugin:expr ) => {
+		$crate::plugin_add_inner!($registry; $plugin; $path ::);
+	};
+}
+
+/// Iterate over all plugins in unspecified order
+#[doc(hidden)]
+#[macro_export]
+macro_rules! plugin_foreach_inner {
+    ( $registry:ident; $closure:expr; $( $path_tt:tt )* ) => {
+        let guard = $crate::paste::paste!( $( $path_tt )* [< __godot_rust_plugin_ $registry >] )
+            .lock()
+            .unwrap
