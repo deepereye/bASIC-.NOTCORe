@@ -105,4 +105,18 @@ macro_rules! plugin_foreach {
 	};
 }
 
-// ---------------------
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashSet;
+    plugin_registry!(V: &'static str);
+
+    plugin_add!(V; "three");
+    plugin_add!(V; "four");
+    plugin_add!(V; "one");
+    plugin_add!(V; "two");
+
+    #[test]
+    fn plugin_registry() {
+        let expected = HashSet::from(["one", "two", "thre
