@@ -84,4 +84,25 @@ macro_rules! plugin_foreach_inner {
     ( $registry:ident; $closure:expr; $( $path_tt:tt )* ) => {
         let guard = $crate::paste::paste!( $( $path_tt )* [< __godot_rust_plugin_ $registry >] )
             .lock()
-            .unwrap
+            .unwrap();
+
+        for e in guard.iter() {
+            $closure(e);
+        }
+    };
+}
+
+/// Register a plugin to a registry
+#[doc(hidden)]
+#[macro_export]
+macro_rules! plugin_foreach {
+    ( $registry:ident; $closure:expr ) => {
+		$crate::plugin_foreach_inner!($registry; $closure; );
+	};
+
+    ( $registry:ident in $path:path; $closure:expr ) => {
+		$crate::plugin_foreach_inner!($registry; $closure; $path ::);
+	};
+}
+
+// ---------------------
