@@ -119,4 +119,13 @@ mod tests {
 
     #[test]
     fn plugin_registry() {
-        let expected = HashSet::from(["one", "two", "thre
+        let expected = HashSet::from(["one", "two", "three", "four"]);
+        let mut actual = HashSet::new();
+
+        plugin_foreach!(V; |e: &'static str| {
+            actual.insert(e);
+        });
+
+        assert_eq!(actual, expected);
+    }
+}
