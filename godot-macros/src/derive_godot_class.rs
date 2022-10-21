@@ -199,3 +199,126 @@ impl ExportedField {
     pub fn new_from_kv(field: Field, parser: &mut KvParser) -> ParseResult<ExportedField> {
         let getter = parser.handle_lit_required("getter")?;
         let setter = parser.handle_lit_required("setter")?;
+
+        let hint = parser
+            .handle_ident("hint")?
+            .map(|hint_type| {
+                Ok(ExportHint {
+                    hint_type,
+                    description: parser.handle_lit_required("hint_desc")?,
+                })
+            })
+            .transpose()?;
+
+        Ok(ExportedField {
+            field,
+            getter,
+            setter,
+            hint,
+        })
+    }
+}
+
+fn make_godot_init_impl(class_name: &Ident, fields: Fields) -> TokenStream {
+    let base_init = if let Some(Field { name, .. }) = fields.base_field {
+        quote! { #name: base, }
+    } else {
+        TokenStream::new()
+    };
+
+    let rest_init = fields.all_field_names.into_iter().map(|field| {
+        quote! { #field: std::default::Default::default(), }
+    });
+
+    quote! {
+        impl ::godot::obj::cap::GodotInit for #class_name {
+            fn __godot_init(base: ::godot::obj::Base<Self::Base>) -> Self {
+                Self {
+                    #( #rest_init )*
+                    #base_init
+                }
+            }
+        }
+    }
+}
+
+fn make_deref_impl(class_name: &Ident, fields: &Fields) -> TokenStream {
+    let base_field = if let Some(Field { name, .. }) = &fields.base_field {
+        name
+    } else {
+        return TokenStream::new();
+    };
+
+    quote! {
+        impl std::ops::Deref for #class_name {
+            type Target = <Self as ::godot::obj::GodotClass>::Base;
+
+            fn deref(&self) -> &Self::Target {
+                &*self.#base_field
+            }
+        }
+        impl std::ops::DerefMut for #class_name {
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut *self.#base_field
+            }
+        }
+    }
+}
+
+fn make_exports_impl(class_name: &Ident, fields: &Fields) -> TokenStream {
+    let export_tokens = fields
+        .exported_fields
+        .iter()
+        .map(|exported_field: &ExportedField| {
+            use std::str::FromStr;
+            let name = exported_field.field.name.to_string();
+            let getter = proc_macro2::Literal::from_str(&exported_field.getter).unwrap();
+            let setter = proc_macro2::Literal::from_str(&exported_field.setter).unwrap();
+            let field_type = exported_field.field.ty.clone();
+
+            let ExportHint {
+                hint_type,
+                description,
+            } = exported_field.hint.clone().unwrap_or_else(ExportHint::none);
+
+            // trims '"' and '\' from both ends of the hint description.
+            let description = description.trim_matches(|c| c == '\\' || c == '"');
+
+            quote! {
+                use ::godot::builtin::meta::VariantMetadata;
+
+                let class_name = ::godot::builtin::StringName::from(#class_name::CLASS_NAME);
+                let property_info = ::godot::builtin::meta::PropertyInfo::new(
+                    <#field_type>::variant_type(),
+                    ::godot::builtin::meta::ClassName::of::<#class_name>(),
+                    ::godot::builtin::StringName::from(#name),
+                    ::godot::engine::global::PropertyHint::#hint_type,
+                    GodotString::from(#description),
+                );
+                let property_info_sys = property_info.property_sys();
+
+                let getter_string_name = ::godot::builtin::StringName::from(#getter);
+                let setter_string_name = ::godot::builtin::StringName::from(#setter);
+                unsafe {
+                    ::godot::sys::interface_fn!(classdb_register_extension_class_property)(
+                        ::godot::sys::get_library(),
+                        class_name.string_sys(),
+                        std::ptr::addr_of!(property_info_sys),
+                        setter_string_name.string_sys(),
+                        getter_string_name.string_sys(),
+                    );
+                }
+            }
+        });
+    quote! {
+        impl ::godot::obj::cap::ImplementsGodotExports for #class_name {
+            fn __register_exports() {
+                #(
+                    {
+                        #export_tokens
+                    }
+                )*
+            }
+        }
+    }
+}
