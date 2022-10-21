@@ -18,4 +18,14 @@ pub fn transform(decl: Declaration) -> ParseResult<TokenStream> {
     };
 
     validate_impl(&impl_decl, Some("ExtensionLibrary"), "gdextension")?;
-    if impl_decl.tk_unsafe.
+    if impl_decl.tk_unsafe.is_none() {
+        return bail(
+            "`impl ExtensionLibrary` must be marked unsafe, to confirm your opt-in to godot-rust's safety model", 
+            impl_decl.tk_impl
+        );
+    }
+
+    let drained_attributes = std::mem::take(&mut impl_decl.attributes);
+    let mut parser = KvParser::parse_required(&drained_attributes, "gdextension", &impl_decl)?;
+    let entry_point = parser.handle_ident("entry_point")?;
+    parser.fini
