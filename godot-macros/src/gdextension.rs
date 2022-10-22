@@ -42,4 +42,16 @@ pub fn transform(decl: Declaration) -> ParseResult<TokenStream> {
             library: ::godot::sys::GDExtensionClassLibraryPtr,
             init: *mut ::godot::sys::GDExtensionInitialization,
         ) -> ::godot::sys::GDExtensionBool {
-            
+            ::godot::init::__gdext_load_library::<#impl_ty>(
+                interface,
+                library,
+                init
+            )
+        }
+
+        fn __static_type_check() {
+            // Ensures that the init function matches the signature advertised in FFI header
+            let _unused: ::godot::sys::GDExtensionInitializationFunction = Some(#entry_point);
+        }
+    })
+}
