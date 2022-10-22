@@ -28,4 +28,18 @@ pub fn transform(decl: Declaration) -> ParseResult<TokenStream> {
     let drained_attributes = std::mem::take(&mut impl_decl.attributes);
     let mut parser = KvParser::parse_required(&drained_attributes, "gdextension", &impl_decl)?;
     let entry_point = parser.handle_ident("entry_point")?;
-    parser.fini
+    parser.finish()?;
+
+    let entry_point = entry_point.unwrap_or_else(|| ident("gdext_rust_init"));
+    let impl_ty = &impl_decl.self_ty;
+
+    Ok(quote! {
+        #impl_decl
+
+        #[no_mangle]
+        unsafe extern "C" fn #entry_point(
+            interface: *const ::godot::sys::GDExtensionInterface,
+            library: ::godot::sys::GDExtensionClassLibraryPtr,
+            init: *mut ::godot::sys::GDExtensionInitialization,
+        ) -> ::godot::sys::GDExtensionBool {
+            
