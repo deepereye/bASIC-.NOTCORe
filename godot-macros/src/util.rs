@@ -427,3 +427,83 @@ mod tests {
             .expect("decl")
             .as_function()
             .expect("fn")
+            .attributes;
+
+        assert_eq!(attrs.len(), 1);
+        let attr_value = &attrs[0].value;
+        let mut parsed = parse_kv_group(attr_value).expect("parse");
+
+        for (key, value) in output_map {
+            assert_eq!(parsed.remove(&key), Some(value));
+        }
+
+        assert!(parsed.is_empty(), "Remaining entries in map");
+    }
+
+    #[test]
+    fn test_parse_kv_just_key() {
+        expect_parsed(
+            quote! {
+                #[attr(just_key)]
+            },
+            hash_map!(
+                "just_key".to_string() => KvValue::None,
+            ),
+        );
+    }
+
+    #[test]
+    fn test_parse_kv_key_ident() {
+        expect_parsed(
+            quote! {
+                #[attr(key=value)]
+            },
+            hash_map!(
+                "key".to_string() => KvValue::Ident(ident("value")),
+            ),
+        );
+    }
+
+    #[test]
+    fn test_parse_kv_key_lit() {
+        expect_parsed(
+            quote! {
+                #[attr(key="string", pos=32, neg=-32, bool=true, float=3.4)]
+            },
+            hash_map!(
+                "key".to_string() => KvValue::Lit("\"string\"".to_string()),
+                "pos".to_string() => KvValue::Lit("32".to_string()),
+                "neg".to_string() => KvValue::Lit("-32".to_string()),
+                "bool".to_string() => KvValue::Lit("true".to_string()),
+                "float".to_string() => KvValue::Lit("3.4".to_string()),
+            ),
+        );
+    }
+
+    #[test]
+    fn test_parse_kv_mixed() {
+        expect_parsed(
+            quote! {
+                #[attr(forever, key="string", default=-820, fn=my_function, alone)]
+            },
+            hash_map!(
+                "forever".to_string() => KvValue::None,
+                "key".to_string() => KvValue::Lit("\"string\"".to_string()),
+                "default".to_string() => KvValue::Lit("-820".to_string()),
+                "fn".to_string() => KvValue::Ident(ident("my_function")),
+                "alone".to_string() => KvValue::None,
+            ),
+        );
+    }
+}
+
+pub(crate) fn path_is_single(path: &[TokenTree], expected: &str) -> bool {
+    path.len() == 1 && path[0].to_string() == expected
+}
+
+pub(crate) fn path_ends_with(path: &[TokenTree], expected: &str) -> bool {
+    // could also use TyExpr::as_path()
+    path.last()
+        .map(|last| last.to_string() == expected)
+        .unwrap_or(false)
+}
