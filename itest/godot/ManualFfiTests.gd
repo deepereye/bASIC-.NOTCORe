@@ -21,4 +21,23 @@ func test_missing_init():
 func test_to_string():
 	var ffi = VirtualMethodTest.new()
 	
-	assert_eq(str(ffi
+	assert_eq(str(ffi), "VirtualMethodTest[integer=0]")
+
+func test_export():
+	var obj = HasProperty.new()
+
+	obj.int_val = 5
+	assert_eq(obj.int_val, 5)
+
+	obj.string_val = "test val"
+	assert_eq(obj.string_val, "test val")
+
+	var node = Node.new()
+	obj.object_val = node
+	assert_eq(obj.object_val, node)
+	
+	var texture_val_meta = obj.get_property_list().filter(
+		func(el): return el["name"] == "texture_val"
+	).front()
+	
+	assert_that(texture_val_meta != null, "'texture_val' is de
