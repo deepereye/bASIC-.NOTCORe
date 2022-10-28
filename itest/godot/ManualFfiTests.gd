@@ -40,4 +40,18 @@ func test_export():
 		func(el): return el["name"] == "texture_val"
 	).front()
 	
-	assert_that(texture_val_meta != null, "'texture_val' is de
+	assert_that(texture_val_meta != null, "'texture_val' is defined")
+	assert_eq(texture_val_meta["hint"], PropertyHint.PROPERTY_HINT_RESOURCE_TYPE)
+	assert_eq(texture_val_meta["hint_string"], "Texture")
+	
+	obj.free()
+	node.free()
+
+func test_untyped_array_pass_to_user_func():
+	var obj = ArrayTest.new()
+	var array: Array = [42, "answer"]
+	assert_eq(obj.pass_untyped_array(array), 2)
+
+func test_untyped_array_return_from_user_func():
+	var obj = ArrayTest.new()
+	var array: Array =
