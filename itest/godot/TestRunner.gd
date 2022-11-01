@@ -15,4 +15,20 @@ func _ready():
 				unrecognized_args.push_back(arg)
 
 	if unrecognized_args:
-		push_error("Unrecognized arguments: ", unrecognized
+		push_error("Unrecognized arguments: ", unrecognized_args)
+		get_tree().quit(2)
+		return
+
+	var rust_runner = IntegrationTests.new()
+
+	var gdscript_suites: Array = [
+		preload("res://ManualFfiTests.gd").new(),
+		preload("res://gen/GenFfiTests.gd").new(),
+	]
+	
+	var gdscript_tests: Array = []
+	for suite in gdscript_suites:
+		for method in suite.get_method_list():
+			var method_name: String = method.name
+			if method_name.begins_with("test_"):
+				gdscript_tests.push_back(GDScriptTestCase.new(suite, 
