@@ -31,4 +31,27 @@ func _ready():
 		for method in suite.get_method_list():
 			var method_name: String = method.name
 			if method_name.begins_with("test_"):
-				gdscript_tests.push_back(GDScriptTestCase.new(suite, 
+				gdscript_tests.push_back(GDScriptTestCase.new(suite, method_name))
+
+	var success: bool = rust_runner.run_all_tests(
+		gdscript_tests,
+		gdscript_suites.size(),
+		allow_focus,
+		self,
+	)
+
+	var exit_code: int = 0 if success else 1
+	get_tree().quit(exit_code)
+
+
+class GDScriptTestCase:
+	var suite: Object
+	var method_name: String
+	var suite_name: String
+	
+	func _init(suite: Object, method_name: String):
+		self.suite = suite
+		self.method_name = method_name
+		self.suite_name = _suite_name(suite)
+
+	func run
