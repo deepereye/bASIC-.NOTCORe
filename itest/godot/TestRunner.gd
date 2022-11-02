@@ -54,4 +54,13 @@ class GDScriptTestCase:
 		self.method_name = method_name
 		self.suite_name = _suite_name(suite)
 
-	func run
+	func run():
+		# This is a no-op if the suite doesn't have this property.
+		suite.set("_assertion_failed", false)
+		var result = suite.call(method_name)
+		var ok: bool = (result == true || result == null) && !suite.get("_assertion_failed")
+		return ok
+	
+	static func _suite_name(suite: Object) -> String:
+		var script: GDScript = suite.get_script()
+		return str(script.resource_path.get_file().get_basename(), ".gd")
