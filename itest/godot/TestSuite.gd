@@ -8,4 +8,24 @@ extends RefCounted
 var _assertion_failed: bool = false
 
 ## Asserts that `what` is `true`, but does not abort the test. Returns `what` so you can return
-## early from the test function if the assertion 
+## early from the test function if the assertion failed.
+func assert_that(what: bool, message: String = "") -> bool:
+	if what:
+		return true
+
+	_assertion_failed = true
+	if message:
+		print("assertion failed: %s" % message)
+	else:
+		print("assertion failed")
+	return false
+
+func assert_eq(left, right, message: String = "") -> bool:
+	if left == right:
+		return true
+
+	_assertion_failed = true
+	if message:
+		print("assertion failed: %s\n  left: %s\n right: %s" % [message, left, right])
+	else:
+		print("assertion failed: `(
