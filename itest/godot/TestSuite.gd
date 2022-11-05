@@ -28,4 +28,5 @@ func assert_eq(left, right, message: String = "") -> bool:
 	if message:
 		print("assertion failed: %s\n  left: %s\n right: %s" % [message, left, right])
 	else:
-		print("assertion failed: `(
+		print("assertion failed: `(left == right)`\n  left: %s\n right: %s" % [left, right])
+	return false
