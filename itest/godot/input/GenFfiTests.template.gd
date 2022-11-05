@@ -11,4 +11,7 @@ func test_varcall_IDENT():
 	var from_rust = ffi.return_IDENT()
 	assert_that(ffi.accept_IDENT(from_rust))
 
-	var from_gdsc
+	var from_gdscript = VAL
+	var mirrored = ffi.mirror_IDENT(from_gdscript)
+	assert_eq(mirrored, from_gdscript)
+#)

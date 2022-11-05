@@ -1,0 +1,8 @@
+
+[configuration]
+entry_symbol = "itest_init"
+
+[libraries]
+linux.x86_64 = "res://../../target/debug/libitest.so"
+windows.x86_64 = "res://../../target/debug/itest.dll"
+macos = "res://../../target/debug/libitest.dylib"
