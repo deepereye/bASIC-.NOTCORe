@@ -11,4 +11,10 @@ config_version=5
 [application]
 
 config/name="IntegrationTests"
-run/main_scene="res://Test
+run/main_scene="res://TestRunner.tscn"
+config/features=PackedStringArray("4.0")
+run/flush_stdout_on_print=true
+
+[debug]
+
+gdscript/warnings/shadowed_variable=0
