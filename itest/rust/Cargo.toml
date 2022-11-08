@@ -16,4 +16,6 @@ double-precision = ["godot/double-precision"]
 [dependencies]
 godot = { path = "../../godot", default-features = false, features = ["formatted"] }
 
-[build
+[build-dependencies]
+quote = "1"
+proc-macro2 = "1"
