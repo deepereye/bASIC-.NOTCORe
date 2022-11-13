@@ -40,4 +40,20 @@ fn base_deref() {
 
 #[itest]
 fn base_display() {
-    let obj = Gd::<BaseHolder
+    let obj = Gd::<BaseHolder>::new_default();
+    {
+        let guard = obj.bind();
+        let id = guard.base.instance_id();
+
+        // We expect the dynamic type to be part of Godot's to_string(), so BaseHolder and not Node2D
+        let actual = format!(".:{}:.", guard.base);
+        let expected = format!(".:<BaseHolder#{id}>:.");
+
+        assert_eq!(actual, expected);
+    }
+    obj.free();
+}
+
+#[itest]
+fn base_debug() {
+    let obj = Gd::<BaseHolder>::ne
