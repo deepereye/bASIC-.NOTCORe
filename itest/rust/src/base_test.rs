@@ -17,4 +17,27 @@ fn base_test_is_weak() {
 fn base_instance_id() {
     let obj = Gd::<BaseHolder>::new_default();
     let obj_id = obj.instance_id();
-    let bas
+    let base_id = obj.bind().base.instance_id();
+
+    assert_eq!(obj_id, base_id);
+    obj.free();
+}
+
+#[itest]
+fn base_deref() {
+    let mut obj = Gd::<BaseHolder>::new_default();
+
+    {
+        let mut guard = obj.bind_mut();
+        let pos = Vector2::new(-5.5, 7.0);
+        guard.set_position(pos); // GdMut as DerefMut
+
+        assert_eq!(guard.base.get_position(), pos);
+    }
+
+    obj.free();
+}
+
+#[itest]
+fn base_display() {
+    let obj = Gd::<BaseHolder
