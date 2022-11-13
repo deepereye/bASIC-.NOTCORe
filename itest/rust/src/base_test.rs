@@ -56,4 +56,20 @@ fn base_display() {
 
 #[itest]
 fn base_debug() {
-    let obj = Gd::<BaseHolder>::ne
+    let obj = Gd::<BaseHolder>::new_default();
+    {
+        let guard = obj.bind();
+        let id = guard.base.instance_id();
+
+        // We expect the dynamic type to be part of Godot's to_string(), so BaseHolder and not Node2D
+        let actual = format!(".:{:?}:.", guard.base);
+        let expected = format!(".:Base {{ id: {id}, class: BaseHolder }}:.");
+
+        assert_eq!(actual, expected);
+    }
+    obj.free();
+}
+
+#[itest]
+fn base_with_init() {
+    let obj = Gd::<BaseHolder>::with_base(|m
