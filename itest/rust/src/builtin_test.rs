@@ -29,4 +29,19 @@ fn test_builtins_array() {
     let mut inner: InnerArray = array.as_inner();
 
     let a = 7.to_variant();
-    
+    let b = GodotString::from("Seven").to_variant();
+
+    inner.append(a.clone());
+    inner.append(b.clone());
+
+    assert_eq!(inner.size(), 2);
+    assert_eq!(inner.pop_front(), a);
+    assert_eq!(inner.pop_front(), b);
+    assert_eq!(inner.pop_front(), Variant::nil());
+}
+
+#[itest]
+fn test_builtins_callable() {
+    let obj = Node2D::new_alloc();
+    let cb = Callable::from_object_method(obj.share(), "set_position");
+    let
