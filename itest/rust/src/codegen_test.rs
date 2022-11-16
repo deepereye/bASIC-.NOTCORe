@@ -9,4 +9,17 @@
 
 use crate::itest;
 use godot::builtin::inner::{InnerColor, InnerString};
-use godot::engine
+use godot::engine::{FileAccess, HttpRequest};
+use godot::prelude::*;
+
+#[itest]
+fn codegen_class_renamed() {
+    // Known as `HTTPRequest` in Godot
+    let obj = HttpRequest::new_alloc();
+    obj.free();
+}
+
+#[itest]
+fn codegen_base_renamed() {
+    // The registration is done at startup time, so it may already fail during GDExtension init.
+    // Nevertheless, try to instantiate an object with base HttpRequest her
