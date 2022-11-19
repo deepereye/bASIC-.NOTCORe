@@ -42,3 +42,16 @@ fn codegen_static_builtin_method() {
 #[itest]
 fn codegen_static_class_method() {
     let exists = FileAccess::file_exists("inexistent".into());
+    assert!(!exists);
+
+    let exists = FileAccess::file_exists("res://itest.gdextension".into());
+    assert!(exists);
+
+    // see also object_test for reference count verification
+}
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+#[derive(GodotClass)]
+#[class(base=HttpRequest)]
+pub struct TestBaseRenamed 
