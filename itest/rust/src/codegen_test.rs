@@ -22,4 +22,23 @@ fn codegen_class_renamed() {
 #[itest]
 fn codegen_base_renamed() {
     // The registration is done at startup time, so it may already fail during GDExtension init.
-    // Nevertheless, try to instantiate an object with base HttpRequest her
+    // Nevertheless, try to instantiate an object with base HttpRequest here.
+
+    let obj = Gd::with_base(|base| TestBaseRenamed { base });
+    let _id = obj.instance_id();
+
+    obj.free();
+}
+
+#[itest]
+fn codegen_static_builtin_method() {
+    let pi = InnerString::num(std::f64::consts::PI, 3);
+    assert_eq!(pi, GodotString::from("3.142"));
+
+    let col = InnerColor::html("#663399cc".into());
+    assert_eq!(col, Color::from_rgba(0.4, 0.2, 0.6, 0.8));
+}
+
+#[itest]
+fn codegen_static_class_method() {
+    let exists = FileAccess::file_exists("inexistent".into());
