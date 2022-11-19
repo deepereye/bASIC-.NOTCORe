@@ -54,4 +54,14 @@ fn codegen_static_class_method() {
 
 #[derive(GodotClass)]
 #[class(base=HttpRequest)]
-pub struct TestBaseRenamed 
+pub struct TestBaseRenamed {
+    #[base]
+    base: Base<HttpRequest>,
+}
+
+#[godot_api]
+impl GodotExt for TestBaseRenamed {
+    fn init(base: Base<HttpRequest>) -> Self {
+        TestBaseRenamed { base }
+    }
+}
