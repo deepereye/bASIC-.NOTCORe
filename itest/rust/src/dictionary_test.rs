@@ -22,3 +22,13 @@ fn dictionary_new() {
 
 #[itest]
 fn dictionary_from_iterator() {
+    let dictionary = Dictionary::from_iter([("foo", 1), ("bar", 2)]);
+
+    assert_eq!(dictionary.len(), 2);
+    assert_eq!(dictionary.get("foo"), Some(1.to_variant()), "key = \"foo\"");
+    assert_eq!(dictionary.get("bar"), Some(2.to_variant()), "key = \"bar\"");
+
+    let dictionary = Dictionary::from_iter([(1, "foo"), (2, "bar")]);
+
+    assert_eq!(dictionary.len(), 2);
+    assert_eq!(dictionary.get(1), Some("foo".to_variant()), "k
