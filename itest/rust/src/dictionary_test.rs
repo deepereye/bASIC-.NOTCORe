@@ -43,4 +43,20 @@ fn dictionary_from() {
     assert_eq!(dictionary.get("foo"), Some(1.to_variant()), "key = \"foo\"");
     assert_eq!(dictionary.get("bar"), Some(2.to_variant()), "key = \"bar\"");
 
-    let dictionary = Dictionary::from(&HashMap::from([(1, "foo"), 
+    let dictionary = Dictionary::from(&HashMap::from([(1, "foo"), (2, "bar")]));
+
+    assert_eq!(dictionary.len(), 2);
+    assert_eq!(dictionary.get(1), Some("foo".to_variant()), "key = \"foo\"");
+    assert_eq!(dictionary.get(2), Some("bar".to_variant()), "key = \"bar\"");
+}
+
+#[itest]
+fn dictionary_macro() {
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": true,
+        "baz": "foobar"
+    };
+
+    assert_eq!(dictionary.len(), 3);
+    assert_eq!(dictionary.get("f
