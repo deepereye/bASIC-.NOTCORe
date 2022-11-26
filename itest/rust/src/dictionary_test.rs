@@ -79,4 +79,20 @@ fn dictionary_macro() {
         foo: 10,
         "bar": true,
         (1 + 2): Variant::nil(),
-   
+    };
+    assert_eq!(dict_complex.get("foo"), Some(10.to_variant()));
+    assert_eq!(dict_complex.get("bar"), Some(true.to_variant()));
+    assert_eq!(dict_complex.get(3), Some(Variant::nil()));
+}
+
+#[itest]
+fn dictionary_clone() {
+    let subdictionary = dict! {
+        "baz": true,
+        "foobar": false
+    };
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": subdictionary.share()
+    };
+    #[allow(clippy::redundant_c
