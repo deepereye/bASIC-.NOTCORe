@@ -59,4 +59,24 @@ fn dictionary_macro() {
     };
 
     assert_eq!(dictionary.len(), 3);
-    assert_eq!(dictionary.get("f
+    assert_eq!(dictionary.get("foo"), Some(0.to_variant()), "key = \"foo\"");
+    assert_eq!(
+        dictionary.get("bar"),
+        Some(true.to_variant()),
+        "key = \"bar\""
+    );
+    assert_eq!(
+        dictionary.get("baz"),
+        Some("foobar".to_variant()),
+        "key = \"baz\""
+    );
+
+    let empty = dict!();
+    assert!(empty.is_empty());
+
+    let foo = "foo";
+    let dict_complex = dict! {
+        foo: 10,
+        "bar": true,
+        (1 + 2): Variant::nil(),
+   
