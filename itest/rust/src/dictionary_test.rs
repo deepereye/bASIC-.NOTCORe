@@ -95,4 +95,22 @@ fn dictionary_clone() {
         "foo": 0,
         "bar": subdictionary.share()
     };
-    #[allow(clippy::redundant_c
+    #[allow(clippy::redundant_clone)]
+    let clone = dictionary.share();
+    Dictionary::from_variant(&clone.get("bar").unwrap()).insert("final", 4);
+    assert_eq!(subdictionary.get("final"), Some(4.to_variant()));
+}
+
+#[itest]
+fn dictionary_hash() {
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": true,
+        "baz": "foobar"
+    };
+    dictionary.hash();
+}
+
+#[itest]
+fn dictionary_duplicate_deep() {
+    let subdictionary = dic
