@@ -113,4 +113,22 @@ fn dictionary_hash() {
 
 #[itest]
 fn dictionary_duplicate_deep() {
-    let subdictionary = dic
+    let subdictionary = dict! {
+        "baz": true,
+        "foobar": false
+    };
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": subdictionary.share()
+    };
+    let clone = dictionary.duplicate_deep();
+    Dictionary::from_variant(&clone.get("bar").unwrap()).insert("baz", 4);
+    assert_eq!(
+        subdictionary.get("baz"),
+        Some(true.to_variant()),
+        "key = \"baz\""
+    );
+}
+
+#[itest]
+fn dictionary_duplicate_shallow(
