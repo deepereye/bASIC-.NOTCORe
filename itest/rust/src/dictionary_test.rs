@@ -131,4 +131,18 @@ fn dictionary_duplicate_deep() {
 }
 
 #[itest]
-fn dictionary_duplicate_shallow(
+fn dictionary_duplicate_shallow() {
+    let subdictionary = dict! {
+        "baz": true,
+        "foobar": false
+    };
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": subdictionary.share()
+    };
+    let mut clone = dictionary.duplicate_shallow();
+    Dictionary::from_variant(&clone.get("bar").unwrap()).insert("baz", 4);
+    assert_eq!(
+        subdictionary.get("baz"),
+        Some(4.to_variant()),
+        "key = \"baz\""
