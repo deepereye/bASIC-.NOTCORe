@@ -176,4 +176,23 @@ fn dictionary_get() {
         dictionary.get_or_nil("nil"),
         Variant::nil(),
         "key = \"nil\""
-  
+    );
+    assert_eq!(
+        dictionary.get_or_nil("missing"),
+        Variant::nil(),
+        "key = \"missing\""
+    );
+    assert_eq!(dictionary.get("foobar"), None, "key = \"foobar\"");
+}
+
+#[itest]
+fn dictionary_insert() {
+    let mut dictionary = dict! {
+        "foo": 0,
+        "bar": 1,
+    };
+
+    assert_eq!(dictionary.insert("bar", 2), Some(1.to_variant()));
+    assert_eq!(
+        dictionary
+          
