@@ -146,3 +146,21 @@ fn dictionary_duplicate_shallow() {
         subdictionary.get("baz"),
         Some(4.to_variant()),
         "key = \"baz\""
+    );
+    clone.insert("foo", false.to_variant());
+    assert_eq!(dictionary.get("foo"), Some(0.to_variant()));
+    assert_eq!(clone.get("foo"), Some(false.to_variant()));
+}
+
+#[itest]
+fn dictionary_get() {
+    let mut dictionary = dict! {
+        "foo": 0,
+        "bar": true,
+        "baz": "foobar",
+        "nil": Variant::nil(),
+    };
+
+    dictionary.insert("baz", "foobar");
+
+    assert_eq!(dictionary.get("foo"), Some(0.to_v
