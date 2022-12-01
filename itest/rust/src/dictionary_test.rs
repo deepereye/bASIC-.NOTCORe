@@ -163,4 +163,17 @@ fn dictionary_get() {
 
     dictionary.insert("baz", "foobar");
 
-    assert_eq!(dictionary.get("foo"), Some(0.to_v
+    assert_eq!(dictionary.get("foo"), Some(0.to_variant()), "key = \"foo\"");
+    assert_eq!(
+        dictionary.get("bar"),
+        Some(true.to_variant()),
+        "key = \"bar\""
+    );
+    assert_eq!(dictionary.get("baz"), Some("foobar".to_variant()));
+    assert_eq!(dictionary.get("nil"), Some(Variant::nil()), "key = \"nil\"");
+    assert_eq!(dictionary.get("missing"), None, "key = \"missing\"");
+    assert_eq!(
+        dictionary.get_or_nil("nil"),
+        Variant::nil(),
+        "key = \"nil\""
+  
