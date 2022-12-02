@@ -195,4 +195,17 @@ fn dictionary_insert() {
     assert_eq!(dictionary.insert("bar", 2), Some(1.to_variant()));
     assert_eq!(
         dictionary
-          
+            .iter_shared()
+            .typed::<String, i64>()
+            .collect::<HashMap<_, _>>(),
+        HashMap::from([("foo".into(), 0), ("bar".into(), 2)])
+    );
+    assert_eq!(dictionary.insert("baz", 3), None);
+    assert_eq!(
+        dictionary
+            .iter_shared()
+            .typed::<String, i64>()
+            .collect::<HashMap<_, _>>(),
+        HashMap::from([("foo".into(), 0), ("bar".into(), 2), ("baz".into(), 3)])
+    );
+}
