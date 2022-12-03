@@ -227,4 +227,19 @@ fn dictionary_insert_multiple() {
 #[itest]
 fn dictionary_insert_long() {
     let mut dictionary = dict! {};
-    let ol
+    let old = dictionary.insert("abcdefghijklmnopqrstuvwxyz", "zabcdefghijklmnopqrstuvwxy");
+    assert_eq!(old, None);
+    assert_eq!(
+        dictionary.get("abcdefghijklmnopqrstuvwxyz"),
+        Some("zabcdefghijklmnopqrstuvwxy".to_variant())
+    );
+}
+
+#[itest]
+fn dictionary_extend() {
+    let mut dictionary = dict! {
+        "foo": 0,
+        "bar": true,
+    };
+    assert_eq!(dictionary.get("foo"), Some(0.to_variant()));
+    let other = dict! {
