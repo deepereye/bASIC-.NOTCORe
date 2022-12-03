@@ -209,3 +209,22 @@ fn dictionary_insert() {
         HashMap::from([("foo".into(), 0), ("bar".into(), 2), ("baz".into(), 3)])
     );
 }
+
+#[itest]
+fn dictionary_insert_multiple() {
+    let mut dictionary = dict! {};
+    assert!(dictionary.is_empty());
+
+    dictionary.insert(1, true);
+    assert_eq!(dictionary.get(1), Some(true.to_variant()));
+
+    let mut other = dict! {};
+    assert!(other.is_empty());
+
+    other.insert(1, 2);
+    assert_eq!(other.get(1), Some(2.to_variant()));
+}
+#[itest]
+fn dictionary_insert_long() {
+    let mut dictionary = dict! {};
+    let ol
