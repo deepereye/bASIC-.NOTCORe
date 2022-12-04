@@ -257,4 +257,25 @@ fn dictionary_extend() {
         "bar": "new",
     };
     dictionary.extend_dictionary(other, true);
-    assert_eq!(dictionary.get("bar"), Some
+    assert_eq!(dictionary.get("bar"), Some("new".to_variant()));
+}
+
+#[itest]
+fn dictionary_remove() {
+    let mut dictionary = dict! {
+        "foo": 0,
+    };
+    assert_eq!(dictionary.remove("foo"), Some(0.to_variant()));
+    assert!(!dictionary.contains_key("foo"));
+    assert!(dictionary.is_empty());
+}
+
+#[itest]
+fn dictionary_clear() {
+    let mut dictionary = dict! {
+        "foo": 0,
+        "bar": true,
+        "baz": "foobar"
+    };
+
+    assert!(!dictionary.is_empty
