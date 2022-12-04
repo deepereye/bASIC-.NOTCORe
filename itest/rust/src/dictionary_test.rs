@@ -278,4 +278,24 @@ fn dictionary_clear() {
         "baz": "foobar"
     };
 
-    assert!(!dictionary.is_empty
+    assert!(!dictionary.is_empty());
+    dictionary.clear();
+    assert!(dictionary.is_empty());
+}
+
+#[itest]
+fn dictionary_find_key() {
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": true,
+    };
+
+    assert_eq!(dictionary.find_key_by_value(0), Some("foo".to_variant()));
+    assert_eq!(dictionary.find_key_by_value(true), Some("bar".to_variant()));
+}
+
+#[itest]
+fn dictionary_contains_keys() {
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": true
