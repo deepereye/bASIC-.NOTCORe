@@ -298,4 +298,16 @@ fn dictionary_find_key() {
 fn dictionary_contains_keys() {
     let dictionary = dict! {
         "foo": 0,
-        "bar": true
+        "bar": true,
+    };
+
+    assert!(dictionary.contains_key("foo"), "key = \"foo\"");
+    assert!(dictionary.contains_key("bar"), "key = \"bar\"");
+    assert!(
+        dictionary.contains_all_keys(varray!["foo", "bar"]),
+        "keys = [\"foo\", \"bar\"]"
+    );
+    assert!(!dictionary.contains_key("missing"), "key = \"missing\"");
+    assert!(
+        !dictionary.contains_all_keys(varray!["foo", "bar", "missing"]),
+        "keys = [\"foo\", \"
