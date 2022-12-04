@@ -243,3 +243,18 @@ fn dictionary_extend() {
     };
     assert_eq!(dictionary.get("foo"), Some(0.to_variant()));
     let other = dict! {
+        "bar": "new",
+        "baz": Variant::nil(),
+    };
+    dictionary.extend_dictionary(other, false);
+    assert_eq!(dictionary.get("bar"), Some(true.to_variant()));
+    assert_eq!(dictionary.get("baz"), Some(Variant::nil()));
+
+    let mut dictionary = dict! {
+        "bar": true,
+    };
+    let other = dict! {
+        "bar": "new",
+    };
+    dictionary.extend_dictionary(other, true);
+    assert_eq!(dictionary.get("bar"), Some
