@@ -310,4 +310,22 @@ fn dictionary_contains_keys() {
     assert!(!dictionary.contains_key("missing"), "key = \"missing\"");
     assert!(
         !dictionary.contains_all_keys(varray!["foo", "bar", "missing"]),
-        "keys = [\"foo\", \"
+        "keys = [\"foo\", \"bar\", \"missing\"]"
+    );
+}
+
+#[itest]
+fn dictionary_keys_values() {
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": true,
+    };
+
+    assert_eq!(dictionary.keys_array(), varray!["foo", "bar"]);
+    assert_eq!(dictionary.values_array(), varray![0, true]);
+}
+
+#[itest]
+fn dictionary_equal() {
+    assert_eq!(dict! {"foo": "bar"}, dict! {"foo": "bar"});
+    assert_eq!(dict! {1: f32::NAN}, d
