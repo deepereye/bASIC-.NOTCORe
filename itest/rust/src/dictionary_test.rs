@@ -328,4 +328,20 @@ fn dictionary_keys_values() {
 #[itest]
 fn dictionary_equal() {
     assert_eq!(dict! {"foo": "bar"}, dict! {"foo": "bar"});
-    assert_eq!(dict! {1: f32::NAN}, d
+    assert_eq!(dict! {1: f32::NAN}, dict! {1: f32::NAN}); // yes apparently Godot considers these equal
+    assert_ne!(dict! {"foo": "bar"}, dict! {"bar": "foo"});
+}
+
+#[itest]
+fn dictionary_iter() {
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": true,
+        "baz": "foobar",
+        "nil": Variant::nil(),
+    };
+
+    let map = HashMap::<String, Variant>::from([
+        ("foo".into(), 0.to_variant()),
+        ("bar".into(), true.to_variant()),
+        ("baz".into(), "foobar".to
