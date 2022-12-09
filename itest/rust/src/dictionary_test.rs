@@ -367,4 +367,20 @@ fn dictionary_iter_equals_big() {
 
 #[itest]
 fn dictionary_iter_insert() {
-    l
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": true,
+        "baz": "foobar",
+        "nil": Variant::nil(),
+    };
+    let mut dictionary2 = dictionary.share();
+
+    let mut iter = dictionary.iter_shared();
+    iter.next();
+    iter.next();
+
+    dictionary2.insert("new_key", 10);
+    let v: Vec<_> = iter.collect();
+    assert_eq!(dictionary.len(), 5);
+    assert!(dictionary.contains_key("new_key"));
+ 
