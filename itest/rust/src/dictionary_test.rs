@@ -383,4 +383,21 @@ fn dictionary_iter_insert() {
     let v: Vec<_> = iter.collect();
     assert_eq!(dictionary.len(), 5);
     assert!(dictionary.contains_key("new_key"));
- 
+    assert_eq!(v.len(), 3);
+    assert!(v.contains(&("new_key".to_variant(), 10.to_variant())));
+}
+
+#[itest]
+fn dictionary_iter_insert_after_completion() {
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": true,
+        "baz": "foobar",
+        "nil": Variant::nil(),
+    };
+    let mut dictionary2 = dictionary.share();
+    let mut iter = dictionary.iter_shared();
+    for _ in 0..4 {
+        iter.next();
+    }
+    assert_eq!(iter.n
