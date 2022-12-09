@@ -356,4 +356,15 @@ fn dictionary_iter() {
 fn dictionary_iter_equals_big() {
     let dictionary: Dictionary = (0..1000).zip(0..1000).collect();
     let map: HashMap<i64, i64> = (0..1000).zip(0..1000).collect();
-    let collected_map: HashMap<i64, i64> = dictionary.iter_sh
+    let collected_map: HashMap<i64, i64> = dictionary.iter_shared().typed::<i64, i64>().collect();
+    assert_eq!(map, collected_map);
+    let collected_dictionary: Dictionary = collected_map.into_iter().collect();
+    assert_eq!(dictionary, collected_dictionary);
+}
+
+// Insertion mid-iteration seems to work and is not explicitly forbidden in the docs:
+// https://docs.godotengine.org/en/latest/classes/class_dictionary.html#description
+
+#[itest]
+fn dictionary_iter_insert() {
+    l
