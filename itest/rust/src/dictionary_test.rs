@@ -344,4 +344,16 @@ fn dictionary_iter() {
     let map = HashMap::<String, Variant>::from([
         ("foo".into(), 0.to_variant()),
         ("bar".into(), true.to_variant()),
-        ("baz".into(), "foobar".to
+        ("baz".into(), "foobar".to_variant()),
+        ("nil".into(), Variant::nil()),
+    ]);
+
+    let map2: HashMap<String, Variant> = dictionary.iter_shared().typed().collect();
+    assert_eq!(map, map2);
+}
+
+#[itest]
+fn dictionary_iter_equals_big() {
+    let dictionary: Dictionary = (0..1000).zip(0..1000).collect();
+    let map: HashMap<i64, i64> = (0..1000).zip(0..1000).collect();
+    let collected_map: HashMap<i64, i64> = dictionary.iter_sh
