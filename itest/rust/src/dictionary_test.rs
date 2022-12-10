@@ -400,4 +400,22 @@ fn dictionary_iter_insert_after_completion() {
     for _ in 0..4 {
         iter.next();
     }
-    assert_eq!(iter.n
+    assert_eq!(iter.next(), None);
+
+    dictionary2.insert("new_key", 10);
+    assert_eq!(iter.next(), None);
+    assert_eq!(dictionary.len(), 5);
+}
+
+#[itest]
+fn dictionary_iter_big() {
+    let dictionary: Dictionary = (0..256).zip(0..256).collect();
+    let mut dictionary2 = dictionary.share();
+    let mut iter = dictionary.iter_shared();
+
+    for _ in 0..4 {
+        for _ in 0..4 {
+            for _ in 0..16 {
+                iter.next();
+            }
+            dictionary2.insert
