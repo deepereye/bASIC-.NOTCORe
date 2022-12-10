@@ -418,4 +418,22 @@ fn dictionary_iter_big() {
             for _ in 0..16 {
                 iter.next();
             }
-            dictionary2.insert
+            dictionary2.insert("a", "b");
+        }
+        dictionary2.clear();
+        dictionary2.extend((0..64).zip(0..64));
+    }
+    assert_eq!(dictionary2, (0..64).zip(0..64).collect());
+}
+
+#[itest]
+fn dictionary_iter_simultaneous() {
+    let dictionary = dict! {
+        "foo": 10,
+        "bar": true,
+        "baz": "foobar",
+        "nil": Variant::nil(),
+    };
+
+    let map: HashMap<String, (Variant, Variant)> = dictionary
+        .iter_share
