@@ -436,4 +436,20 @@ fn dictionary_iter_simultaneous() {
     };
 
     let map: HashMap<String, (Variant, Variant)> = dictionary
-        .iter_share
+        .iter_shared()
+        .typed::<String, Variant>()
+        .zip(dictionary.iter_shared().typed::<String, Variant>())
+        .map(|((mut k1, v1), (k2, v2))| {
+            k1.push_str(k2.as_str());
+            (k1, (v1, v2))
+        })
+        .collect();
+
+    assert!(map.len() == 4);
+
+    let mut tens = 0;
+    let mut trues = 0;
+    let mut foobars = 0;
+    let mut nils = 0;
+
+    for v in map.iter().flat_map(|(_, (v1, v2))| [v1, 
