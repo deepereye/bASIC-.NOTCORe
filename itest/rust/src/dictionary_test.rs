@@ -452,4 +452,20 @@ fn dictionary_iter_simultaneous() {
     let mut foobars = 0;
     let mut nils = 0;
 
-    for v in map.iter().flat_map(|(_, (v1, v2))| [v1, 
+    for v in map.iter().flat_map(|(_, (v1, v2))| [v1, v2]) {
+        if let Ok(b) = bool::try_from_variant(v) {
+            assert!(b);
+            trues += 1;
+        } else if let Ok(i) = i64::try_from_variant(v) {
+            assert_eq!(i, 10);
+            tens += 1;
+        } else if let Ok(s) = String::try_from_variant(v) {
+            assert_eq!(s.as_str(), "foobar");
+            foobars += 1;
+        } else {
+            assert!(v.is_nil());
+            nils += 1;
+        }
+    }
+
+  
