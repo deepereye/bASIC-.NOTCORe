@@ -493,4 +493,14 @@ fn dictionary_iter_panics() {
     );
 }
 
-// The below tests erase entries mid-iteration. This is not supported by Godot diction
+// The below tests erase entries mid-iteration. This is not supported by Godot dictionaries
+// however it shouldn't cause unsafety or panicking. Rather the outcome of the iteration is not
+// guaranteed. These tests therefore test two main things:
+// 1. The dictionary is not corrupted by erasing mid-iteration.
+// 2. Our implementation behaves the same as Godot.
+//
+// #2 may change in the future, so equivalent GDScript code is provided. That way we can
+// easily check if a failure is a false negative caused by Godot's behavior changing.
+
+#[itest]
+fn dictionary_i
