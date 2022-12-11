@@ -468,4 +468,16 @@ fn dictionary_iter_simultaneous() {
         }
     }
 
-  
+    assert_eq!(tens, 2);
+    assert_eq!(trues, 2);
+    assert_eq!(foobars, 2);
+    assert_eq!(nils, 2);
+}
+
+#[itest]
+fn dictionary_iter_panics() {
+    expect_panic(
+        "Dictionary containing integer keys should not be convertible to a HashSet<String>",
+        || {
+            let dictionary: Dictionary = (0..10).zip(0..).collect();
+            let _set: HashSet<String> = dictionary.keys_shared()
