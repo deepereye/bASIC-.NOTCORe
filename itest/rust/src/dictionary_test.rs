@@ -480,4 +480,17 @@ fn dictionary_iter_panics() {
         "Dictionary containing integer keys should not be convertible to a HashSet<String>",
         || {
             let dictionary: Dictionary = (0..10).zip(0..).collect();
-            let _set: HashSet<String> = dictionary.keys_shared()
+            let _set: HashSet<String> = dictionary.keys_shared().typed::<String>().collect();
+        },
+    );
+
+    expect_panic(
+        "Dictionary containing integer entries should not be convertible to a HashMap<String,String>",
+        || {
+            let dictionary: Dictionary = (0..10).zip(0..).collect();
+            let _set: HashMap<String,String> = dictionary.iter_shared().typed::<String,String>().collect();
+        },
+    );
+}
+
+// The below tests erase entries mid-iteration. This is not supported by Godot diction
