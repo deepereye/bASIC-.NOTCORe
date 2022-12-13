@@ -503,4 +503,19 @@ fn dictionary_iter_panics() {
 // easily check if a failure is a false negative caused by Godot's behavior changing.
 
 #[itest]
-fn dictionary_i
+fn dictionary_iter_clear() {
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": true,
+        "baz": "foobar",
+        "nil": Variant::nil(),
+    };
+    let mut dictionary2 = dictionary.share();
+
+    let mut iter = dictionary.iter_shared();
+    iter.next();
+    iter.next();
+    dictionary2.clear();
+    let v: Vec<_> = iter.collect();
+    assert!(dictionary.is_empty(), "Dictionary contains {dictionary:?}.");
+    assert!(v.is_empty(), "Vec con
