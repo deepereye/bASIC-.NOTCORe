@@ -543,4 +543,20 @@ fn dictionary_iter_clear() {
      */
 }
 
-#[ite
+#[itest]
+fn dictionary_iter_erase() {
+    let dictionary = dict! {
+        "foo": 0,
+        "bar": true,
+        "baz": "foobar",
+        "nil": Variant::nil(),
+    };
+    let mut dictionary2 = dictionary.share();
+
+    let mut iter = dictionary.iter_shared();
+    iter.next();
+    iter.next();
+    dictionary2.remove("baz");
+    let v: Vec<_> = iter.collect();
+    assert_eq!(dictionary.len(), 3);
+    assert_eq!(v.len(), 1);
