@@ -518,4 +518,29 @@ fn dictionary_iter_clear() {
     dictionary2.clear();
     let v: Vec<_> = iter.collect();
     assert!(dictionary.is_empty(), "Dictionary contains {dictionary:?}.");
-    assert!(v.is_empty(), "Vec con
+    assert!(v.is_empty(), "Vec contains {v:?}.");
+    /* equivalent GDScript code:
+    ```
+    var dictionary = {
+        "foo": 0,
+        "bar": true,
+        "baz": "foobar",
+        "nil": null,
+    }
+    var arr = []
+
+    var i = 0
+    for key in dictionary:
+        var value = dictionary.get(key)
+        if i == 1:
+            dictionary.clear()
+        elif i > 1:
+            arr.append([key, value])
+        i += 1
+    print(dictionary)
+    print(arr)
+    ```
+     */
+}
+
+#[ite
