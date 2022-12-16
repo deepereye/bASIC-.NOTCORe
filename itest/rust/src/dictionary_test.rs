@@ -578,4 +578,9 @@ fn dictionary_iter_erase() {
             dictionary.erase("baz")
         elif i > 1:
             arr.append([key, value])
-    
+        i += 1
+    print(dictionary)
+    print(arr)
+    ```
+     */
+}
