@@ -560,3 +560,22 @@ fn dictionary_iter_erase() {
     let v: Vec<_> = iter.collect();
     assert_eq!(dictionary.len(), 3);
     assert_eq!(v.len(), 1);
+    assert!(v.contains(&("nil".to_variant(), Variant::nil())));
+    /* equivalent GDScript code:
+    ```
+    var dictionary = {
+        "foo": 0,
+        "bar": true,
+        "baz": "foobar",
+        "nil": null,
+    }
+    var arr = []
+
+    var i = 0
+    for key in dictionary:
+        var value = dictionary.get(key)
+        if i == 1:
+            dictionary.erase("baz")
+        elif i > 1:
+            arr.append([key, value])
+    
