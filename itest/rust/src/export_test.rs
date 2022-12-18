@@ -55,4 +55,24 @@ impl HasProperty {
     }
 
     #[func]
-    pub fn set_object_val(&mut sel
+    pub fn set_object_val(&mut self, val: Gd<Object>) {
+        self.object_val = Some(val);
+    }
+
+    #[func]
+    pub fn get_texture_val(&self) -> Variant {
+        if let Some(texture_val) = self.texture_val.as_ref() {
+            texture_val.to_variant()
+        } else {
+            Variant::nil()
+        }
+    }
+
+    #[func]
+    pub fn set_texture_val(&mut self, val: Gd<Texture>) {
+        self.texture_val = Some(val);
+    }
+}
+
+#[godot_api]
+impl GodotExt for HasPropert
