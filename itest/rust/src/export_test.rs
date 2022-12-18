@@ -36,4 +36,23 @@ impl HasProperty {
     }
 
     #[func]
-    pub fn get_string_val(&self) -> God
+    pub fn get_string_val(&self) -> GodotString {
+        self.string_val.clone()
+    }
+
+    #[func]
+    pub fn set_string_val(&mut self, val: GodotString) {
+        self.string_val = val;
+    }
+
+    #[func]
+    pub fn get_object_val(&self) -> Variant {
+        if let Some(object_val) = self.object_val.as_ref() {
+            object_val.to_variant()
+        } else {
+            Variant::nil()
+        }
+    }
+
+    #[func]
+    pub fn set_object_val(&mut sel
