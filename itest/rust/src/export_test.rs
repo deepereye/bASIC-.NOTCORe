@@ -19,4 +19,21 @@ struct HasProperty {
     string_val: GodotString,
     #[export(getter = "get_object_val", setter = "set_object_val")]
     object_val: Option<Gd<Object>>,
-    #[export(getter = "g
+    #[export(getter = "get_texture_val", setter = "set_texture_val", hint = PROPERTY_HINT_RESOURCE_TYPE, hint_desc = "Texture")]
+    texture_val: Option<Gd<Texture>>,
+}
+
+#[godot_api]
+impl HasProperty {
+    #[func]
+    pub fn get_int_val(&self) -> i32 {
+        self.int_val
+    }
+
+    #[func]
+    pub fn set_int_val(&mut self, val: i32) {
+        self.int_val = val;
+    }
+
+    #[func]
+    pub fn get_string_val(&self) -> God
