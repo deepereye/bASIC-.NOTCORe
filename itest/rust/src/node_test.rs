@@ -5,4 +5,19 @@
  */
 
 use crate::{itest, TestContext};
-use godot:
+use godot::builtin::{NodePath, Variant};
+use godot::engine::{global, node, Node, Node3D, NodeExt, PackedScene, SceneTree};
+use godot::obj::Share;
+
+#[itest]
+fn node_get_node() {
+    let mut child = Node3D::new_alloc();
+    child.set_name("child".into());
+    let child_id = child.instance_id();
+
+    let mut parent = Node3D::new_alloc();
+    parent.set_name("parent".into());
+    parent.add_child(
+        child.share().upcast(),
+        false,
+        node::Interna
