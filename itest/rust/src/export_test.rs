@@ -75,4 +75,14 @@ impl HasProperty {
 }
 
 #[godot_api]
-impl GodotExt for HasPropert
+impl GodotExt for HasProperty {
+    fn init(base: Base<Node>) -> Self {
+        HasProperty {
+            int_val: 0,
+            object_val: None,
+            string_val: GodotString::new(),
+            texture_val: None,
+            base,
+        }
+    }
+}
