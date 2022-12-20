@@ -4,8 +4,5 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#![allow(dead_code)]
-
-#[rustfmt::skip]
-#[path = "gen/gen_ffi.rs"]
-mod gen_ffi;
+use crate::{itest, TestContext};
+use godot:
