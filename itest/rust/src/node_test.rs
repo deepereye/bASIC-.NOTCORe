@@ -35,4 +35,20 @@ fn node_get_node() {
     let found = grandparent.get_node_as::<Node3D>(NodePath::from("parent/child"));
     assert_eq!(found.instance_id(), child_id);
 
-    // Der
+    // Deref via &T
+    let found = grandparent.try_get_node_as::<Node3D>(NodePath::from("parent/child"));
+    let found = found.expect("try_get_node_as() returned Some(..)");
+    assert_eq!(found.instance_id(), child_id);
+
+    grandparent.free();
+}
+
+#[itest]
+fn node_get_node_fail() {
+    let mut child = Node3D::new_alloc();
+    child.set_name("child".into());
+
+    let found = child.try_get_node_as::<Node3D>(NodePath::from("non-existent"));
+    assert!(found.is_none());
+
+    child.free(
