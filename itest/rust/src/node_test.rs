@@ -51,4 +51,23 @@ fn node_get_node_fail() {
     let found = child.try_get_node_as::<Node3D>(NodePath::from("non-existent"));
     assert!(found.is_none());
 
-    child.free(
+    child.free();
+}
+
+#[itest(skip)]
+fn node_scene_tree() {
+    let mut child = Node::new_alloc();
+    child.set_name("kid".into());
+
+    let mut parent = Node::new_alloc();
+    parent.set_name("parent".into());
+    parent.add_child(
+        child.share(),
+        false,
+        node::InternalMode::INTERNAL_MODE_DISABLED,
+    );
+
+    let mut scene = PackedScene::new();
+    let err = scene.pack(parent.share());
+    assert_eq!(err, global::Error::OK);
+
