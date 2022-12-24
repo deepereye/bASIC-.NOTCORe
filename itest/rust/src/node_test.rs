@@ -85,4 +85,9 @@ fn node_scene_tree() {
 // FIXME: call_group() crashes
 #[itest(skip)]
 fn node_call_group(ctx: &TestContext) {
-    let mut node = ctx.scene_tree.shar
+    let mut node = ctx.scene_tree.share();
+    let mut tree = node.get_tree().unwrap();
+
+    node.add_to_group("group".into(), true);
+    tree.call_group("group".into(), "set_name".into(), &[Variant::from("name")]);
+}
