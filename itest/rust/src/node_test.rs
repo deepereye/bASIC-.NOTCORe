@@ -71,3 +71,18 @@ fn node_scene_tree() {
     let err = scene.pack(parent.share());
     assert_eq!(err, global::Error::OK);
 
+    let mut tree = SceneTree::new_alloc();
+    let err = tree.change_scene_to_packed(scene);
+    assert_eq!(err, global::Error::OK);
+
+    // Note: parent + child are not owned by PackedScene, thus need to be freed
+    // (verified by porting this very test to GDScript)
+    tree.free();
+    parent.free();
+    child.free();
+}
+
+// FIXME: call_group() crashes
+#[itest(skip)]
+fn node_call_group(ctx: &TestContext) {
+    let mut node = ctx.scene_tree.shar
