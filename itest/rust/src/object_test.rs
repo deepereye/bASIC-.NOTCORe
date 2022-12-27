@@ -18,4 +18,19 @@ use godot::obj::{Base, Gd, InstanceId};
 use godot::obj::{Inherits, Share};
 use godot::sys::GodotFfi;
 
-use crate::{expect_panic, 
+use crate::{expect_panic, itest, TestContext};
+
+// TODO:
+// * make sure that ptrcalls are used when possible (ie. when type info available; maybe GDScript integration test)
+// * Deref impl for user-defined types
+
+#[itest]
+fn object_construct_default() {
+    let obj = Gd::<ObjPayload>::new_default();
+    assert_eq!(obj.bind().value, 111);
+}
+
+#[itest]
+fn object_construct_value() {
+    let obj = Gd::new(ObjPayload { value: 222 });
+    assert_eq!(obj.bind().v
