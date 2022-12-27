@@ -33,4 +33,23 @@ fn object_construct_default() {
 #[itest]
 fn object_construct_value() {
     let obj = Gd::new(ObjPayload { value: 222 });
-    assert_eq!(obj.bind().v
+    assert_eq!(obj.bind().value, 222);
+}
+
+// TODO(#23): DerefMut on Gd pointer may be used to break subtyping relations
+#[itest(skip)]
+fn object_subtype_swap() {
+    let mut a: Gd<Node> = Node::new_alloc();
+    let mut b: Gd<Node3D> = Node3D::new_alloc();
+
+    /*
+    let a_id = a.instance_id();
+    let b_id = b.instance_id();
+    let a_class = a.get_class();
+    let b_class = b.get_class();
+
+    dbg!(a_id);
+    dbg!(b_id);
+    dbg!(&a_class);
+    dbg!(&b_class);
+  
