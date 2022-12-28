@@ -52,4 +52,29 @@ fn object_subtype_swap() {
     dbg!(b_id);
     dbg!(&a_class);
     dbg!(&b_class);
-  
+    println!("..swap..");
+    */
+
+    mem::swap(&mut *a, &mut *b);
+
+    /*
+    dbg!(a_id);
+    dbg!(b_id);
+    dbg!(&a_class);
+    dbg!(&b_class);
+    */
+
+    // This should not panic
+    a.free();
+    b.free();
+}
+
+#[itest]
+fn object_user_roundtrip_return() {
+    let value: i16 = 17943;
+    let user = ObjPayload { value };
+
+    let obj: Gd<ObjPayload> = Gd::new(user);
+    assert_eq!(obj.bind().value, value);
+
+    let ptr = obj.sys();
