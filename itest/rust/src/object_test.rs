@@ -132,4 +132,25 @@ fn object_debug() {
     let actual = format!(".:{obj:?}:.");
     let expected = format!(".:Gd {{ id: {id}, class: Node3D }}:.");
 
-    assert_eq!(actual, 
+    assert_eq!(actual, expected);
+    obj.free();
+}
+
+#[itest]
+fn object_instance_id() {
+    let value: i16 = 17943;
+    let user = ObjPayload { value };
+
+    let obj: Gd<ObjPayload> = Gd::new(user);
+    let id = obj.instance_id();
+
+    let obj2 = Gd::<ObjPayload>::from_instance_id(id);
+    assert_eq!(obj2.bind().value, value);
+}
+
+#[itest]
+fn object_instance_id_when_freed() {
+    let node: Gd<Node3D> = Node3D::new_alloc();
+    assert!(node.is_instance_valid());
+
+    node.share().fr
