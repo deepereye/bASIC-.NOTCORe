@@ -112,4 +112,24 @@ fn object_engine_roundtrip() {
     obj.free();
 }
 
-#[it
+#[itest]
+fn object_display() {
+    let obj = Node3D::new_alloc();
+    let id = obj.instance_id();
+
+    let actual = format!(".:{obj}:.");
+    let expected = format!(".:<Node3D#{id}>:.");
+
+    assert_eq!(actual, expected);
+    obj.free();
+}
+
+#[itest]
+fn object_debug() {
+    let obj = Node3D::new_alloc();
+    let id = obj.instance_id();
+
+    let actual = format!(".:{obj:?}:.");
+    let expected = format!(".:Gd {{ id: {id}, class: Node3D }}:.");
+
+    assert_eq!(actual, 
