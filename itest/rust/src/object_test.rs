@@ -78,3 +78,18 @@ fn object_user_roundtrip_return() {
     assert_eq!(obj.bind().value, value);
 
     let ptr = obj.sys();
+    std::mem::forget(obj);
+
+    let obj2 = unsafe { Gd::<ObjPayload>::from_sys(ptr) };
+    assert_eq!(obj2.bind().value, value);
+} // drop
+
+#[itest]
+fn object_user_roundtrip_write() {
+    let value: i16 = 17943;
+    let user = ObjPayload { value };
+
+    let obj: Gd<ObjPayload> = Gd::new(user);
+    assert_eq!(obj.bind().value, value);
+
+    let obj2 = unsafe { Gd::<ObjPayload>::from_sys_init(|ptr| obj.write_
