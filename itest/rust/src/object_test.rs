@@ -92,4 +92,24 @@ fn object_user_roundtrip_write() {
     let obj: Gd<ObjPayload> = Gd::new(user);
     assert_eq!(obj.bind().value, value);
 
-    let obj2 = unsafe { Gd::<ObjPayload>::from_sys_init(|ptr| obj.write_
+    let obj2 = unsafe { Gd::<ObjPayload>::from_sys_init(|ptr| obj.write_sys(ptr)) };
+    std::mem::forget(obj);
+    assert_eq!(obj2.bind().value, value);
+} // drop
+
+#[itest]
+fn object_engine_roundtrip() {
+    let pos = Vector3::new(1.0, 2.0, 3.0);
+
+    let mut obj: Gd<Node3D> = Node3D::new_alloc();
+    obj.set_position(pos);
+    assert_eq!(obj.get_position(), pos);
+
+    let ptr = obj.sys();
+
+    let obj2 = unsafe { Gd::<Node3D>::from_sys(ptr) };
+    assert_eq!(obj2.get_position(), pos);
+    obj.free();
+}
+
+#[it
