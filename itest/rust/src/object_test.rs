@@ -171,4 +171,20 @@ fn object_from_invalid_instance_id() {
 
 #[itest]
 fn object_from_instance_id_inherits_type() {
-    let descr = GodotString::from("so
+    let descr = GodotString::from("some very long description");
+
+    let mut node: Gd<Node3D> = Node3D::new_alloc();
+    node.set_editor_description(descr.clone());
+
+    let id = node.instance_id();
+
+    let node_as_base = Gd::<Node>::from_instance_id(id);
+    assert_eq!(node_as_base.instance_id(), id);
+    assert_eq!(node_as_base.get_editor_description(), descr);
+
+    node_as_base.free();
+}
+
+#[itest]
+fn object_from_instance_id_unrelated_type() {
+    let node: Gd<Node3D> = 
