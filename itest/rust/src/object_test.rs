@@ -153,4 +153,22 @@ fn object_instance_id_when_freed() {
     let node: Gd<Node3D> = Node3D::new_alloc();
     assert!(node.is_instance_valid());
 
-    node.share().fr
+    node.share().free(); // destroys object without moving out of reference
+    assert!(!node.is_instance_valid());
+
+    expect_panic("instance_id() on dead object", move || {
+        node.instance_id();
+    });
+}
+
+#[itest]
+fn object_from_invalid_instance_id() {
+    let id = InstanceId::try_from_i64(0xDEADBEEF).unwrap();
+
+    let obj2 = Gd::<ObjPayload>::try_from_instance_id(id);
+    assert!(obj2.is_none());
+}
+
+#[itest]
+fn object_from_instance_id_inherits_type() {
+    let descr = GodotString::from("so
