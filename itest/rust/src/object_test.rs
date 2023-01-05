@@ -187,4 +187,25 @@ fn object_from_instance_id_inherits_type() {
 
 #[itest]
 fn object_from_instance_id_unrelated_type() {
-    let node: Gd<Node3D> = 
+    let node: Gd<Node3D> = Node3D::new_alloc();
+    let id = node.instance_id();
+
+    let obj = Gd::<RefCounted>::try_from_instance_id(id);
+    assert!(
+        obj.is_none(),
+        "try_from_instance_id() with bad type must fail"
+    );
+
+    node.free();
+}
+
+#[itest]
+fn object_user_eq() {
+    let value: i16 = 17943;
+    let a = ObjPayload { value };
+    let b = ObjPayload { value };
+
+    let a1 = Gd::new(a);
+    let a2 = a1.share();
+    let b1 = Gd::new(b);
+
