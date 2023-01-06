@@ -258,4 +258,21 @@ fn object_user_convert_variant() {
     let value: i16 = 17943;
     let user = ObjPayload { value };
 
-    let
+    let obj: Gd<ObjPayload> = Gd::new(user);
+    let variant = obj.to_variant();
+    let obj2 = Gd::<ObjPayload>::from_variant(&variant);
+
+    assert_eq!(obj2.bind().value, value);
+}
+
+#[itest]
+fn object_engine_convert_variant() {
+    let pos = Vector3::new(1.0, 2.0, 3.0);
+
+    let mut obj: Gd<Node3D> = Node3D::new_alloc();
+    obj.set_position(pos);
+
+    let variant = obj.to_variant();
+    let obj2 = Gd::<Node3D>::from_variant(&variant);
+
+ 
