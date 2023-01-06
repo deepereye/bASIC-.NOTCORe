@@ -292,4 +292,16 @@ fn object_engine_convert_variant_refcount() {
     check_convert_variant_refcount(obj);
 }
 
-/// Converts between Object <-> Variant and verifies the refer
+/// Converts between Object <-> Variant and verifies the reference counter at each stage.
+fn check_convert_variant_refcount(obj: Gd<RefCounted>) {
+    // Freshly created -> refcount 1
+    assert_eq!(obj.get_reference_count(), 1);
+
+    {
+        // Variant created from object -> increment
+        let variant = obj.to_variant();
+        assert_eq!(obj.get_reference_count(), 2);
+
+        {
+            // Yet another object created *from* variant -> increment
+            let anoth
