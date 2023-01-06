@@ -275,4 +275,21 @@ fn object_engine_convert_variant() {
     let variant = obj.to_variant();
     let obj2 = Gd::<Node3D>::from_variant(&variant);
 
- 
+    assert_eq!(obj2.get_position(), pos);
+    obj.free();
+}
+
+#[itest]
+fn object_user_convert_variant_refcount() {
+    let obj: Gd<ObjPayload> = Gd::new(ObjPayload { value: -22222 });
+    let obj = obj.upcast::<RefCounted>();
+    check_convert_variant_refcount(obj)
+}
+
+#[itest]
+fn object_engine_convert_variant_refcount() {
+    let obj = RefCounted::new();
+    check_convert_variant_refcount(obj);
+}
+
+/// Converts between Object <-> Variant and verifies the refer
