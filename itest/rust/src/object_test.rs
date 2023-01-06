@@ -234,4 +234,28 @@ fn object_dead_eq() {
     let b = Node3D::new_alloc();
     let b2 = b.share();
 
-    // Destroy b1 without c
+    // Destroy b1 without consuming it
+    b.share().free();
+
+    {
+        let lhs = a.share();
+        expect_panic("Gd::eq() panics when one operand is dead", move || {
+            let _ = lhs == b;
+        });
+    }
+    {
+        let rhs = a.share();
+        expect_panic("Gd::ne() panics when one operand is dead", move || {
+            let _ = b2 != rhs;
+        });
+    }
+
+    a.free();
+}
+
+#[itest]
+fn object_user_convert_variant() {
+    let value: i16 = 17943;
+    let user = ObjPayload { value };
+
+    let
