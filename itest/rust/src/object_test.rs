@@ -304,4 +304,21 @@ fn check_convert_variant_refcount(obj: Gd<RefCounted>) {
 
         {
             // Yet another object created *from* variant -> increment
-            let anoth
+            let another_object = variant.to::<Gd<RefCounted>>();
+            assert_eq!(obj.get_reference_count(), 3);
+            assert_eq!(another_object.get_reference_count(), 3);
+        }
+
+        // `another_object` destroyed -> decrement
+        assert_eq!(obj.get_reference_count(), 2);
+    }
+
+    // `variant` destroyed -> decrement
+    assert_eq!(obj.get_reference_count(), 1);
+}
+
+#[itest]
+fn object_engine_convert_variant_nil() {
+    let nil = Variant::nil();
+
+    
