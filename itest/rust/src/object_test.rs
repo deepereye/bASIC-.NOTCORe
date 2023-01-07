@@ -321,4 +321,18 @@ fn check_convert_variant_refcount(obj: Gd<RefCounted>) {
 fn object_engine_convert_variant_nil() {
     let nil = Variant::nil();
 
-    
+    assert_eq!(
+        Gd::<Area2D>::try_from_variant(&nil),
+        Err(VariantConversionError),
+        "try_from_variant(&nil)"
+    );
+
+    expect_panic("from_variant(&nil)", || {
+        Gd::<Area2D>::from_variant(&nil);
+    });
+}
+
+#[itest]
+fn object_engine_returned_refcount() {
+    let Some(file) = FileAccess::open("res://itest.gdextension".into(), file_access::ModeFlags::READ) else {
+        panic!("failed to open 
