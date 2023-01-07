@@ -335,4 +335,19 @@ fn object_engine_convert_variant_nil() {
 #[itest]
 fn object_engine_returned_refcount() {
     let Some(file) = FileAccess::open("res://itest.gdextension".into(), file_access::ModeFlags::READ) else {
-        panic!("failed to open 
+        panic!("failed to open file used to test FileAccess")
+    };
+    assert!(file.is_open());
+
+    // There was a bug which incremented ref-counts of just-returned objects, keep this as regression test.
+    assert_eq!(file.get_reference_count(), 1);
+}
+
+#[itest]
+fn object_engine_up_deref() {
+    let node3d: Gd<Node3D> = Node3D::new_alloc();
+    let id = node3d.instance_id();
+
+    // Deref chain: Gd<Node3D> -> &Node3D -> &Node -> &Object
+    assert_eq!(node3d.instance_id(), id);
+    assert_eq!(
