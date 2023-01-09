@@ -350,4 +350,19 @@ fn object_engine_up_deref() {
 
     // Deref chain: Gd<Node3D> -> &Node3D -> &Node -> &Object
     assert_eq!(node3d.instance_id(), id);
-    assert_eq!(
+    assert_eq!(node3d.get_class(), GodotString::from("Node3D"));
+
+    node3d.free();
+}
+
+#[itest]
+fn object_engine_up_deref_mut() {
+    let mut node3d: Gd<Node3D> = Node3D::new_alloc();
+
+    // DerefMut chain: Gd<Node3D> -> &mut Node3D -> &mut Node -> &mut Object
+    node3d.set_message_translation(true);
+    assert!(node3d.can_translate_messages());
+
+    // DerefMut chain: &mut Node3D -> ...
+    let node3d_ref = &mut *node3d;
+   
