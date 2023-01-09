@@ -365,4 +365,19 @@ fn object_engine_up_deref_mut() {
 
     // DerefMut chain: &mut Node3D -> ...
     let node3d_ref = &mut *node3d;
-   
+    node3d_ref.set_message_translation(false);
+    assert!(!node3d_ref.can_translate_messages());
+
+    node3d.free();
+}
+
+#[itest]
+fn object_engine_upcast() {
+    let node3d: Gd<Node3D> = Node3D::new_alloc();
+    let id = node3d.instance_id();
+
+    let object = node3d.upcast::<Object>();
+    assert_eq!(object.instance_id(), id);
+    assert_eq!(object.get_class(), GodotString::from("Node3D"));
+
+    // Deliberate free on upcast o
