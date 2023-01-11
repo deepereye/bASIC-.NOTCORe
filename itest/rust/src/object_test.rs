@@ -399,4 +399,19 @@ fn object_engine_upcast_reflexive() {
 #[itest]
 fn object_engine_downcast() {
     let pos = Vector3::new(1.0, 2.0, 3.0);
-    let mut node
+    let mut node3d: Gd<Node3D> = Node3D::new_alloc();
+    node3d.set_position(pos);
+    let id = node3d.instance_id();
+
+    let object = node3d.upcast::<Object>();
+    let node: Gd<Node> = object.cast::<Node>();
+    let node3d: Gd<Node3D> = node.try_cast::<Node3D>().expect("try_cast");
+
+    assert_eq!(node3d.instance_id(), id);
+    assert_eq!(node3d.get_position(), pos);
+
+    node3d.free();
+}
+
+#[itest]
+fn object_engine_downcast_r
