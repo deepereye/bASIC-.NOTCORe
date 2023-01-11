@@ -380,4 +380,23 @@ fn object_engine_upcast() {
     assert_eq!(object.instance_id(), id);
     assert_eq!(object.get_class(), GodotString::from("Node3D"));
 
-    // Deliberate free on upcast o
+    // Deliberate free on upcast object
+    object.free();
+}
+
+#[itest]
+fn object_engine_upcast_reflexive() {
+    let node3d: Gd<Node3D> = Node3D::new_alloc();
+    let id = node3d.instance_id();
+
+    let object = node3d.upcast::<Node3D>();
+    assert_eq!(object.instance_id(), id);
+    assert_eq!(object.get_class(), GodotString::from("Node3D"));
+
+    object.free();
+}
+
+#[itest]
+fn object_engine_downcast() {
+    let pos = Vector3::new(1.0, 2.0, 3.0);
+    let mut node
