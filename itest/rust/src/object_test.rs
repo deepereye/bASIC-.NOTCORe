@@ -414,4 +414,21 @@ fn object_engine_downcast() {
 }
 
 #[itest]
-fn object_engine_downcast_r
+fn object_engine_downcast_reflexive() {
+    let node3d: Gd<Node3D> = Node3D::new_alloc();
+    let id = node3d.instance_id();
+
+    let node3d: Gd<Node3D> = node3d.cast::<Node3D>();
+    assert_eq!(node3d.instance_id(), id);
+
+    node3d.free();
+}
+
+#[itest]
+fn object_engine_bad_downcast() {
+    let object: Gd<Object> = Object::new_alloc();
+    let free_ref = object.share();
+    let node3d: Option<Gd<Node3D>> = object.try_cast::<Node3D>();
+
+    assert!(node3d.is_none());
+    
