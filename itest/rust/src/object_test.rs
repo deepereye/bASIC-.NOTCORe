@@ -431,4 +431,18 @@ fn object_engine_bad_downcast() {
     let node3d: Option<Gd<Node3D>> = object.try_cast::<Node3D>();
 
     assert!(node3d.is_none());
-    
+    free_ref.free();
+}
+
+#[itest]
+fn object_engine_accept_polymorphic() {
+    let mut node = Camera3D::new_alloc();
+    let expected_name = StringName::from("Node name");
+    let expected_class = GodotString::from("Camera3D");
+
+    node.set_name(GodotString::from(&expected_name));
+
+    let actual_name = accept_node(node.share());
+    assert_eq!(actual_name, expected_name);
+
+    let actual_class = accept_object(node.sh
