@@ -445,4 +445,19 @@ fn object_engine_accept_polymorphic() {
     let actual_name = accept_node(node.share());
     assert_eq!(actual_name, expected_name);
 
-    let actual_class = accept_object(node.sh
+    let actual_class = accept_object(node.share());
+    assert_eq!(actual_class, expected_class);
+
+    node.free();
+}
+
+#[itest]
+fn object_user_accept_polymorphic() {
+    let obj = Gd::new(ObjPayload { value: 123 });
+    let expected_class = GodotString::from("ObjPayload");
+
+    let actual_class = accept_refcounted(obj.share());
+    assert_eq!(actual_class, expected_class);
+
+    let actual_class = accept_object(obj);
+    assert_eq!(actual_class, expe
