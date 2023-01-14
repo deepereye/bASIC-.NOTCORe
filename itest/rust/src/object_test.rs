@@ -489,4 +489,19 @@ where
 
 #[itest]
 fn object_user_upcast() {
-    l
+    let obj = user_object();
+    let id = obj.instance_id();
+
+    let object = obj.upcast::<Object>();
+    assert_eq!(object.instance_id(), id);
+    assert_eq!(object.get_class(), GodotString::from("ObjPayload"));
+}
+
+#[itest]
+fn object_user_downcast() {
+    let obj = user_object();
+    let id = obj.instance_id();
+
+    let object = obj.upcast::<Object>();
+    let intermediate: Gd<RefCounted> = object.cast::<RefCounted>();
+    asse
