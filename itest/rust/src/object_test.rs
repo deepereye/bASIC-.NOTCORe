@@ -460,4 +460,33 @@ fn object_user_accept_polymorphic() {
     assert_eq!(actual_class, expected_class);
 
     let actual_class = accept_object(obj);
-    assert_eq!(actual_class, expe
+    assert_eq!(actual_class, expected_class);
+}
+
+fn accept_node<T>(node: Gd<T>) -> StringName
+where
+    T: Inherits<Node>,
+{
+    let up = node.upcast();
+    up.get_name()
+}
+
+fn accept_refcounted<T>(node: Gd<T>) -> GodotString
+where
+    T: Inherits<RefCounted>,
+{
+    let up = node.upcast();
+    up.get_class()
+}
+
+fn accept_object<T>(node: Gd<T>) -> GodotString
+where
+    T: Inherits<Object>,
+{
+    let up = node.upcast();
+    up.get_class()
+}
+
+#[itest]
+fn object_user_upcast() {
+    l
