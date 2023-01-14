@@ -517,4 +517,23 @@ fn object_user_bad_downcast() {
     let object = obj.upcast::<Object>();
     let node3d: Option<Gd<Node>> = object.try_cast::<Node>();
 
-    assert!(node3d.is_none(
+    assert!(node3d.is_none());
+}
+
+#[itest]
+fn object_engine_manual_free() {
+    // Tests if no panic or memory leak
+
+    {
+        let node = Node3D::new_alloc();
+        let node2 = node.share();
+        node2.free();
+    } // drop(node)
+}
+
+/// Tests the [`DynamicRefCount`] destructor when the underlying [`Object`] is already freed.
+#[itest]
+fn object_engine_shared_free() {
+    {
+        let node = Node::new_alloc();
+        let _object
