@@ -504,4 +504,17 @@ fn object_user_downcast() {
 
     let object = obj.upcast::<Object>();
     let intermediate: Gd<RefCounted> = object.cast::<RefCounted>();
-    asse
+    assert_eq!(intermediate.instance_id(), id);
+
+    let concrete: Gd<ObjPayload> = intermediate.try_cast::<ObjPayload>().expect("try_cast");
+    assert_eq!(concrete.instance_id(), id);
+    assert_eq!(concrete.bind().value, 17943);
+}
+
+#[itest]
+fn object_user_bad_downcast() {
+    let obj = user_object();
+    let object = obj.upcast::<Object>();
+    let node3d: Option<Gd<Node>> = object.try_cast::<Node>();
+
+    assert!(node3d.is_none(
