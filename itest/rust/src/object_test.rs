@@ -554,4 +554,24 @@ fn object_engine_manual_double_free() {
 #[itest]
 fn object_engine_refcounted_free() {
     let node = RefCounted::new();
-    let node2 = node.share().upcast:
+    let node2 = node.share().upcast::<Object>();
+
+    expect_panic("calling free() on RefCounted object", || node2.free())
+}
+
+#[itest]
+fn object_user_share_drop() {
+    let drop_count = Rc::new(RefCell::new(0));
+
+    let object: Gd<Tracker> = Gd::new(Tracker {
+        drop_count: Rc::clone(&drop_count),
+    });
+    assert_eq!(*drop_count.borrow(), 0);
+
+    let shared = object.share();
+    assert_eq!(*drop_count.borrow(), 0);
+
+    drop(shared);
+    assert_eq!(*drop_count.borrow(), 0);
+
+    drop(ob
