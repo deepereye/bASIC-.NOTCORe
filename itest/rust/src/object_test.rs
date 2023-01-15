@@ -536,4 +536,22 @@ fn object_engine_manual_free() {
 fn object_engine_shared_free() {
     {
         let node = Node::new_alloc();
-        let _object
+        let _object = node.share().upcast::<Object>();
+        node.free();
+    } // drop(_object)
+}
+
+#[itest]
+fn object_engine_manual_double_free() {
+    expect_panic("double free()", || {
+        let node = Node3D::new_alloc();
+        let node2 = node.share();
+        node.free();
+        node2.free();
+    });
+}
+
+#[itest]
+fn object_engine_refcounted_free() {
+    let node = RefCounted::new();
+    let node2 = node.share().upcast:
