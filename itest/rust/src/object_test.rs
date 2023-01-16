@@ -574,4 +574,23 @@ fn object_user_share_drop() {
     drop(shared);
     assert_eq!(*drop_count.borrow(), 0);
 
-    drop(ob
+    drop(object);
+    assert_eq!(*drop_count.borrow(), 1);
+}
+
+#[itest]
+fn object_call_no_args() {
+    let mut node = Node3D::new_alloc().upcast::<Object>();
+
+    let static_id = node.instance_id();
+    let reflect_id_variant = node.call(StringName::from("get_instance_id"), &[]);
+
+    let reflect_id = InstanceId::from_variant(&reflect_id_variant);
+
+    assert_eq!(static_id, reflect_id);
+    node.free();
+}
+
+#[itest]
+fn object_call_with_args() {
+ 
