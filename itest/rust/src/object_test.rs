@@ -593,4 +593,21 @@ fn object_call_no_args() {
 
 #[itest]
 fn object_call_with_args() {
- 
+    let mut node = Node3D::new_alloc();
+
+    let expected_pos = Vector3::new(2.5, 6.42, -1.11);
+
+    let none = node.call(
+        StringName::from("set_position"),
+        &[expected_pos.to_variant()],
+    );
+    let actual_pos = node.call(StringName::from("get_position"), &[]);
+
+    assert_eq!(none, Variant::nil());
+    assert_eq!(actual_pos, expected_pos.to_variant());
+    node.free();
+}
+
+#[itest]
+fn object_get_scene_tree(ctx: &TestContext) {
+    let node = Nod
