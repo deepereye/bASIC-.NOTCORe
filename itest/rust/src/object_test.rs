@@ -610,4 +610,15 @@ fn object_call_with_args() {
 
 #[itest]
 fn object_get_scene_tree(ctx: &TestContext) {
-    let node = Nod
+    let node = Node3D::new_alloc();
+
+    let mut tree = ctx.scene_tree.share();
+    tree.add_child(node.upcast(), false, InternalMode::INTERNAL_MODE_DISABLED);
+
+    let count = tree.get_child_count(false);
+    assert_eq!(count, 1);
+} // implicitly tested: node does not leak
+
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+#[inline(never)] // force to move "out of scope", can t
