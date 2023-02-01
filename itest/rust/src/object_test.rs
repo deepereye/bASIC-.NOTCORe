@@ -641,4 +641,15 @@ impl GodotExt for ObjPayload {
     }
 }
 
-// -----------------------------------------
+// ----------------------------------------------------------------------------------------------------------------------------------------------
+
+#[derive(GodotClass, Debug, Eq, PartialEq)]
+pub struct Tracker {
+    drop_count: Rc<RefCell<i32>>,
+}
+impl Drop for Tracker {
+    fn drop(&mut self) {
+        //println!("      Tracker::drop");
+        *self.drop_count.borrow_mut() += 1;
+    }
+}
