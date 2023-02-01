@@ -98,3 +98,84 @@ fn packed_array_get() {
 
 #[itest]
 fn packed_array_binary_search() {
+    let array = PackedByteArray::from(&[1, 3]);
+
+    assert_eq!(array.binary_search(0), 0);
+    assert_eq!(array.binary_search(1), 0);
+    assert_eq!(array.binary_search(2), 1);
+    assert_eq!(array.binary_search(3), 1);
+    assert_eq!(array.binary_search(4), 2);
+}
+
+#[itest]
+fn packed_array_find() {
+    let array = PackedByteArray::from(&[1, 2, 1]);
+
+    assert_eq!(array.find(0, None), None);
+    assert_eq!(array.find(1, None), Some(0));
+    assert_eq!(array.find(1, Some(1)), Some(2));
+}
+
+#[itest]
+fn packed_array_rfind() {
+    let array = PackedByteArray::from(&[1, 2, 1]);
+
+    assert_eq!(array.rfind(0, None), None);
+    assert_eq!(array.rfind(1, None), Some(2));
+    assert_eq!(array.rfind(1, Some(1)), Some(0));
+}
+
+#[itest]
+fn packed_array_set() {
+    let mut array = PackedByteArray::from(&[1, 2]);
+
+    array.set(0, 3);
+    assert_eq!(array.get(0), 3);
+
+    expect_panic("Array index 2 out of bounds: length is 2", move || {
+        array.set(2, 4);
+    });
+}
+
+#[itest]
+fn packed_array_push() {
+    let mut array = PackedByteArray::from(&[1, 2]);
+
+    array.push(3);
+
+    assert_eq!(array.len(), 3);
+    assert_eq!(array.get(2), 3);
+}
+
+#[itest]
+fn packed_array_insert() {
+    let mut array = PackedByteArray::from(&[1, 2]);
+
+    array.insert(0, 3);
+    assert_eq!(array.to_vec(), vec![3, 1, 2]);
+
+    array.insert(3, 4);
+    assert_eq!(array.to_vec(), vec![3, 1, 2, 4]);
+}
+
+#[itest]
+fn packed_array_extend() {
+    let mut array = PackedByteArray::from(&[1, 2]);
+    let other = PackedByteArray::from(&[3, 4]);
+    array.extend_array(&other);
+    assert_eq!(array.to_vec(), vec![1, 2, 3, 4]);
+}
+
+#[itest]
+fn packed_array_sort() {
+    let mut array = PackedByteArray::from(&[2, 1]);
+    array.sort();
+    assert_eq!(array.to_vec(), vec![1, 2]);
+}
+
+#[itest]
+fn packed_array_reverse() {
+    let mut array = PackedByteArray::from(&[1, 2]);
+    array.reverse();
+    assert_eq!(array.to_vec(), vec![2, 1]);
+}
