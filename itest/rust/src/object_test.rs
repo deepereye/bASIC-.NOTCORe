@@ -621,4 +621,24 @@ fn object_get_scene_tree(ctx: &TestContext) {
 
 // ----------------------------------------------------------------------------------------------------------------------------------------------
 
-#[inline(never)] // force to move "out of scope", can t
+#[inline(never)] // force to move "out of scope", can trigger potential dangling pointer errors
+fn user_object() -> Gd<ObjPayload> {
+    let value: i16 = 17943;
+    let user = ObjPayload { value };
+    Gd::new(user)
+}
+
+#[derive(GodotClass, Debug, Eq, PartialEq)]
+//#[class(init)]
+pub struct ObjPayload {
+    value: i16,
+}
+
+#[godot_api]
+impl GodotExt for ObjPayload {
+    fn init(_base: Base<Self::Base>) -> Self {
+        Self { value: 111 }
+    }
+}
+
+// -----------------------------------------
