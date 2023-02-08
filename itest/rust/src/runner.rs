@@ -73,3 +73,174 @@ impl IntegrationTests {
         let mut last_file = None;
         for test in tests {
             let outcome = run_rust_test(&test, &ctx);
+
+            self.update_stats(&outcome);
+            print_test(test.file.to_string(), test.name, outcome, &mut last_file);
+        }
+    }
+
+    fn run_gdscript_tests(&mut self, tests: VariantArray) {
+        let mut last_file = None;
+        for test in tests.iter_shared() {
+            let result = test.call("run", &[]);
+            let success = result.try_to::<bool>().unwrap_or_else(|_| {
+                panic!("GDScript test case {test} returned non-bool: {result}")
+            });
+
+            let test_file = get_property(&test, "suite_name");
+            let test_case = get_property(&test, "method_name");
+            let outcome = TestOutcome::from_bool(success);
+
+            self.update_stats(&outcome);
+            print_test(test_file, &test_case, outcome, &mut last_file);
+        }
+    }
+
+    fn conclude(
+        &self,
+        rust_time: Duration,
+        gdscript_time: Option<Duration>,
+        allow_focus: bool,
+    ) -> bool {
+        let Self {
+            total,
+            passed,
+            skipped,
+            ..
+        } = *self;
+
+        // Consider 0 tests run as a failure too, because it's probably a problem with the run itself.
+        let failed = total - passed - skipped;
+        let all_passed = failed == 0 && total != 0;
+
+        let outcome = TestOutcome::from_bool(all_passed);
+
+        let rust_time = rust_time.as_secs_f32();
+        let gdscript_time = gdscript_time.map(|t| t.as_secs_f32());
+        let focused_run = gdscript_time.is_none();
+
+        let extra = if skipped > 0 {
+            format!(", {skipped} skipped")
+        } else if focused_run {
+            " (focused run)".to_string()
+        } else {
+            "".to_string()
+        };
+
+        println!("\nTest result: {outcome}. {passed} passed; {failed} failed{extra}.");
+        if let Some(gdscript_time) = gdscript_time {
+            let total_time = rust_time + gdscript_time;
+            println!(
+                "  Time: {total_time:.2}s.  (Rust {rust_time:.2}s, GDScript {gdscript_time:.2}s)"
+            );
+        } else {
+            println!("  Time: {rust_time:.2}s.");
+        }
+
+        if focused_run && !allow_focus {
+            println!("  {FMT_YELLOW}Focus run disallowed; return failure.{FMT_END}");
+            false
+        } else {
+            all_passed
+        }
+    }
+
+    fn update_stats(&mut self, outcome: &TestOutcome) {
+        self.total += 1;
+        match outcome {
+            TestOutcome::Passed => self.passed += 1,
+            TestOutcome::Failed => {}
+            TestOutcome::Skipped => self.skipped += 1,
+        }
+    }
+}
+
+// For more colors, see https://stackoverflow.com/a/54062826
+// To experiment with colors, add `rand` dependency and add following code above.
+//     use rand::seq::SliceRandom;
+//     let outcome = [TestOutcome::Passed, TestOutcome::Failed, TestOutcome::Skipped];
+//     let outcome = outcome.choose(&mut rand::thread_rng()).unwrap();
+const FMT_CYAN_BOLD: &str = "\x1b[36;1;1m";
+const FMT_CYAN: &str = "\x1b[36m";
+const FMT_GREEN: &str = "\x1b[32m";
+const FMT_YELLOW: &str = "\x1b[33m";
+const FMT_RED: &str = "\x1b[31m";
+const FMT_END: &str = "\x1b[0m";
+
+fn run_rust_test(test: &RustTestCase, ctx: &TestContext) -> TestOutcome {
+    if test.skipped {
+        return TestOutcome::Skipped;
+    }
+
+    // Explicit type to prevent tests from returning a value
+    let err_context = || format!("itest `{}` failed", test.name);
+    let success: Option<()> = godot::private::handle_panic(err_context, || (test.function)(ctx));
+
+    TestOutcome::from_bool(success.is_some())
+}
+
+/// Prints a test name and its outcome.
+///
+/// Note that this is run after a test run, so stdout/stderr output during the test will be printed before.
+/// It would be possible to print the test name before and the outcome after, but that would split or duplicate the line.
+fn print_test(
+    test_file: String,
+    test_case: &str,
+    outcome: TestOutcome,
+    last_file: &mut Option<String>,
+) {
+    // Check if we need to open a new category for a file
+    let print_file = last_file
+        .as_ref()
+        .map_or(true, |last_file| last_file != &test_file);
+
+    if print_file {
+        let file_subtitle = if let Some(sep_pos) = test_file.rfind(&['/', '\\']) {
+            &test_file[sep_pos + 1..]
+        } else {
+            test_file.as_str()
+        };
+
+        println!("\n   {file_subtitle}:");
+    }
+
+    println!("   -- {test_case} ... {outcome}");
+
+    // State update for file-category-print
+    *last_file = Some(test_file);
+}
+
+fn get_property(test: &Variant, property: &str) -> String {
+    test.call("get", &[property.to_variant()]).to::<String>()
+}
+
+#[must_use]
+enum TestOutcome {
+    Passed,
+    Failed,
+    Skipped,
+}
+
+impl TestOutcome {
+    fn from_bool(success: bool) -> Self {
+        if success {
+            Self::Passed
+        } else {
+            Self::Failed
+        }
+    }
+}
+
+impl std::fmt::Display for TestOutcome {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // Do not use print_rich() from Godot, because it's very slow and significantly delays test execution.
+        let end = FMT_END;
+        let (col, outcome) = match self {
+            TestOutcome::Passed => (FMT_GREEN, "ok"),
+            TestOutcome::Failed => (FMT_RED, "FAILED"),
+            TestOutcome::Skipped => (FMT_YELLOW, "skipped"),
+        };
+
+        write!(f, "{col}{outcome}{end}")
+    }
+}
