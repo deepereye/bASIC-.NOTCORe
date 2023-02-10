@@ -24,4 +24,7 @@ fn transform2d_equiv() {
     let mappings_transform = [
         ("affine_inverse",   inner.affine_inverse(),                             outer.affine_inverse()                            ),
         ("orthonormalized",  inner.orthonormalized(),                            outer.orthonormalized()                           ),
-        ("rotated",          in
+        ("rotated",          inner.rotated(1.0),                                 outer.rotated(1.0)                                ),
+        ("rotated_local",    inner.rotated_local(1.0),                           outer.rotated_local(1.0)                          ),
+        ("scaled",           inner.scaled(vec),                                  outer.scaled(vec)                                 ),
+        ("scaled_local",     inner.scaled_local(vec),                            o
