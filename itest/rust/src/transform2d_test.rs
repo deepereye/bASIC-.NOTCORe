@@ -17,4 +17,11 @@ const TEST_TRANSFORM: Transform2D = Transform2D::from_cols(
 #[itest]
 fn transform2d_equiv() {
     let inner = InnerTransform2D::from_outer(&TEST_TRANSFORM);
-    let outer = TES
+    let outer = TEST_TRANSFORM;
+    let vec = Vector2::new(1.0, 2.0);
+
+    #[rustfmt::skip]
+    let mappings_transform = [
+        ("affine_inverse",   inner.affine_inverse(),                             outer.affine_inverse()                            ),
+        ("orthonormalized",  inner.orthonormalized(),                            outer.orthonormalized()                           ),
+        ("rotated",          in
