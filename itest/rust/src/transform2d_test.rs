@@ -30,4 +30,22 @@ fn transform2d_equiv() {
         ("scaled_local",     inner.scaled_local(vec),                            outer.scaled_local(vec)                           ),
         ("translated",       inner.translated(vec),                              outer.translated(vec)                             ),
         ("translated_local", inner.translated_local(vec),                        outer.translated_local(vec)                       ),
-        ("interpolate_with", inner.interpolate_with(Transform2D::IDENTITY, 0.5), outer.interpolate_with(Transform2D::IDE
+        ("interpolate_with", inner.interpolate_with(Transform2D::IDENTITY, 0.5), outer.interpolate_with(Transform2D::IDENTITY, 0.5))
+    ];
+    for (name, inner, outer) in mappings_transform {
+        assert_eq_approx!(
+            &inner,
+            &outer,
+            Transform2D::is_equal_approx,
+            "function: {name}\n"
+        );
+    }
+
+    assert_eq_approx!(
+        inner.get_rotation(),
+        outer.rotation(),
+        |a, b| is_equal_approx(real::from_f64(a), b),
+        "function: get_rotation\n"
+    );
+    assert_eq_approx!(
+        inner.get_rotat
