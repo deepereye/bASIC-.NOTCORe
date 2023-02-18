@@ -18,4 +18,12 @@ const TEST_TRANSFORM: Transform3D = Transform3D::new(
 );
 
 #[itest]
-fn transfo
+fn transform3d_equiv() {
+    let inner = InnerTransform3D::from_outer(&TEST_TRANSFORM);
+    let outer = TEST_TRANSFORM;
+    let vec = Vector3::new(1.0, 2.0, 3.0);
+
+    #[rustfmt::skip]
+    let mappings_transform = [
+        ("affine_inverse",   inner.affine_inverse(),                             outer.affine_inverse()                            ),
+        ("orthonormalized",  inner.orthonormalized(),                            outer.orthonormalized()  
