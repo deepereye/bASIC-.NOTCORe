@@ -26,4 +26,8 @@ fn transform3d_equiv() {
     #[rustfmt::skip]
     let mappings_transform = [
         ("affine_inverse",   inner.affine_inverse(),                             outer.affine_inverse()                            ),
-        ("orthonormalized",  inner.orthonormalized(),                            outer.orthonormalized()  
+        ("orthonormalized",  inner.orthonormalized(),                            outer.orthonormalized()                           ),
+        ("rotated",          inner.rotated(vec.normalized(), 1.0),               outer.rotated(vec.normalized(), 1.0)              ),
+        ("rotated_local",    inner.rotated_local(vec.normalized(), 1.0),         outer.rotated_local(vec.normalized(), 1.0)        ),
+        ("scaled",           inner.scaled(vec),                                  outer.scaled(vec)                                 ),
+        ("sc
