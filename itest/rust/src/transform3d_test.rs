@@ -30,4 +30,7 @@ fn transform3d_equiv() {
         ("rotated",          inner.rotated(vec.normalized(), 1.0),               outer.rotated(vec.normalized(), 1.0)              ),
         ("rotated_local",    inner.rotated_local(vec.normalized(), 1.0),         outer.rotated_local(vec.normalized(), 1.0)        ),
         ("scaled",           inner.scaled(vec),                                  outer.scaled(vec)                                 ),
-        ("sc
+        ("scaled_local",     inner.scaled_local(vec),                            outer.scaled_local(vec)                           ),
+        ("translated",       inner.translated(vec),                              outer.translated(vec)                             ),
+        ("translated_local", inner.translated_local(vec),                        outer.translated_local(vec)                       ),
+        ("interpolate_with", inner.interpolate
