@@ -33,4 +33,14 @@ fn transform3d_equiv() {
         ("scaled_local",     inner.scaled_local(vec),                            outer.scaled_local(vec)                           ),
         ("translated",       inner.translated(vec),                              outer.translated(vec)                             ),
         ("translated_local", inner.translated_local(vec),                        outer.translated_local(vec)                       ),
-        ("interpolate_with", inner.interpolate
+        ("interpolate_with", inner.interpolate_with(Transform3D::IDENTITY, 0.5), outer.interpolate_with(Transform3D::IDENTITY, 0.5))
+    ];
+    for (name, inner, outer) in mappings_transform {
+        assert_eq_approx!(
+            &inner,
+            &outer,
+            Transform3D::is_equal_approx,
+            "function: {name}\n"
+        );
+    }
+}
