@@ -22,4 +22,24 @@ fn utilities_sign() {
     let input = Variant::from(-7);
     let output = sign(input);
 
-    asse
+    assert_eq!(output, Variant::from(-1));
+}
+
+#[itest]
+fn utilities_wrap() {
+    let output = wrap(Variant::from(3.4), Variant::from(2.0), Variant::from(3.0));
+    assert_eq!(output, Variant::from(2.4));
+
+    let output = wrap(
+        Variant::from(-5.7),
+        Variant::from(-3.0),
+        Variant::from(-2.0),
+    );
+    assert_eq!(output, Variant::from(-2.7));
+}
+
+#[itest]
+fn utilities_max() {
+    let output = max(
+        Variant::from(1.0),
+        Variant::from(
