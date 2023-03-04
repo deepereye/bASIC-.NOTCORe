@@ -42,4 +42,15 @@ fn utilities_wrap() {
 fn utilities_max() {
     let output = max(
         Variant::from(1.0),
-        Variant::from(
+        Variant::from(3.0),
+        &[Variant::from(5.0), Variant::from(7.0)],
+    );
+    assert_eq!(output, Variant::from(7.0));
+
+    let output = max(
+        Variant::from(-1.0),
+        Variant::from(-3.0),
+        &[Variant::from(-5.0), Variant::from(-7.0)],
+    );
+    assert_eq!(output, Variant::from(-1.0));
+}
